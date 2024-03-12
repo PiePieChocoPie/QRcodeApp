@@ -1,4 +1,4 @@
-import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity} from "react-native";
+import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions} from "react-native";
 import React, {FC, useState} from "react";
 import {encode as base64encode} from 'base-64';
 import { storeAuthStatus } from "../store";
@@ -6,9 +6,10 @@ import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 
-import {bitrixAuthRequest, bitrixUserRequest} from "../http";
+import {bitrixAuthRequest, bitrixDepRequest, bitrixUserRequest} from "../http";
 import {Ionicons} from "@expo/vector-icons";
 import authStore from "../authStoreDir";
+import depStore from "../authStoreDir/depStore";
 
 type AuthNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Authorize'>;
 export const Authorize:FC =() => {
@@ -30,10 +31,14 @@ export const Authorize:FC =() => {
                             await storeAuthStatus(token)
                                 .then(async () => {
                                     await bitrixUserRequest(token)
-                                        .then((res) =>{
+                                        .then(async(res) =>{
                                             authStore.setUserData(res.data.result);
-                                            console.log(authStore.userData[0]);
-                                            navigation.replace('Reader');
+                                            await bitrixDepRequest(authStore.userData[0].UF_DEPARTMENT)
+                                                .then(async (res)=>{
+                                                    depStore.setDepData((res.data.result))
+                                                    console.log(authStore.userData[0], depStore.depData[0]);
+                                                    navigation.replace('Reader');
+                                                })
                                         })
                                         .catch(err =>{
                                             console.log(err);
@@ -65,31 +70,31 @@ export const Authorize:FC =() => {
 
     return (
         <View style={styles.authContainer}>
-            <TextInput style={styles.input}
-                       value={login}
-                       placeholder='Логин'
-                       onChangeText={loginHandler}
-                       keyboardType={"ascii-capable"}
-            />
-            <TextInput style={styles.input}
-                       value={password}
-                       placeholder='Пароль'
-                       secureTextEntry={showPassword}
-                       onChangeText={passwordHandler}
-            >
-
-            </TextInput>
-            <TouchableOpacity
-                onPress={togglePasswordVisibility}
-            >
-                <Ionicons
-                    name={showPassword ? 'eye-off' : 'eye'}
-                    size={24}
-                    color="gray"
+            <View style={styles.authContainer1}>
+                <TextInput style={styles.input}
+                           value={login}
+                           placeholder='Логин'
+                           onChangeText={loginHandler}
+                           keyboardType={"ascii-capable"}
                 />
-            </TouchableOpacity>
-            <Button onPress={buttonHandler} title='Войти'/>
-            {isInvalidLogin && <Text>Неверные данные</Text>}
+                <TextInput style={styles.input}
+                           value={password}
+                           placeholder='Пароль'
+                           secureTextEntry={showPassword}
+                           onChangeText={passwordHandler}
+                />
+                <TouchableOpacity
+                    onPress={togglePasswordVisibility}
+                >
+                    <Ionicons
+                        name={showPassword ? 'eye-off' : 'eye'}
+                        size={24}
+                        color="gray"
+                    />
+                </TouchableOpacity>
+                <Button onPress={buttonHandler} title='Войти'/>
+                {isInvalidLogin && <Text>Неверные данные</Text>}
+            </View>
         </View>
     );
 }
@@ -100,6 +105,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-start',
+    },
+    authContainer1: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginTop: Dimensions.get("window").height /6
     },
     input: {
         marginTop: 20,

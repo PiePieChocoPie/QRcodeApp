@@ -50,7 +50,7 @@ export function bitrixDepRequest(id: string): Promise<AxiosResponse> {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://192.168.91.115:22001/api/bitrix/departments/${id}`
+        url: `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/department.get.json?ID=${id}`
     };
     return axios.request(config)
 }

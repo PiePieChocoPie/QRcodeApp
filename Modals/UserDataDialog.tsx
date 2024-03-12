@@ -1,16 +1,20 @@
 import React from "react";
 import {Modal, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import authStore from "./authStoreDir";
-import { storeAuthStatus } from './store';
+import authStore from "../authStoreDir";
+import { storeAuthStatus } from '../store';
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RootStackParamList} from "./types/navigation";
+import {RootStackParamList} from "../types/navigation";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
+import depStore from "../authStoreDir/depStore";
+import QRDialog from "./QRDialog";
 let userData = '';
-type  logOutProp = NativeStackNavigationProp<RootStackParamList, 'QRPage'>;
-const QRCodeDialog = ({ visible, onClose }) => {
+type  logOutProp = NativeStackNavigationProp<RootStackParamList, 'MainPage'>;
+const UserDataDialog = ({ visible, onClose }) => {
 const navigation = useNavigation<NativeStackNavigationProp<any>>()
+    const [modalVisible, setModalVisible] = React.useState(false);
+
     const handleLogout = async () => {
         onClose(); // Закрываем модальное окно после выхода
         await  storeAuthStatus('');
@@ -24,6 +28,17 @@ const navigation = useNavigation<NativeStackNavigationProp<any>>()
         userData = `${authStore.userData[0].LAST_NAME} ${authStore.userData[0].NAME} ${secName}\n${authStore.userData[0].WORK_POSITION}`;
     }, [authStore.userData[0]]);
 
+    React.useEffect(() => {
+        const secName = authStore.userData[0].SECOND_NAME === undefined ? ' ' : authStore.userData[0].SECOND_NAME;
+
+        userData = userData.concat(`\n${depStore.depData[0].NAME}`);
+    }, [depStore.depData[0]]);
+
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
+
+
     return (
         <Modal
             visible={visible}
@@ -33,9 +48,13 @@ const navigation = useNavigation<NativeStackNavigationProp<any>>()
         >
             <View style={styles.container}>
                 <View style={styles.dialog}>
+                    <TouchableOpacity   style={styles.opacities}  onPress={toggleModal}>
+                        <Icon name="qrcode" size={40} color="#fff"/>
+                    </TouchableOpacity>
                     <Text style={styles.text}>{userData}</Text>
+
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity   style={styles.opacities}  onPress={handleLogout}>
+                        <TouchableOpacity   style={styles.opacities} onPress={handleLogout}>
                             <Icon name="user-times" size={40} color="#fff"/>
                             <Text style={styles.text}>выход</Text>
                         </TouchableOpacity>
@@ -45,6 +64,7 @@ const navigation = useNavigation<NativeStackNavigationProp<any>>()
                         </TouchableOpacity>
                     </View>
                 </View>
+                <QRDialog visible={modalVisible} onClose={toggleModal}/>
             </View>
         </Modal>
     );
@@ -73,7 +93,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
         gap: 60
     },
     opacities:{
@@ -82,4 +101,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default QRCodeDialog;
+export default UserDataDialog;

@@ -1,7 +1,6 @@
 import React from "react";
-import {Button, Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions, Image} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Dimensions, Image} from 'react-native';
 import QRCode from "react-native-qrcode-svg";
-import {Camera} from "expo-camera";
 import authStore from "../authStoreDir";
 import {useNavigation} from "@react-navigation/native";
 import {storeAuthStatus} from "../store";
@@ -9,12 +8,12 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
-import QRCodeDialog from "../QRCodeDialog";
+import UserDataDialog from "../Modals/UserDataDialog";
 
 
 let fullName = '';
-type QRNavigationProp = NativeStackNavigationProp<RootStackParamList, 'QRPage'>
-export default function QRPage () {
+type QRNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MainPage'>
+export default function MainPage () {
     const [qrValue] = React.useState(authStore.userData[0].UF_USR_GUID);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [photoUrl, setPhotoUrl] = React.useState('');
@@ -35,7 +34,7 @@ export default function QRPage () {
 
     return (
         <View style={styles.container}>
-                <View style={styles.overlay}>
+                <View style={styles.overlayWithUser}>
                     <TouchableOpacity style={styles.userB} onPress={toggleModal}>
                         <View style={styles.avatarContainer}>
                             {photoUrl ? (
@@ -50,19 +49,16 @@ export default function QRPage () {
                 <View style={styles.horizontalBorders}>
                     <View style={styles.overlay} />
 
-                    <QRCode value={qrValue} size={Dimensions.get('window').width - 60}/>
+                    <View style={styles.mainFrame}/>
                     <View style={styles.overlay} />
                 </View>
                 <View style={styles.infoButtonContainer}>
                     <TouchableOpacity style={styles.opacities} onPress={handleBack}>
-                        <Icon2 name="qrcode-scan"  size={40} color="#fff"/>
-                        <Text style={styles.text}>сканировать</Text>
+                        <Icon2 name="qrcode-scan"  size={40} color="#111"/>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.overlay} >
-                </View>
 
-            <QRCodeDialog visible={modalVisible} onClose={toggleModal}/>
+            <UserDataDialog visible={modalVisible} onClose={toggleModal}/>
         </View>
     );
 }
@@ -94,7 +90,10 @@ const styles = StyleSheet.create({
     },
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Полупрозрачное черное наложение
+    },
+    overlayWithUser: {
+        flex: 1,
+        alignItems:"flex-end",
     },
     horizontalBorders:{
         flexDirection: "row"
@@ -103,12 +102,11 @@ const styles = StyleSheet.create({
         margin: 0,
         flexDirection: 'row',
         justifyContent: "center",
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Полупрозрачное черное наложение
-
         gap: 150,
+
     },
     text: {
-        color: '#FFF',
+        color: '#111',
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center"
@@ -116,24 +114,28 @@ const styles = StyleSheet.create({
     opacities:{
         alignItems: "center",
         marginTop:30,
+        marginBottom: 30,
     },
     userB:{
         margin:10,
-        alignItems:"flex-end",
         flexDirection: "row",
         alignContent:"center"
     },
     avatarContainer: {
         width: 70,
         height: 70,
-        borderRadius: 50, // Радиус для создания кружка
-        overflow: 'hidden', // Обрезаем изображение по границам кружка
-        alignItems:"flex-end",
+        borderRadius: 50,
+        overflow: 'hidden',
+        margin: 15
     },
     avatar: {
         flex: 1,
         width: '100%',
         height: '100%',
     },
+    mainFrame:{
+        width: Dimensions.get('window').width - 60,
+        height: Dimensions.get('window').width - 60
+    }
 });
 

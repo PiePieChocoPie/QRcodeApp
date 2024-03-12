@@ -1,7 +1,7 @@
 import React from "react";
 import {Text, View, StyleSheet, Button, Dimensions, TouchableOpacity, ImageBackground, Image} from "react-native";
 import { Camera } from "expo-camera";
-import QRCodeDialog from "../QRCodeDialog";
+import UserDataDialog from "../Modals/UserDataDialog";
 import {bitrixUserRequest, sendTo1cData} from "../http";
 import authStore from "../authStoreDir";
 import {getAuthStatus} from "../store";
@@ -51,7 +51,7 @@ export default function Reader() {
     };
 
     const handleBack = async() =>{
-       navigation.replace('QRPage');
+       navigation.replace('MainPage');
     }
 
     const toggleModal = () => {
@@ -70,7 +70,7 @@ export default function Reader() {
     return (
         <View style={styles.container}>
             <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}>
-                <View style={styles.overlay}>
+                <View style={styles.overlayWithUser}>
                 <TouchableOpacity style={styles.userB} onPress={toggleModal}>
                     <View style={styles.avatarContainer}>
                         {photoUrl ? (
@@ -86,24 +86,23 @@ export default function Reader() {
                         <View style={styles.overlay} />
                         <View style={styles.cameraContainer}/>
                         <View style={styles.overlay} />
-                    </View>
+                    </View><View style={styles.overlay} >
+                {scanned && (
+                    <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
+                        <Icon2 name="refresh"  size={40} color="#fff"/>
+                        <Text style={styles.text}>сканировать снова</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
                 <View style={styles.infoButtonContainer}>
                     <TouchableOpacity  style={styles.opacities} onPress={handleBack}>
-                        <Icon2 name="qrcode" size={50} color="#FFF"/>
-                        <Text style={styles.text}>показать</Text>
+                        <Icon name="list-alt" size={50} color="#FFF"/>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.overlay} >
-                    {scanned && (
-                        <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
-                            <Icon2 name="refresh"  size={40} color="#47f"/>
-                            <Text style={styles.text}>сканировать снова</Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
+
             </Camera>
 
-            <QRCodeDialog visible={modalVisible} onClose={toggleModal}/>
+            <UserDataDialog visible={modalVisible} onClose={toggleModal}/>
         </View>
     );
 }
@@ -157,23 +156,28 @@ const styles = StyleSheet.create({
     opacities:{
         alignItems: "center",
         marginTop:30,
+        marginBottom:30,
     },
     userB:{
         margin:10,
-        alignItems:"flex-end",
         flexDirection: "row",
         alignContent:"center"
     },
     avatarContainer: {
         width: 70,
         height: 70,
-        borderRadius: 50, // Радиус для создания кружка
-        overflow: 'hidden', // Обрезаем изображение по границам кружка
-        alignItems:"flex-end",
+        borderRadius: 50,
+        overflow: 'hidden',
+        margin: 15
     },
     avatar: {
         flex: 1,
-            width: '100%',
-            height: '100%',
+        width: '100%',
+        height: '100%',
+    },
+    overlayWithUser: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Полупрозрачное черное наложение
+        alignItems:"flex-end",
     },
 });
