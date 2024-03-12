@@ -8,10 +8,9 @@
     "userInterfaceStyle": "light",
     "plugins": [
       [
-        "expo-camera/next",
+        "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
         }
       ]
     ],
