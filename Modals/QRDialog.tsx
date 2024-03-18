@@ -2,7 +2,7 @@ import React from "react";
 import {Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import QRCode from "react-native-qrcode-svg";
-import authStore from "../authStoreDir";
+import authStore from "../stores/authStore";
 const QRDialog = ({ visible, onClose }) => {
     const [qrValue] = React.useState(authStore.userData[0].UF_USR_GUID);
 

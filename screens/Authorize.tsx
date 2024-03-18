@@ -1,15 +1,17 @@
 import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions} from "react-native";
 import React, {FC, useState} from "react";
 import {encode as base64encode} from 'base-64';
-import { storeAuthStatus } from "../store";
+import { storeAuthStatus } from "../secStore";
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 
-import {bitrixAuthRequest, bitrixDepRequest, bitrixUserRequest} from "../http";
+import {bitrixAuthRequest, bitrixDepRequest, bitrixUserRequest, getUserCurTasks} from "../http";
 import {Ionicons} from "@expo/vector-icons";
-import authStore from "../authStoreDir";
-import depStore from "../authStoreDir/depStore";
+import authStore from "../stores/authStore";
+import depStore from "../stores/depStore";
+import {black} from "react-native-paper/lib/typescript/styles/colors";
+import taskStore from "../stores/taskStore";
 
 type AuthNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Authorize'>;
 export const Authorize:FC =() => {
@@ -17,6 +19,7 @@ export const Authorize:FC =() => {
     const [password, setPassword] = useState('');
     const [isInvalidLogin, setIsInvalidLogin] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState(true);
+    const [test, setTest] = useState({});
 
 
     const navigation = useNavigation<AuthNavigationProp>();
@@ -35,18 +38,34 @@ export const Authorize:FC =() => {
                                             authStore.setUserData(res.data.result);
                                             await bitrixDepRequest(authStore.userData[0].UF_DEPARTMENT)
                                                 .then(async (res)=>{
-                                                    depStore.setDepData((res.data.result))
-                                                    console.log(authStore.userData[0], depStore.depData[0]);
-                                                    navigation.replace('Reader');
+                                                    depStore.setDepData(res.data.result);
+                                                    await getUserCurTasks(authStore.userData[0].ID)
+                                                        .then(async (res) => {
+                                                            taskStore.setTaskData( res.data.result.tasks);
+                                                            console.log(`${authStore.userData[0].NAME} ${depStore.depData[0].NAME} ${taskStore.taskData[0].title}`)
+                                                            navigation.replace('Reader');
+                                                        })
+                                                        .catch(err => {
+                                                            console.log('Ошибка получения списка задач:\n'+err);
+                                                        })
+                                                })
+                                                .catch(err =>{
+                                                    console.log('Ошибка получения подразделения:\n'+err);
                                                 })
                                         })
                                         .catch(err =>{
-                                            console.log(err);
-                                    })
+                                            console.log('Ошибка получения пользователя:\n'+err);
+                                        })
+                                })
+                                .catch(err =>{
+                                    console.log('Ошибка авторизации: \n' +err);
                                 })
                         } else {
                             setIsInvalidLogin(true)
                         }
+                    })
+                    .catch(err =>{
+                        console.log(err);
                     })
             }
         }
@@ -92,7 +111,7 @@ export const Authorize:FC =() => {
                         color="gray"
                     />
                 </TouchableOpacity>
-                <Button onPress={buttonHandler} title='Войти'/>
+                <Button onPress={buttonHandler} color={'brown'} title='Войти'/>
                 {isInvalidLogin && <Text>Неверные данные</Text>}
             </View>
         </View>

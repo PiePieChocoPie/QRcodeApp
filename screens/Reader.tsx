@@ -2,26 +2,28 @@ import React from "react";
 import {Text, View, StyleSheet, Button, Dimensions, TouchableOpacity, ImageBackground, Image} from "react-native";
 import { Camera } from "expo-camera";
 import UserDataDialog from "../Modals/UserDataDialog";
-import {bitrixUserRequest, sendTo1cData} from "../http";
-import authStore from "../authStoreDir";
-import {getAuthStatus} from "../store";
+import chooseState from "../Modals/chooseStateDialog";
+import authStore from "../stores/authStore";
+import {getAuthStatus} from "../secStore";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 import {useNavigation} from "@react-navigation/native";
-import { BlurView } from 'expo-blur';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import ChooseStateDialog from "../Modals/chooseStateDialog";
+import Svg,{Polyline} from "react-native-svg";
+const { width, height } = Dimensions.get('window');
 
 type ReaderNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Reader'>
 export default function Reader() {
     const [hasPermission, setHasPermission] = React.useState(null);
     const [scanned, setScanned] = React.useState(false);
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [modalVisibleState, setModalVisibleState] = React.useState(false);
     const navigation = useNavigation<ReaderNavigationProp>();
-    const nonBlurCameraSize = Dimensions.get("window").width - 30;
-    const [image, setImage] = React.useState(null); // Состояние для хранения изображения с камеры
     const [photoUrl, setPhotoUrl] = React.useState('');
+    const [modalText, setModalText] = React.useState('');
+
 
     React.useEffect(() => {
         const getCameraPermissions = async () => {
@@ -37,17 +39,8 @@ export default function Reader() {
     }, [authStore.userData[0]]);
 
     const handleBarCodeScanned = async ({ data }) => {
-        setScanned(true);
-        const token = await getAuthStatus();
-
-    await sendTo1cData(data).then((res)=>{
-             alert(res);
-             console.log(res);
-         })
-         .catch((err) =>{
-            console.log(err);
-         })
-        alert(`Отправлено ${data}`);
+        setModalText(data);
+        setModalVisibleState(true);
     };
 
     const handleBack = async() =>{
@@ -56,6 +49,10 @@ export default function Reader() {
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
+    };
+    const toggleModalState = () => {
+        setModalVisibleState(!modalVisibleState);
+        setScanned(!scanned)
     };
 
     if (hasPermission === null) {
@@ -84,7 +81,39 @@ export default function Reader() {
             {/* Верхняя часть: камера */}
                     <View style={styles.horizontalBorders}>
                         <View style={styles.overlay} />
-                        <View style={styles.cameraContainer}/>
+                        <View style={styles.cameraContainer}>
+                            <Svg   width="100%"
+                                   height="100%"
+                                   viewBox={'0 0 60 60'}
+                                   style={{overflow:'visible'}}
+                            >
+                                <Polyline
+                                    points="0,20 0,0 20,0"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="6"
+                                />
+                                <Polyline
+                                    points="40,0 60,0 60,20"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="6"
+                                />
+                                <Polyline
+                                    points="0,40 0,60 20,60"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="6"
+                                />
+                                <Polyline
+                                    points="40,60 60,60 60,40"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="6"
+                                />
+                            </Svg>
+                        </View>
+
                         <View style={styles.overlay} />
                     </View><View style={styles.overlay} >
                 {scanned && (
@@ -101,7 +130,7 @@ export default function Reader() {
                 </View>
 
             </Camera>
-
+            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  guidDoc={modalText}/>
             <UserDataDialog visible={modalVisible} onClose={toggleModal}/>
         </View>
     );
@@ -112,20 +141,10 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     cameraContainer: {
-        width: Dimensions.get('window').width - 60,
-        height: Dimensions.get('window').width - 60,
+        width: width - 60,
+        height: width - 60,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: '#FFF',
-        overflow: 'hidden',
-    },
-    cameraBorder: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        borderWidth: 5, // Толщина рамки по углам
-        borderColor: '#FFF',
     },
     camera: {
         flex:1,
@@ -155,8 +174,7 @@ const styles = StyleSheet.create({
     },
     opacities:{
         alignItems: "center",
-        marginTop:30,
-        marginBottom:30,
+        margin:15,
     },
     userB:{
         margin:10,
@@ -168,7 +186,8 @@ const styles = StyleSheet.create({
         height: 70,
         borderRadius: 50,
         overflow: 'hidden',
-        margin: 15
+        marginTop: 15,
+        alignItems: "center"
     },
     avatar: {
         flex: 1,
@@ -179,5 +198,44 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Полупрозрачное черное наложение
         alignItems:"flex-end",
+    },
+    border: {
+        width: 200,
+        height: 200,
+        borderWidth: 1,
+        borderColor: 'black',
+        position: 'relative',
+    },
+    corner: {
+        position: 'absolute',
+        width: 10,
+        height: 10,
+        borderWidth: 1,
+        borderColor: 'black',
+        borderStyle: 'dashed',
+    },
+    topLeft: {
+        top: -5,
+        left: -5,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+    },
+    topRight: {
+        top: -5,
+        right: -5,
+        borderTopWidth: 0,
+        borderRightWidth: 0,
+    },
+    bottomLeft: {
+        bottom: -5,
+        left: -5,
+        borderBottomWidth: 0,
+        borderLeftWidth: 0,
+    },
+    bottomRight: {
+        bottom: -5,
+        right: -5,
+        borderBottomWidth: 0,
+        borderRightWidth: 0,
     },
 });

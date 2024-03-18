@@ -1,13 +1,13 @@
 import React from "react";
 import {Modal, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import authStore from "../authStoreDir";
-import { storeAuthStatus } from '../store';
+import authStore from "../stores/authStore";
+import { storeAuthStatus } from '../secStore';
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
-import depStore from "../authStoreDir/depStore";
+import depStore from "../stores/depStore";
 import QRDialog from "./QRDialog";
 let userData = '';
 type  logOutProp = NativeStackNavigationProp<RootStackParamList, 'MainPage'>;

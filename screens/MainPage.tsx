@@ -1,26 +1,32 @@
 import React from "react";
-import {View, StyleSheet, Text, TouchableOpacity, Dimensions, Image} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Dimensions, Image, Animated} from 'react-native';
 import QRCode from "react-native-qrcode-svg";
-import authStore from "../authStoreDir";
+import authStore from "../stores/authStore";
 import {useNavigation} from "@react-navigation/native";
-import {storeAuthStatus} from "../store";
+import {storeAuthStatus} from "../secStore";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon3 from 'react-native-vector-icons/Feather';
 import UserDataDialog from "../Modals/UserDataDialog";
+import taskStore from "../stores/taskStore";
+import {getUserCurTasks} from "../http";
+import TaskStore from "../stores/taskStore";
+import ScrollView = Animated.ScrollView;
+import {transparent} from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 
 let fullName = '';
 type QRNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MainPage'>
 export default function MainPage () {
-    const [qrValue] = React.useState(authStore.userData[0].UF_USR_GUID);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [photoUrl, setPhotoUrl] = React.useState('');
-
     React.useEffect(() => {
         setPhotoUrl(authStore.userData[0].PERSONAL_PHOTO);
     }, [authStore.userData[0]]);
+
+
 
     const navigation = useNavigation<QRNavigationProp>()
     const handleBack = async () => {
@@ -32,6 +38,61 @@ export default function MainPage () {
         setModalVisible(!modalVisible);
     };
 
+
+    const elements = taskStore.taskData.map(item => {
+        const [detailVisible, setDetailVisible] = React.useState(false);
+        const [depDate, setDepDate] = React.useState('');
+        const [depDLDate, setDepDLDate] = React.useState('');
+
+        React.useEffect(() => {
+            const onlyDate = item.createdDate.split('T')[0]
+            setDepDate(onlyDate);
+            const onlyDLDate = item.deadline ? item.deadline.split('T')[0] : "не установлен";
+            setDepDLDate(onlyDLDate);
+        }, [taskStore.taskData[0]]);
+        const toggleMore = () => {
+            setDetailVisible(!detailVisible);
+        };
+
+        return (
+            <View key={item.id} style={styles.taskView}>
+                <Text style={{fontSize:16,        textAlign:"center"
+                }}>{item.title}</Text>
+                <View style={styles.taskInternalView}>
+                    <View style={styles.internalTextRowView}>
+                        <Text>постановщик: </Text>
+                        <Text style={{fontSize:16}}>{item.creator.name}</Text>
+                    </View>
+                    <View style={styles.internalTextRowView}>
+                        <Text>дата постановки: </Text>
+                        <Text style={styles.text}>{depDate}</Text>
+                    </View>
+                    <View style={styles.internalTextRowView}>
+                        <Text>дедлайн: </Text>
+                    {item.deadline ? (
+                        <Text style={styles.text}>{depDLDate}</Text>
+                    ) : (
+                        <Text style={styles.text}>не установлен</Text>
+                    )}
+                    </View>
+                    <TouchableOpacity style={styles.moreButton} onPress={toggleMore}>
+                        <Icon3 name={'more-horizontal'} size={30}/>
+                    </TouchableOpacity>
+                </View>
+                {detailVisible ? (
+                    <View>
+                        {item.description ? (
+                            <Text style={styles.descriptionText}>{item.description}</Text>
+                        ) : (
+                            <Text style={styles.descriptionText}>Дополнительная информация отсутствует</Text>
+                        )}
+                    </View>
+                ):(<View/>)}
+            </View>
+        );
+    });
+
+
     return (
         <View style={styles.container}>
                 <View style={styles.overlayWithUser}>
@@ -40,17 +101,15 @@ export default function MainPage () {
                             {photoUrl ? (
                                 <Image source={{ uri: photoUrl }} style={styles.avatar} />
                             ) : (
-                                <Icon name="user-o" size={40} color="#fff"
+                                <Icon name="user-o" size={40} color="#111"
                                 />)}
                         </View>
                     </TouchableOpacity>
                 </View>
-                {/* Верхняя часть: камера */}
                 <View style={styles.horizontalBorders}>
-                    <View style={styles.overlay} />
-
-                    <View style={styles.mainFrame}/>
-                    <View style={styles.overlay} />
+                    <ScrollView>
+                    {elements}
+                    </ScrollView>
                 </View>
                 <View style={styles.infoButtonContainer}>
                     <TouchableOpacity style={styles.opacities} onPress={handleBack}>
@@ -92,11 +151,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     overlayWithUser: {
-        flex: 1,
         alignItems:"flex-end",
     },
     horizontalBorders:{
-        flexDirection: "row"
+        flex:1,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5,
     },
     infoButtonContainer: {
         margin: 0,
@@ -111,10 +172,23 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center"
     },
+    internalTextRowView: {
+        color: '#111',
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
+        textAlign: "center"
+    },
+    descriptionText: {
+        color: '#111',
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center"
+    },
     opacities:{
         alignItems: "center",
-        marginTop:30,
-        marginBottom: 30,
+        // marginTop:30,
+        margin: 15,
     },
     userB:{
         margin:10,
@@ -126,7 +200,8 @@ const styles = StyleSheet.create({
         height: 70,
         borderRadius: 50,
         overflow: 'hidden',
-        margin: 15
+        marginTop: 15,
+        alignItems: "center"
     },
     avatar: {
         flex: 1,
@@ -136,6 +211,41 @@ const styles = StyleSheet.create({
     mainFrame:{
         width: Dimensions.get('window').width - 60,
         height: Dimensions.get('window').width - 60
-    }
+    },
+    itemContainer:{
+        width: Dimensions.get("window").width-3,
+        borderRadius: 5,
+        backgroundColor:'#ddd',
+        flexDirection: "row",
+        borderWidth:2,
+        overflow: 'hidden',
+        borderColor: '#eee'
+    },
+    moreButton:{
+        borderRadius:50,
+        backgroundColor:'#d1ded3',
+        alignItems:"center",
+        margin:4
+    },
+    taskView:{
+        alignItems:"center",
+        justifyContent:"center",
+        backgroundColor: '#ddd',
+        borderRadius: 10,
+        borderWidth:1,
+        borderColor:'#aaa',
+        width: Dimensions.get("window").width-8,
+        overflow: 'hidden',
+        marginTop:5,
+        textAlign:"center"
+    },
+    taskInternalView:{
+        alignItems:"center",
+        justifyContent:"space-between",
+        width: Dimensions.get("window").width-3,
+        borderColor:'#aaa',
+        backgroundColor: '#fff',
+        flex:1
+    },
 });
 
