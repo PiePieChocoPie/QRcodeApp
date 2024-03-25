@@ -6,9 +6,11 @@ import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 import Icon from "react-native-vector-icons/FontAwesome";
+import IconFeather from "react-native-vector-icons/Feather";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import depStore from "../stores/depStore";
 import QRDialog from "./QRDialog";
+import projColors from "../stores/staticColors";
 let userData = '';
 type  logOutProp = NativeStackNavigationProp<RootStackParamList, 'MainPage'>;
 const UserDataDialog = ({ visible, onClose }) => {
@@ -49,17 +51,28 @@ const navigation = useNavigation<NativeStackNavigationProp<any>>()
             <View style={styles.container}>
                 <View style={styles.dialog}>
                     <TouchableOpacity   style={styles.opacities}  onPress={toggleModal}>
-                        <Icon name="qrcode" size={40} color="#fff"/>
+                        <Icon name="qrcode" size={40} color={projColors.currentVerse.font}/>
                     </TouchableOpacity>
                     <Text style={styles.text}>{userData}</Text>
 
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity   style={styles.opacities} onPress={handleLogout}>
-                            <Icon name="user-times" size={40} color="#fff"/>
+                            <Icon name="user-times" size={40} color={projColors.currentVerse.font}/>
                             <Text style={styles.text}>выход</Text>
                         </TouchableOpacity>
+                        {/*<TouchableOpacity   style={styles.opacities}  onPress={projColors.switchVerse}>*/}
+                        {/*    {projColors.currentVerse ===projColors.lightVerse ?*/}
+                        {/*        (*/}
+                        {/*            <IconFeather name="moon" size={40} color={projColors.currentVerse.font} />*/}
+                        {/*        )*/}
+                        {/*        :*/}
+                        {/*        (*/}
+                        {/*            <IconFeather name="sun" size={40} color={projColors.currentVerse.font} />*/}
+                        {/*        )*/}
+                        {/*    }*/}
+                        {/*</TouchableOpacity>*/}
                         <TouchableOpacity   style={styles.opacities}  onPress={onClose}>
-                            <Icons name="cancel" size={40} color="#fff" />
+                            <Icons name="cancel" size={40} color={projColors.currentVerse.font} />
                             <Text style={styles.text}>отмена</Text>
                         </TouchableOpacity>
                     </View>
@@ -77,18 +90,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dialog: {
-        backgroundColor: '#444',
+        backgroundColor: projColors.currentVerse.second,
         padding: 20,
         borderRadius: 10,
         alignItems: 'center',
-        borderColor:'#777',
+        borderColor:projColors.currentVerse.main,
         borderWidth:2,
     },
     text: {
         marginVertical: 10,
         fontSize: 16,
         textAlign: "center",
-        color:'#fff'
+        color:projColors.currentVerse.font
     },
     buttonContainer: {
         flexDirection: 'row',

@@ -12,6 +12,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "../Modals/chooseStateDialog";
 import Svg,{Polyline} from "react-native-svg";
+import {getDataAboutDocs} from "../http";
+import updStore from "../stores/updStore";
 const { width, height } = Dimensions.get('window');
 
 type ReaderNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Reader'>
@@ -39,8 +41,15 @@ export default function Reader() {
     }, [authStore.userData[0]]);
 
     const handleBarCodeScanned = async ({ data }) => {
-        setModalText(data);
-        setModalVisibleState(true);
+        await getDataAboutDocs(data).then((res) => {
+            updStore.setUpdData(res.data);
+            console.log(res.data)
+            setModalText(res.data);
+            setModalVisibleState(true);
+        })
+        .catch((err) =>{
+            console.log(err);
+        })
     };
 
     const handleBack = async() =>{
@@ -66,7 +75,7 @@ export default function Reader() {
 
     return (
         <View style={styles.container}>
-            <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}>
+            <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} >
                 <View style={styles.overlayWithUser}>
                 <TouchableOpacity style={styles.userB} onPress={toggleModal}>
                     <View style={styles.avatarContainer}>
@@ -130,7 +139,7 @@ export default function Reader() {
                 </View>
 
             </Camera>
-            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  guidDoc={modalText}/>
+            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText}/>
             <UserDataDialog visible={modalVisible} onClose={toggleModal}/>
         </View>
     );

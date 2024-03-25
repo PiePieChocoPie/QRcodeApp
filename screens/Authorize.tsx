@@ -6,12 +6,21 @@ import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 
-import {bitrixAuthRequest, bitrixDepRequest, bitrixUserRequest, getUserCurTasks} from "../http";
+import {
+    bitrixAuthRequest,
+    bitrixDepRequest,
+    bitrixUserRequest,
+    getUpdStatusesList,
+    getUserCurTasks,
+    getUserCurUpds
+} from "../http";
 import {Ionicons} from "@expo/vector-icons";
 import authStore from "../stores/authStore";
 import depStore from "../stores/depStore";
 import {black} from "react-native-paper/lib/typescript/styles/colors";
 import taskStore from "../stores/taskStore";
+import updListStore from "../stores/updListStore";
+import statusesListStore from "../stores/statusesListStore";
 
 type AuthNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Authorize'>;
 export const Authorize:FC =() => {
@@ -42,12 +51,28 @@ export const Authorize:FC =() => {
                                                     await getUserCurTasks(authStore.userData[0].ID)
                                                         .then(async (res) => {
                                                             taskStore.setTaskData( res.data.result.tasks);
-                                                            console.log(`${authStore.userData[0].NAME} ${depStore.depData[0].NAME} ${taskStore.taskData[0].title}`)
-                                                            navigation.replace('Reader');
+                                                            await getUserCurUpds(authStore.userData[0].ID)
+                                                                .then( async (res) => {
+                                                                     updListStore.setUpdListData(res.data.result.items);
+                                                                    // console.log(`${authStore.userData[0].NAME} ${depStore.depData[0].NAME} ${taskStore.taskData[0].title}`);
+                                                                    await getUpdStatusesList()
+                                                                        .then(async(res)=>{
+                                                                            statusesListStore.setStatusesListData(res.data.result);
+                                                                            console.log(statusesListStore.statusData[0].NAME);
+                                                                        })
+                                                                        .catch(err =>{
+                                                                            console.log("ошибка получения списка статусов:\n"+err);
+                                                                        })
+                                                                    navigation.replace('Reader');
+                                                                })
+                                                                .catch(err =>{
+                                                                    console.log("ошибка получения списка УПД:\n"+err)
+                                                                })
                                                         })
                                                         .catch(err => {
                                                             console.log('Ошибка получения списка задач:\n'+err);
                                                         })
+
                                                 })
                                                 .catch(err =>{
                                                     console.log('Ошибка получения подразделения:\n'+err);

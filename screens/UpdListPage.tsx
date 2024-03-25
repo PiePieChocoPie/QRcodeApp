@@ -1,6 +1,5 @@
 import React from "react";
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions, Image, Animated} from 'react-native';
-import QRCode from "react-native-qrcode-svg";
 import authStore from "../stores/authStore";
 import {useNavigation} from "@react-navigation/native";
 import {storeAuthStatus} from "../secStore";
@@ -11,10 +10,7 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Feather';
 import UserDataDialog from "../Modals/UserDataDialog";
 import taskStore from "../stores/taskStore";
-import {getUserCurTasks} from "../http";
-import TaskStore from "../stores/taskStore";
 import ScrollView = Animated.ScrollView;
-import {transparent} from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 import projColors from "../stores/staticColors";
 
 

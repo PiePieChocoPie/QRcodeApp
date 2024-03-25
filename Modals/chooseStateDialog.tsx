@@ -3,34 +3,47 @@ import {Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions, Alert} from
 import {RadioButton} from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {getAuthStatus} from "../secStore";
-import {sendTo1cData} from "../http";
-const ChooseStateDialog = ({visible, onClose, guidDoc}) => {
+import projColors from "../stores/staticColors";
+import updStore from "../stores/updStore";
+import authStore from "../stores/authStore";
+import statusesListStore from "../stores/statusesListStore";
+import {updUpdStatus} from "../http";
+const ChooseStateDialog = ({visible, onClose, docData}) => {
     const [checked, setChecked] = useState({label:'', value:''});
-
+    const [statuses] = React.useState(statusesListStore.statusData);
+    const getNextStatus = () =>{
+        const curStatus = docData.stageId;
+        const newSt='';
+        for(let i=0;i<statuses.length;i++){
+            if(statusesListStore.statusData[i].STATUS_ID ===curStatus&&i!==statuses.length-2)
+                return statuses[i+1];
+        }
+        return newSt;
+    }
     const acceptAxios = async () => {
         console.log(checked)
-        if (checked.label!="") {
-            const token = await getAuthStatus();
-            let stat = checked.label;
-            console.log(`stat ${stat}, \n checked ${checked}`)
-            await sendTo1cData(guidDoc, stat).then((res) => {
-                console.log(res);
-            })
-                .catch((err) => {
-                    console.log(err);
-                })
-            Alert.alert('успешно',`Отправлен документ - \n${guidDoc}\n\nCо статусом - \n${stat}`);
+        let setableStatus;
+        if (checked.value==='break') {
+            setableStatus = statuses[5];
+        }
+        else if(checked.value==='newStatus'){
+            setableStatus = getNextStatus();
         }
         else{
-            Alert.alert('ошибка',"Выберите статус!")
+            return Alert.alert('ошибка',"Выберите статус!");
         }
+        await updUpdStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+        Alert.alert('успешно',`Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
+        onClose();
     };
     const RadioButtonOptions = ([
-        { label: "1.На выдаче", value: "first" },
-        { label: "2.Предпроверка", value: "second" },
-        { label: "3.Сдан", value: "third" },
-        { label: "4.Не сдан", value: "fourth" },
-        { label: "5.На исправлении", value: "fifth" },
+        // { label: "1.На выдаче", value: "first" },
+        // { label: "2.Предпроверка", value: "second" },
+        // { label: "3.Сдан", value: "third" },
+        // { label: "4.Не сдан", value: "fourth" },
+        // { label: "5.На исправлении", value: "fifth" },
+        {label:getNextStatus().NAME, value:"newStatus"},
+        {label:"прервать документ", value:"break"},
     ]);
 
     return (
@@ -43,6 +56,7 @@ const ChooseStateDialog = ({visible, onClose, guidDoc}) => {
         >
             <View style={styles.container}>
             <View style={styles.dialog}>
+                <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
             <View style={styles.RBView}>
                 {RadioButtonOptions.map((option) => (
                     <RadioButton.Item
@@ -51,24 +65,24 @@ const ChooseStateDialog = ({visible, onClose, guidDoc}) => {
                         value={option.value}
                         status={checked === option ? 'checked' : 'unchecked'}
                         onPress={() => setChecked(option)}
-                        labelStyle={{color: checked.value === option.value ? '#fff' : '#aaa',
+                        labelStyle={{color: checked.value === option.value ? projColors.currentVerse.fontAccent : projColors.currentVerse.font,
                             fontWeight:checked.value === option.value ? 'bold' : '300',
                             width: Dimensions.get("window").width-190,
                             alignItems: 'center',
                             justifyContent: "center",
                             textAlign: "center"}}
-                        uncheckedColor={"#eee"}
-                        color={'#ddd'}
+                        uncheckedColor={projColors.currentVerse.font}
+                        color={projColors.currentVerse.extra}
                     />
                 ))}
             </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.container} onPress={acceptAxios}>
-                        <Icon name="check"  size={50} color="#FFF"/>
+                        <Icon name="check"  size={50} color={projColors.currentVerse.fontAccent}/>
                         <Text style={styles.text}>отправить</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={onClose} style={styles.container}>
-                    <Icon name="close"  size={50} color="#FFF"/>
+                    <Icon name="close"  size={50} color={projColors.currentVerse.fontAccent}/>
                     <Text style={styles.text}>отменить</Text>
                 </TouchableOpacity>
                 </View>
@@ -85,10 +99,10 @@ const styles = StyleSheet.create({
         flex:1
     },
     dialog: {
-        backgroundColor: '#444',
+        backgroundColor: projColors.currentVerse.second,
         padding: 20,
         borderRadius: 10,
-        borderColor:'#777',
+        borderColor:projColors.currentVerse.main,
         borderWidth:2,
         justifyContent: 'center',
         alignItems: 'center',
@@ -97,7 +111,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         fontSize: 16,
         textAlign: "center",
-        color:'#fff',
+        color:projColors.currentVerse.fontAccent,
     },
     buttonContainer: {
         flexDirection: 'row',

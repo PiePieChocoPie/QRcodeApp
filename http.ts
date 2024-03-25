@@ -1,11 +1,11 @@
 import axios, {AxiosResponse} from "axios";
-import authStore from "./stores/authStore";
+import updStore from "./stores/updStore";
 
 export function bitrixAuthRequest(token: string): Promise<AxiosResponse>{
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://192.168.91.115:22001/api/auth/bitrix/${token}`
+        url: `http://192.168.91.115:22001/api/mobile/baseAuth/${token}`
     };
     return axios.request(config);
 }
@@ -14,37 +14,9 @@ export function bitrixUserRequest(token: string): Promise<AxiosResponse> {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://192.168.91.115:22001/api/auth/bitrixData/${token}`
+        url: `http://192.168.91.115:22001/api/mobile/dataFromAuth/${token}`
     };
     return axios.request(config)
-}
-
-export function sendTo1cData(raw: string, stat:string): Promise<any> {
-    const data = (
-    {
-        ID:authStore.userData[0].ID,
-        FULL_NAME:`${authStore.userData[0].LAST_NAME} ${authStore.userData[0].NAME} ${authStore.userData[0].SECOND_NAME}`,
-        user:
-        {
-            text:raw,
-            status:stat
-        }
-    });
-    console.log(data)
-    const url = 'http://192.168.91.115:22001/api/1c/setstatus';
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
-    return axios.post(url, data, { headers })
-        .then(response => {
-            // console.log(response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error(error);
-            throw error;
-        });
 }
 
 export function bitrixDepRequest(id: string): Promise<AxiosResponse> {
@@ -65,6 +37,44 @@ export function  getUserCurTasks(ID:string){
     const url = 'http://192.168.91.115:22001/api/bitrix/task/tasks/'+ID
     let req = axios.post(url);
     return req;
-
 }
+
+export async function getDataAboutDocs(raw:string){
+    const url = `http://192.168.91.115:22001/api/mobile/getupd/${raw}`;
+    return axios.get(url);
+}
+
+export function  getUserCurUpds(ID:string){
+    const body = {
+        "entityTypeId": "168",
+        "filter":{
+            "assignedById":ID
+        }
+    }
+    const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list'
+    let req = axios.post(url,body);
+    return req;
+}
+
+export function getUpdStatusesList(){
+    return axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_168_STAGE_9");
+}
+
+export function  updUpdStatus(IDUpd:string,IDStatus:string, userID: string){
+    const body = {
+        "entityTypeId": "168",
+        "id": IDUpd,
+        "fields":{
+            "stageId":IDStatus,
+            "assignedById": userID
+        }
+    }
+    console.log(body);
+    const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
+    let req = axios.post(url,body);
+    return req;
+}
+
+
+
 
