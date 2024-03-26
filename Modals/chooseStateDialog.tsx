@@ -8,32 +8,52 @@ import updStore from "../stores/updStore";
 import authStore from "../stores/authStore";
 import statusesListStore from "../stores/statusesListStore";
 import {updUpdStatus} from "../http";
+import {Camera} from "expo-camera";
 const ChooseStateDialog = ({visible, onClose, docData}) => {
     const [checked, setChecked] = useState({label:'', value:''});
     const [statuses] = React.useState(statusesListStore.statusData);
+    React.useEffect(() => {
+        setChecked(RadioButtonOptions[0])
+
+    }, [statusesListStore.statusData]);
+
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
         const newSt='';
         for(let i=0;i<statuses.length;i++){
             if(statusesListStore.statusData[i].STATUS_ID ===curStatus&&i!==statuses.length-2)
                 return statuses[i+1];
+
         }
         return newSt;
     }
     const acceptAxios = async () => {
+    try {
         console.log(checked)
         let setableStatus;
-        if (checked.value==='break') {
-            setableStatus = statuses[5];
+        console.log(docData.stageId, statuses[4].STATUS_ID, statuses[3].STATUS_ID)
+        if (docData.stageId !== statuses[4].STATUS_ID && docData.STATUS_ID !== statuses[3].STATUS_ID) {
+            if (checked.value === 'break') {
+                setableStatus = statuses[3];
+            }
+                else if(checked.label === 'newStatus'){
+                setableStatus = getNextStatus();
+
+                }
+                    else if (docData.stageId===statuses[2].STATUS_ID) {
+                setableStatus = statuses[4];
+
+                    } else {
+                        return Alert.alert('ошибка', "Выберите статус!");
+                    }
+                await updUpdStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+                .then()
+            Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
         }
-        else if(checked.value==='newStatus'){
-            setableStatus = getNextStatus();
-        }
-        else{
-            return Alert.alert('ошибка',"Выберите статус!");
-        }
-        await updUpdStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
-        Alert.alert('успешно',`Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
+        else Alert.alert("Документ завершен", "Жизненный цикл документа был завершен")
+    } catch(e){
+        alert(e)
+    }
         onClose();
     };
     const RadioButtonOptions = ([
@@ -73,6 +93,7 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
                             textAlign: "center"}}
                         uncheckedColor={projColors.currentVerse.font}
                         color={projColors.currentVerse.extra}
+
                     />
                 ))}
             </View>

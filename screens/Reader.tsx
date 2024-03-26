@@ -2,9 +2,7 @@ import React from "react";
 import {Text, View, StyleSheet, Button, Dimensions, TouchableOpacity, ImageBackground, Image} from "react-native";
 import { Camera } from "expo-camera";
 import UserDataDialog from "../Modals/UserDataDialog";
-import chooseState from "../Modals/chooseStateDialog";
 import authStore from "../stores/authStore";
-import {getAuthStatus} from "../secStore";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 import {useNavigation} from "@react-navigation/native";
@@ -41,11 +39,11 @@ export default function Reader() {
     }, [authStore.userData[0]]);
 
     const handleBarCodeScanned = async ({ data }) => {
+        setModalVisibleState(true);
         await getDataAboutDocs(data).then((res) => {
             updStore.setUpdData(res.data);
             console.log(res.data)
             setModalText(res.data);
-            setModalVisibleState(true);
         })
         .catch((err) =>{
             console.log(err);
