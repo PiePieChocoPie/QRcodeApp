@@ -40,8 +40,26 @@ export function  getUserCurTasks(ID:string){
 }
 
 export async function getDataAboutDocs(raw:string){
-    const url = `http://192.168.91.115:22001/api/mobile/getupd/${raw}`;
-    return axios.get(url);
+    if (raw.includes('$')) {
+        const body = {
+            "entityTypeId": "133",
+            "filter": {
+                "=ufCrm6Guid": raw
+            }
+        }
+        const url = `https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list`;
+        return axios.post(url, body);
+    }
+    else{
+        const body = {
+            "entityTypeId": "168",
+            "filter": {
+                "=ufCrm5ReleaceGuid": raw
+            }
+        }
+        const url = `https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list`;
+        return axios.post(url, body);
+    }
 }
 
 export function  getUserCurUpds(ID:string){
@@ -59,7 +77,9 @@ export function  getUserCurUpds(ID:string){
 export function getUpdStatusesList(){
     return axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_168_STAGE_9");
 }
-
+export function getItineraryList(){
+    return axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_133_STAGE_10");
+}
 export function  updUpdStatus(IDUpd:string,IDStatus:string, userID: string){
     const body = {
         "entityTypeId": "168",
@@ -70,6 +90,19 @@ export function  updUpdStatus(IDUpd:string,IDStatus:string, userID: string){
         }
     }
     console.log(body);
+    const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
+    let req = axios.post(url,body);
+    return req;
+}
+export function  updItineraryStatus(IDItinerary:string,IDStatus:string, userID: string){
+    const body = {
+        "entityTypeId": "133",
+        "id": IDItinerary,
+        "fields":{
+            "stageId":IDStatus,
+            "updatedBy": userID
+        }
+    }
     const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
     let req = axios.post(url,body);
     return req;

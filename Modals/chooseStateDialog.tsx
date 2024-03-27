@@ -7,55 +7,84 @@ import projColors from "../stores/staticColors";
 import updStore from "../stores/updStore";
 import authStore from "../stores/authStore";
 import statusesListStore from "../stores/statusesListStore";
-import {updUpdStatus} from "../http";
+import {updItineraryStatus, updUpdStatus} from "../http";
 import {Camera} from "expo-camera";
 const ChooseStateDialog = ({visible, onClose, docData}) => {
     const [checked, setChecked] = useState({label:'', value:''});
-    const [statuses] = React.useState(statusesListStore.statusData);
+    const [updStatuses] = React.useState(statusesListStore.statusData);
+    const [itineraryStatuses] = React.useState(statusesListStore.itineraryData);
     React.useEffect(() => {
         setChecked(RadioButtonOptions[0])
 
     }, [statusesListStore.statusData]);
+    React.useEffect(() => {
+        setChecked(RadioButtonOptions[0])
+
+    }, [statusesListStore.itineraryData]);
 
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
         const newSt='';
-        for(let i=0;i<statuses.length;i++){
-            if(statusesListStore.statusData[i].STATUS_ID ===curStatus&&i!==statuses.length-2)
-                return statuses[i+1];
+        for(let i=0;i<updStatuses.length;i++){
+            if(statusesListStore.statusData[i].STATUS_ID ===curStatus&&i!==updStatuses.length-2)
+                return updStatuses[i+1];
 
         }
         return newSt;
     }
-    const acceptAxios = async () => {
-    try {
-        console.log(checked)
+
+    const itineraryHandling = async() =>{
         let setableStatus;
-        console.log(docData.stageId, statuses[4].STATUS_ID, statuses[3].STATUS_ID)
-        if (docData.stageId !== statuses[4].STATUS_ID && docData.STATUS_ID !== statuses[3].STATUS_ID) {
+        console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID)
+        if (docData.stageId !== updStatuses[4].STATUS_ID&&docData.stageId !== updStatuses[3].STATUS_ID&&authStore.userData[0].ID ===docData.ufCrm6Driver) {
+
             if (checked.value === 'break') {
-                setableStatus = statuses[3];
+                setableStatus = updStatuses[4];
             }
-                else if(checked.label === 'newStatus'){
+            else if(checked.label === 'newStatus'){
                 setableStatus = getNextStatus();
 
-                }
-                    else if (docData.stageId===statuses[2].STATUS_ID) {
-                setableStatus = statuses[4];
-
-                    } else {
-                        return Alert.alert('ошибка', "Выберите статус!");
-                    }
-                await updUpdStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+            } else {
+                return Alert.alert('ошибка', "Неожиданная ошибка!");
+            }
+            await updItineraryStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
                 .then()
             Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
         }
-        else Alert.alert("Документ завершен", "Жизненный цикл документа был завершен")
+        else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
+    }
+
+    const updHandling = async() =>{
+        let setableStatus;
+        console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
+        if (docData.stageId === updStatuses[0].STATUS_ID) {
+
+            if (checked.value === 'break') {
+                setableStatus = updStatuses[6];
+            }
+            else if(checked.label === 'newStatus'){
+                setableStatus = getNextStatus();
+
+            } else {
+                return Alert.alert('ошибка', "Неожиданная ошибка!");
+            }
+            await updUpdStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+                .then()
+            Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
+        }
+        else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
+    }
+    const acceptAxios = async () => {
+        // меняем статус документа
+    try {
+        // if
+        // console.log(checked)
     } catch(e){
         alert(e)
     }
         onClose();
     };
+
     const RadioButtonOptions = ([
         // { label: "1.На выдаче", value: "first" },
         // { label: "2.Предпроверка", value: "second" },

@@ -35,7 +35,9 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "upd.scanner"
+      "package": "upd.scanner",
+      "versionCode": 1,
+      "publishBundlePath": "app.aab"
     },
     "web": {
       "favicon": "./assets/favicon.png"

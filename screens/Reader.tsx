@@ -40,6 +40,7 @@ export default function Reader() {
 
     const handleBarCodeScanned = async ({ data }) => {
         setModalVisibleState(true);
+        let isItinerary = true;
         await getDataAboutDocs(data).then((res) => {
             updStore.setUpdData(res.data);
             console.log(res.data)
@@ -63,10 +64,10 @@ export default function Reader() {
     };
 
     if (hasPermission === null) {
-        return <Text>Запрос на использование камеры</Text>;
+        return <View style={styles.container}><Text style={styles.text}>Запрос на использование камеры</Text></View>;
     }
     if (hasPermission === false) {
-        return <Text>Нет доступа к камере</Text>;
+        return <View style={styles.container}><Text style={styles.text}>Нет доступа к камере</Text></View>;
     }
 
 
