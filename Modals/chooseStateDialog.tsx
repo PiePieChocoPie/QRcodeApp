@@ -24,34 +24,48 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
 
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
-        const newSt='';
-        for(let i=0;i<updStatuses.length;i++){
-            if(statusesListStore.statusData[i].STATUS_ID ===curStatus&&i!==updStatuses.length-2)
+        const newSt='Изменение статуса документа невозможно';
+        console.log(updStatuses.length, docData.entityTypeId, curStatus)
+
+        if (docData.entityTypeId=="168"){
+            for(let i=0;i<updStatuses.length;i++){
+                console.log(statusesListStore.statusData[i].STATUS_ID ==curStatus, i!=updStatuses.length-2, updStatuses[i+1])
+                if(statusesListStore.statusData[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
+                console.log(123);
                 return updStatuses[i+1];
+            }
+        }
+        else if(docData.entityTypeId=="133")
+        for(let i=0;i<itineraryStatuses.length;i++){
+            if(statusesListStore.itineraryData[i].STATUS_ID ==curStatus&&i!=itineraryStatuses.length-2)
+                return itineraryStatuses[i+1];
 
         }
         return newSt;
     }
 
     const itineraryHandling = async() =>{
-        let setableStatus;
-        console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID)
-        if (docData.stageId !== updStatuses[4].STATUS_ID&&docData.stageId !== updStatuses[3].STATUS_ID&&authStore.userData[0].ID ===docData.ufCrm6Driver) {
+        try {
+            let setableStatus;
+            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID)
+            if (docData.stageId !== updStatuses[4].STATUS_ID && docData.stageId !== updStatuses[3].STATUS_ID && authStore.userData[0].ID === docData.ufCrm6Driver) {
 
-            if (checked.value === 'break') {
-                setableStatus = updStatuses[4];
-            }
-            else if(checked.label === 'newStatus'){
-                setableStatus = getNextStatus();
+                if (checked.value === 'break') {
+                    setableStatus = updStatuses[4];
+                } else if (checked.label === 'newStatus') {
+                    setableStatus = getNextStatus();
 
-            } else {
-                return Alert.alert('ошибка', "Неожиданная ошибка!");
-            }
-            await updItineraryStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
-                .then()
-            Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
+                } else {
+                    return Alert.alert('ошибка', "Неожиданная ошибка!");
+                }
+                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+                    .then()
+                Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
+            } else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
         }
-        else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
+        catch (e){
+            alert(e)
+        }
     }
 
     const updHandling = async() =>{
@@ -77,7 +91,9 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const acceptAxios = async () => {
         // меняем статус документа
     try {
-        // if
+        if(docData.entityTypeId ==="168") await updHandling();
+        else if(docData.entityTypeId === "133") await itineraryHandling();
+        else alert("Неверный формат обрабатываемого документа")
         // console.log(checked)
     } catch(e){
         alert(e)

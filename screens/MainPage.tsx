@@ -11,7 +11,6 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Feather';
 import UserDataDialog from "../Modals/UserDataDialog";
 import taskStore from "../stores/taskStore";
-import {getUserCurTasks} from "../http";
 import TaskStore from "../stores/taskStore";
 import ScrollView = Animated.ScrollView;
 import {transparent} from "react-native-paper/lib/typescript/styles/themes/v2/colors";

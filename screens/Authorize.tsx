@@ -6,14 +6,7 @@ import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types/navigation";
 
-import {
-    bitrixAuthRequest,
-    bitrixDepRequest,
-    bitrixUserRequest, getItineraryList,
-    getUpdStatusesList,
-    getUserCurTasks,
-    getUserCurUpds
-} from "../http";
+import {getAllStaticData} from "../http";
 import {Ionicons} from "@expo/vector-icons";
 import authStore from "../stores/authStore";
 import depStore from "../stores/depStore";
@@ -21,6 +14,7 @@ import {black} from "react-native-paper/lib/typescript/styles/colors";
 import taskStore from "../stores/taskStore";
 import updListStore from "../stores/updListStore";
 import statusesListStore from "../stores/statusesListStore";
+import MainPage from "./MainPage";
 
 type AuthNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Authorize'>;
 export const Authorize:FC =() => {
@@ -37,87 +31,25 @@ export const Authorize:FC =() => {
             if (password.length > 1) {
                 const token = base64encode(`${login}:${password}`);
                 console.log(token)
-                await bitrixAuthRequest(token)
+                await getAllStaticData(token)
                     .then(async (res) => {
-                        if (res.data === true) {
-                            await storeAuthStatus(token)
-                                .then(async () => {
-                                    await bitrixUserRequest(token)
-                                        .then(async(res) =>{
-                                            authStore.setUserData(res.data.result);
-                                            console.log(authStore.userData[0].NAME);
-                                            await bitrixDepRequest(authStore.userData[0].UF_DEPARTMENT)
-                                                .then(async (res)=>{
-                                                    depStore.setDepData(res.data.result);
-                                                    console.log(depStore.depData[0].NAME);
-                                                    await getUserCurTasks(authStore.userData[0].ID)
-                                                        .then(async (res) => {
-                                                            taskStore.setTaskData( res.data.result.tasks);
-                                                            await getUserCurUpds(authStore.userData[0].ID)
-                                                                .then( async (res) => {
-                                                                     updListStore.setUpdListData(res.data.result.items);
-                                                                    // console.log(`${authStore.userData[0].NAME} ${depStore.depData[0].NAME} ${taskStore.taskData[0].title}`);
-                                                                    await getUpdStatusesList()
-                                                                        .then(async(res)=>{
-                                                                            statusesListStore.setStatusesListData(res.data.result);
-                                                                            await getItineraryList()
-                                                                                .then(async(res) =>{
-                                                                                    statusesListStore.setStatusesListData(res.data.result);
-                                                                                    console.log(statusesListStore.statusData[0].NAME);
-                                                                                })
-                                                                                .catch((err) =>{
-                                                                                    alert("Ошибка получения списка статусов 2:\n" + err);
-                                                                                    console.log("Ошибка получения списка статусов 2:\n" + err);
-                                                                                })
-
-                                                                        })
-                                                                        .catch(err =>{
-                                                                            console.log("ошибка получения списка статусов:\n"+err);
-                                                                            alert("ошибка получения списка статусов:\n" + err);
-
-                                                                        })
-                                                                    navigation.replace('Reader');
-                                                                })
-                                                                .catch(err =>{
-                                                                    console.log("ошибка получения списка УПД:\n"+err);
-                                                                    alert("ошибка получения списка УПД:\n" + err);
-
-                                                                })
-                                                        })
-                                                        .catch(err => {
-                                                            console.log('Ошибка получения списка задач:\n'+err);
-                                                            alert("Ошибка получения списка задач:\n" + err);
-
-                                                        })
-
-                                                })
-                                                .catch(err =>{
-                                                    console.log('Ошибка получения подразделения:\n'+err);
-                                                    alert("Ошибка получения подразделения:\n" + err);
-
-                                                })
-                                        })
-                                        .catch(err =>{
-                                            console.log('Ошибка получения пользователя:\n'+err);
-                                            alert("Ошибка получения пользователя:\n" + err);
-
-                                        })
-                                })
-                                .catch(err =>{
-                                    console.log('Ошибка авторизации: \n' +err);
-                                    alert("Ошибка авторизации: \n" + err);
-
-                                })
-                        } else {
-                            setIsInvalidLogin(true)
-                        }
+                        console.log(authStore.userData[0])
+                        if(res===false)
+                        {
+                        alert("Что-то пошло не так!")
+                        }else 
+                        navigation.replace('MainPage');
                     })
                     .catch(err =>{
-                        console.log(err);
-                    })
+                    console.log('Ошибка авторизации: \n' +err);
+                    alert("Ошибка авторизации: \n" + err);
+                })
+            } else {
+                setIsInvalidLogin(true)
             }
         }
     }
+    
 
     const loginHandler = (value: string) => {
         setLogin(value)

@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, StyleSheet, Button, Dimensions, TouchableOpacity, ImageBackground, Image} from "react-native";
+import {Text, View, StyleSheet, Button, Dimensions, TouchableOpacity, ImageBackground, Image, Alert} from "react-native";
 import { Camera } from "expo-camera";
 import UserDataDialog from "../Modals/UserDataDialog";
 import authStore from "../stores/authStore";
@@ -39,16 +39,34 @@ export default function Reader() {
     }, [authStore.userData[0]]);
 
     const handleBarCodeScanned = async ({ data }) => {
-        setModalVisibleState(true);
-        let isItinerary = true;
-        await getDataAboutDocs(data).then((res) => {
-            updStore.setUpdData(res.data);
-            console.log(res.data)
-            setModalText(res.data);
-        })
-        .catch((err) =>{
-            console.log(err);
-        })
+        try{
+            setScanned(true)
+            await getDataAboutDocs(data)
+            .then((res) => {
+                if(res.data.result.items[0]){
+                    const item = res.data.result.items[0];
+                    console.log(item.entityTypeId, item.stageId, item.entityTypeId==="133", item.stageId!="DT133_10:SUCCESS", item.stageId!="DT133_10:FAIL")
+                    let docIndex = 0;
+                    if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") docIndex++;
+                    else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") docIndex+=2;
+                    else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент")
+                    setModalVisibleState(true);
+                    updStore.setUpdData(res.data.result.items[0]);
+                    setModalText(res.data.result.items[0]);
+                }
+                else{
+                    console.log(`ошибка получения документа`);
+                    alert(`ошибка получения документа`);
+                    
+                }
+            })
+            .catch((err) =>{
+                console.log(err);
+            })
+        }
+        catch(e){
+            console.log(`ошибка получения документа - ${e}`);
+        }
     };
 
     const handleBack = async() =>{
