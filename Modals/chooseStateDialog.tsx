@@ -47,12 +47,12 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID)
-            if (docData.stageId !== updStatuses[4].STATUS_ID && docData.stageId !== updStatuses[3].STATUS_ID && authStore.userData[0].ID === docData.ufCrm6Driver) {
-
+            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID, docData.stageId != updStatuses[4].STATUS_ID, docData.stageId != updStatuses[3].STATUS_ID, authStore.userData[0].ID == docData.ufCrm6Driver)
+            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && authStore.userData[0].ID == docData.ufCrm6Driver) {
+console.log(123)
                 if (checked.value === 'break') {
                     setableStatus = updStatuses[4];
-                } else if (checked.label === 'newStatus') {
+                } else if (checked.value === 'newStatus') {
                     setableStatus = getNextStatus();
 
                 } else {
@@ -73,10 +73,10 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
         console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
         if (docData.stageId === updStatuses[0].STATUS_ID) {
 
-            if (checked.value === 'break') {
+            if (checked.value == 'break') {
                 setableStatus = updStatuses[6];
             }
-            else if(checked.label === 'newStatus'){
+            else if(checked.value == 'newStatus'){
                 setableStatus = getNextStatus();
 
             } else {
@@ -91,8 +91,8 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const acceptAxios = async () => {
         // меняем статус документа
     try {
-        if(docData.entityTypeId ==="168") await updHandling();
-        else if(docData.entityTypeId === "133") await itineraryHandling();
+        if(docData.entityTypeId =="168") await updHandling();
+        else if(docData.entityTypeId == "133") await itineraryHandling();
         else alert("Неверный формат обрабатываемого документа")
         // console.log(checked)
     } catch(e){
