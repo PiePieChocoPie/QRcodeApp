@@ -1,4 +1,4 @@
-import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions} from "react-native";
+import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, ActivityIndicator, Alert} from "react-native";
 import React, {FC, useState} from "react";
 import {encode as base64encode} from 'base-64';
 import { storeAuthStatus } from "../secStore";
@@ -9,12 +9,7 @@ import {RootStackParamList} from "../types/navigation";
 import {getAllStaticData} from "../http";
 import {Ionicons} from "@expo/vector-icons";
 import authStore from "../stores/authStore";
-import depStore from "../stores/depStore";
-import {black} from "react-native-paper/lib/typescript/styles/colors";
-import taskStore from "../stores/taskStore";
-import updListStore from "../stores/updListStore";
-import statusesListStore from "../stores/statusesListStore";
-import MainPage from "./MainPage";
+import useLoading from "../hooks/useLoading";
 
 type AuthNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Authorize'>;
 export const Authorize:FC =() => {
@@ -23,27 +18,29 @@ export const Authorize:FC =() => {
     const [isInvalidLogin, setIsInvalidLogin] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState(true);
     const [test, setTest] = useState({});
-
+    const {loading, startLoading, stopLoading} = useLoading()
 
     const navigation = useNavigation<AuthNavigationProp>();
     const buttonHandler = async () => {
+        startLoading()
         if (login.length > 1) {
             if (password.length > 1) {
                 const token = base64encode(`${login}:${password}`);
-                console.log(token)
+                authStore.setTokenData(token);
+                console.log(authStore.tokenData)
                 await getAllStaticData(token)
                     .then(async (res) => {
-                        console.log(authStore.userData[0])
-                        if(res===false)
+                        console.log(authStore.userData[0].WORK_POSITION)
+                        if(res==false)
                         {
-                        alert("Что-то пошло не так!")
+                        Alert.alert("Непредвиденная ошибка","Что-то пошло не так!")
                         }else 
                         navigation.replace('MainPage');
                     })
                     .catch(err =>{
-                    console.log('Ошибка авторизации: \n' +err);
-                    alert("Ошибка авторизации: \n" + err);
+                    Alert.alert("ошибка",'Ошибка авторизации: \n' +err);
                 })
+                stopLoading()
             } else {
                 setIsInvalidLogin(true)
             }
@@ -91,7 +88,8 @@ export const Authorize:FC =() => {
                         color="gray"
                     />
                 </TouchableOpacity>
-                <Button onPress={buttonHandler} color={'brown'} title='Войти'/>
+
+                {<Button onPress={buttonHandler} color={'brown'} title='Войти' disabled={loading}/>}
                 {isInvalidLogin && <Text>Неверные данные</Text>}
             </View>
         </View>

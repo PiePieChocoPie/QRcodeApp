@@ -1,5 +1,5 @@
 import React from "react";
-import {View, StyleSheet, Text, TouchableOpacity, Dimensions, Image, Animated} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Dimensions, Image, Animated, RefreshControl} from 'react-native';
 import QRCode from "react-native-qrcode-svg";
 import authStore from "../stores/authStore";
 import {useNavigation} from "@react-navigation/native";
@@ -11,10 +11,9 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Feather';
 import UserDataDialog from "../Modals/UserDataDialog";
 import taskStore from "../stores/taskStore";
-import TaskStore from "../stores/taskStore";
 import ScrollView = Animated.ScrollView;
-import {transparent} from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 import projColors from "../stores/staticColors";
+import {getAllStaticData} from "../http";
 
 
 let fullName = '';
@@ -22,6 +21,18 @@ type QRNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MainPage'
 export default function MainPage () {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [photoUrl, setPhotoUrl] = React.useState('');
+    const [taskCount, setTaskCount] = React.useState(taskStore.taskData && taskStore.taskData.length > 0);
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(async() => {
+        setRefreshing(true);
+        // Ваш код обновления данных здесь
+        console.log('обновляем')
+        await getAllStaticData(authStore.tokenData);
+        // Завершение обновления
+        setRefreshing(false);
+    }, []);
+
     React.useEffect(() => {
         setPhotoUrl(authStore.userData[0].PERSONAL_PHOTO);
     }, [authStore.userData[0]]);
@@ -43,7 +54,6 @@ export default function MainPage () {
         const [detailVisible, setDetailVisible] = React.useState(false);
         const [depDate, setDepDate] = React.useState('');
         const [depDLDate, setDepDLDate] = React.useState('');
-
         React.useEffect(() => {
             const onlyDate = item.createdDate.split('T')[0]
             setDepDate(onlyDate);
@@ -55,45 +65,44 @@ export default function MainPage () {
         };
 
         return (
-            <View key={item.id} style={styles.taskView}>
-                <Text style={{fontSize:16,        textAlign:"center"
-                }}>{item.title}</Text>
-                <View style={styles.taskInternalView}>
-                    <View style={styles.internalTextRowView}>
-                        <Text>постановщик: </Text>
-                        <Text style={{fontSize:16}}>{item.creator.name}</Text>
+                <View key={item.id} style={styles.taskView}>
+                    <Text style={{fontSize: 16, textAlign: "center"}}>{item.title}</Text>
+                    <View style={styles.taskInternalView}>
+                        <View style={styles.internalTextRowView}>
+                            <Text>постановщик: </Text>
+                            <Text style={{fontSize: 16}}>{item.creator.name}</Text>
+                        </View>
+                        <View style={styles.internalTextRowView}>
+                            <Text>дата постановки: </Text>
+                            <Text style={styles.text}>{depDate}</Text>
+                        </View>
+                        <View style={styles.internalTextRowView}>
+                            <Text>дедлайн: </Text>
+                            {item.deadline ? (
+                                <Text style={styles.text}>{depDLDate}</Text>
+                            ) : (
+                                <Text style={styles.text}>не установлен</Text>
+                            )}
+                        </View>
+                        <TouchableOpacity style={styles.moreButton} onPress={toggleMore}>
+                            <Icon3 name={'more-horizontal'} size={30}/>
+                        </TouchableOpacity>
                     </View>
-                    <View style={styles.internalTextRowView}>
-                        <Text>дата постановки: </Text>
-                        <Text style={styles.text}>{depDate}</Text>
-                    </View>
-                    <View style={styles.internalTextRowView}>
-                        <Text>дедлайн: </Text>
-                    {item.deadline ? (
-                        <Text style={styles.text}>{depDLDate}</Text>
-                    ) : (
-                        <Text style={styles.text}>не установлен</Text>
+                    {detailVisible && (
+                        <View>
+                            {item.description ? (
+                                <Text style={styles.descriptionText}>{item.description}</Text>
+                            ) : (
+                                <Text style={styles.descriptionText}>Дополнительная информация отсутствует</Text>
+                            )}
+                        </View>
                     )}
-                    </View>
-                    <TouchableOpacity style={styles.moreButton} onPress={toggleMore}>
-                        <Icon3 name={'more-horizontal'} size={30}/>
-                    </TouchableOpacity>
                 </View>
-                {detailVisible ? (
-                    <View>
-                        {item.description ? (
-                            <Text style={styles.descriptionText}>{item.description}</Text>
-                        ) : (
-                            <Text style={styles.descriptionText}>Дополнительная информация отсутствует</Text>
-                        )}
-                    </View>
-                ):(<View/>)}
-            </View>
-        );
+        )
     });
 
 
-    return (
+        return (
         <View style={styles.container}>
                 <View style={styles.overlayWithUser}>
                     <TouchableOpacity style={styles.userB} onPress={toggleModal}>
@@ -107,9 +116,22 @@ export default function MainPage () {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.horizontalBorders}>
-                    <ScrollView>
-                    {elements}
-                    </ScrollView>
+
+                        {taskCount?
+                            (<ScrollView
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={refreshing}
+                                        onRefresh={onRefresh}
+                                        colors={[projColors.currentVerse.accent]}
+                                    />}>
+                                {elements}
+                            </ScrollView>)
+                            :(
+                                <Text style={styles.noValueText}>Задачи не установлены</Text>
+                            )
+                        }
+
                 </View>
                 <View style={styles.infoButtonContainer}>
                     <TouchableOpacity style={styles.opacities} onPress={handleBack}>
@@ -171,6 +193,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center"
+    },
+    noValueText: {
+        color: projColors.currentVerse.font,
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        fontSize: 20
     },
     internalTextRowView: {
         color: projColors.currentVerse.font,

@@ -25,7 +25,7 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
         const newSt='Изменение статуса документа невозможно';
-        console.log(updStatuses.length, docData.entityTypeId, curStatus)
+        // console.log(updStatuses.length, docData.entityTypeId, curStatus)
 
         if (docData.entityTypeId=="168"){
             for(let i=0;i<updStatuses.length;i++){

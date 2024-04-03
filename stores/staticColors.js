@@ -1,6 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import UserDataDialog from "../Modals/UserDataDialog";
-
 // let isDark = false;
 class projColors{
 
