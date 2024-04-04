@@ -4,7 +4,7 @@ const RootLayout =()=>{
         <Stack.Screen name="authorize" options={{
          headerShown:false,
         }}/> 
-       <Stack.Screen name="(tabs)" options={{
+        <Stack.Screen name={"tabs"} options={{
         headerShown:false,
        }}/> 
     </Stack>

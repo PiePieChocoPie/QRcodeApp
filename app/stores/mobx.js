@@ -8,7 +8,6 @@ class store {
     @observable itineraryData = null;
     @observable taskData = null;
     @observable updData = null;
-    @observable updData = null;
 
 
     @action
@@ -21,10 +20,6 @@ class store {
     }
     @action
     setUpdData(updData) {
-        this.updData = updData;
-    }
-    @action
-    setUpdListData(updData) {
         this.updData = updData;
     }
     @action

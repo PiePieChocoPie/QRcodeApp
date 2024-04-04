@@ -66,6 +66,7 @@ export const styles = StyleSheet.create({
     height: Dimensions.get('window').width - 60,
     alignItems: 'center',
     justifyContent: 'center',
+    verticalAlign:"middle",
     borderWidth: 1,
     borderColor: projColors.currentVerse.second,
     overflow: 'hidden',

@@ -70,55 +70,65 @@ export default function Reader() {
 
 
     return (
-        <View style={styles.container}>
-            <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} >
-            {/* Верхняя часть: камера */}
+        <View style={styles.overlay} >
+                <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} >
+                {/* Верхняя часть: камера */}
+                    <View style={styles.container}>
+                        <View style={styles.overlay} >
+                        {scanned && (
+                        <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
+                            <Icon2 name="refresh"  size={40} color="#fff"/>
+                            <Text style={styles.text}>сканировать снова</Text>
+                        </TouchableOpacity>
+                        )}
+                    </View>
                     <View style={styles.horizontalBorders}>
                         <View style={styles.overlay} />
-                        <View style={styles.cameraContainer}>
-                            <Svg   width="100%"
-                                   height="100%"
-                                   viewBox={'0 0 60 60'}
-                                   style={{overflow:'visible'}}
-                            >
-                                <Polyline
-                                    points="0,20 0,0 20,0"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="6"
-                                />
-                                <Polyline
-                                    points="40,0 60,0 60,20"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="6"
-                                />
-                                <Polyline
-                                    points="0,40 0,60 20,60"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="6"
-                                />
-                                <Polyline
-                                    points="40,60 60,60 60,40"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="6"
-                                />
-                            </Svg>
+                            <View style={styles.cameraContainer}>
+                                <Svg    width="100%"
+                                        height="100%"
+                                        viewBox={'0 0 60 60'}
+                                        style={{overflow:'visible'}}
+                                >
+                                    <Polyline
+                                        points="0,20 0,0 20,0"
+                                        fill="none"
+                                        stroke="white"
+                                        strokeWidth="6"
+                                    />
+                                    <Polyline
+                                        points="40,0 60,0 60,20"
+                                        fill="none"
+                                        stroke="white"
+                                        strokeWidth="6"
+                                    />
+                                    <Polyline
+                                        points="0,40 0,60 20,60"
+                                        fill="none"
+                                        stroke="white"
+                                        strokeWidth="6"
+                                    />
+                                    <Polyline
+                                        points="40,60 60,60 60,40"
+                                        fill="none"
+                                        stroke="white"
+                                        strokeWidth="6"
+                                    />
+                                </Svg>
+                            </View>
+                            <View style={styles.overlay} />
+                            </View>
+                            <View style={styles.overlay} >
+                            {scanned && (
+                            <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
+                                <Icon2 name="refresh"  size={40} color="#fff"/>
+                                <Text style={styles.text}>сканировать снова</Text>
+                            </TouchableOpacity>
+                            )}
                         </View>
-
-                        <View style={styles.overlay} />
-                    </View><View style={styles.overlay} >
-                {scanned && (
-                    <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
-                        <Icon2 name="refresh"  size={40} color="#fff"/>
-                        <Text style={styles.text}>сканировать снова</Text>
-                    </TouchableOpacity>
-                )}
-            </View>
+                    <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText}/>
+                </View>
             </Camera>
-            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText}/>
         </View>
     );
 }
