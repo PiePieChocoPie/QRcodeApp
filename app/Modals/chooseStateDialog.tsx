@@ -2,25 +2,22 @@ import React, {useState} from "react";
 import {Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions, Alert} from 'react-native';
 import {RadioButton} from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {getAuthStatus} from "../secStore";
-import projColors from "../stores/staticColors";
-import updStore from "../stores/updStore";
-import authStore from "../stores/authStore";
-import statusesListStore from "../stores/statusesListStore";
-import {updItineraryStatus, updUpdStatus} from "../http";
 import {Camera} from "expo-camera";
+import { projColors, styles } from "../styles";
+import Store from "../stores/mobx";
+import { updItineraryStatus, updUpdStatus } from "../stores/http";
 const ChooseStateDialog = ({visible, onClose, docData}) => {
     const [checked, setChecked] = useState({label:'', value:''});
-    const [updStatuses] = React.useState(statusesListStore.statusData);
-    const [itineraryStatuses] = React.useState(statusesListStore.itineraryData);
+    const [updStatuses] = React.useState(Store.statusData);
+    const [itineraryStatuses] = React.useState(Store.itineraryData);
     React.useEffect(() => {
         setChecked(RadioButtonOptions[0])
 
-    }, [statusesListStore.statusData]);
+    }, [Store.statusData]);
     React.useEffect(() => {
         setChecked(RadioButtonOptions[0])
 
-    }, [statusesListStore.itineraryData]);
+    }, [Store.itineraryData]);
 
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
@@ -29,15 +26,15 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
 
         if (docData.entityTypeId=="168"){
             for(let i=0;i<updStatuses.length;i++){
-                console.log(statusesListStore.statusData[i].STATUS_ID ==curStatus, i!=updStatuses.length-2, updStatuses[i+1])
-                if(statusesListStore.statusData[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
+                console.log(Store.statusData[i].STATUS_ID ==curStatus, i!=updStatuses.length-2, updStatuses[i+1])
+                if(Store.statusData[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
                 console.log(123);
                 return updStatuses[i+1];
             }
         }
         else if(docData.entityTypeId=="133")
         for(let i=0;i<itineraryStatuses.length;i++){
-            if(statusesListStore.itineraryData[i].STATUS_ID ==curStatus&&i!=itineraryStatuses.length-2)
+            if(Store.itineraryData[i].STATUS_ID ==curStatus&&i!=itineraryStatuses.length-2)
                 return itineraryStatuses[i+1];
 
         }
@@ -47,8 +44,8 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID, docData.stageId != updStatuses[4].STATUS_ID, docData.stageId != updStatuses[3].STATUS_ID, authStore.userData[0].ID == docData.ufCrm6Driver)
-            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && authStore.userData[0].ID == docData.ufCrm6Driver) {
+            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID, docData.stageId != updStatuses[4].STATUS_ID, docData.stageId != updStatuses[3].STATUS_ID, Store.userData[0].ID == docData.ufCrm6Driver)
+            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData[0].ID == docData.ufCrm6Driver) {
 console.log(123)
                 if (checked.value === 'break') {
                     setableStatus = updStatuses[4];
@@ -58,7 +55,7 @@ console.log(123)
                 } else {
                     return Alert.alert('ошибка', "Неожиданная ошибка!");
                 }
-                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData[0].ID)
                     .then()
                 Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
             } else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
@@ -82,7 +79,7 @@ console.log(123)
             } else {
                 return Alert.alert('ошибка', "Неожиданная ошибка!");
             }
-            await updUpdStatus(docData.id, setableStatus.STATUS_ID, authStore.userData[0].ID)
+            await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData[0].ID)
                 .then()
             Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
         }
@@ -157,37 +154,4 @@ console.log(123)
         </Modal>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex:1
-    },
-    dialog: {
-        backgroundColor: projColors.currentVerse.second,
-        padding: 20,
-        borderRadius: 10,
-        borderColor:projColors.currentVerse.main,
-        borderWidth:2,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        marginVertical: 10,
-        fontSize: 16,
-        textAlign: "center",
-        color:projColors.currentVerse.fontAccent,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 40,
-    },
-    RBView:{
-        alignItems:"center",
-        justifyContent:"center",
-    },
-});
-
 export default ChooseStateDialog;

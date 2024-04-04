@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import useLoading from "../hooks/useLoading";
+import useLoading from "./hooks/useLoading";
 import {encode as base64encode} from 'base-64';
-import authStore from "../stores/authStore";
+import Store from "./stores/mobx";
 import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Alert} from "react-native";
 import { router } from "expo-router";
-import styles from "./styles";
-import { getAllStaticData } from "../http";
+import { styles, projColors } from "./styles";
+import { getAllStaticData } from "./stores/http";
 
 
 
@@ -22,8 +22,8 @@ const authorize =() =>{
         if (login.length > 1) {
             if (password.length > 1) {
                 const token = base64encode(`${login}:${password}`);
-                authStore.setTokenData(token);
-                console.log(authStore.tokenData);
+                Store.setTokenData(token);
+                console.log(Store.tokenData);
                 
                 await getAllStaticData(token)
                      .then(async (res) => {

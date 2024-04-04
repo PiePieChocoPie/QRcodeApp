@@ -1,48 +1,30 @@
 import React from "react";
-import {View, Text, TouchableOpacity, Image, Animated, RefreshControl} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import {View, Text, TouchableOpacity, Animated, RefreshControl} from 'react-native';
 import Icon3 from 'react-native-vector-icons/Feather';
+import Store from "../stores/mobx";
 import ScrollView = Animated.ScrollView;
-import styles from "../styles";
-import { getAllStaticData } from "../../http";
-import authStore from "../../stores/authStore";
-import taskStore from "../../stores/taskStore";
-import projColors from "../../stores/staticColors";
-import UserDataDialog from "../../Modals/UserDataDialog";
+import { projColors } from "../styles";
+import { getAllStaticData } from "../stores/http";
+import { styles } from "../styles";
 
 
 let fullName = '';
-export default function tasks () {
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [photoUrl, setPhotoUrl] = React.useState('');
-    const [taskCount, setTaskCount] = React.useState(true);
+export default function MainPage () {
+    const [taskCount] = React.useState(Store.taskData && Store.taskData.length > 0);
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(async() => {
         setRefreshing(true);
         // Ваш код обновления данных здесь
         console.log('обновляем')
-        await getAllStaticData(authStore.tokenData);
+        await getAllStaticData(Store.tokenData);
         // Завершение обновления
         setRefreshing(false);
     }, []);
 
-    React.useEffect(() => {
-        setPhotoUrl(authStore.userData[0].PERSONAL_PHOTO);
-    }, [authStore.userData[0]]);
 
 
-
-
-    const toggleModal = () => {
-        setModalVisible(!modalVisible);
-    };
-
-
-    const elements = taskStore.taskData.map(item => {
+    const elements = Store.taskData.map(item => {
         const [detailVisible, setDetailVisible] = React.useState(false);
         const [depDate, setDepDate] = React.useState('');
         const [depDLDate, setDepDLDate] = React.useState('');
@@ -51,7 +33,7 @@ export default function tasks () {
             setDepDate(onlyDate);
             const onlyDLDate = item.deadline ? item.deadline.split('T')[0] : "не установлен";
             setDepDLDate(onlyDLDate);
-        }, [taskStore.taskData[0]]);
+        }, [Store.taskData[0]]);
         const toggleMore = () => {
             setDetailVisible(!detailVisible);
         };
@@ -96,17 +78,6 @@ export default function tasks () {
 
         return (
         <View style={styles.container}>
-                <View style={styles.overlayWithUser}>
-                    <TouchableOpacity style={styles.userB} onPress={toggleModal}>
-                        <View style={styles.avatarContainer}>
-                            {photoUrl ? (
-                                <Image source={{ uri: photoUrl }} style={styles.avatar} />
-                            ) : (
-                                <Icon name="user-o" size={40} color={projColors.currentVerse.font}
-                                />)}
-                        </View>
-                    </TouchableOpacity>
-                </View>
                 <View style={styles.horizontalBorders}>
 
                         {taskCount?
@@ -125,8 +96,9 @@ export default function tasks () {
                         }
 
                 </View>
-
-            <UserDataDialog visible={modalVisible} onClose={toggleModal}/>
+                <View style={styles.infoButtonContainer}>
+                </View>
         </View>
     );
 }
+

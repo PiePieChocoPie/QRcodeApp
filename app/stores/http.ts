@@ -1,9 +1,5 @@
 import axios from "axios";
-import authStore from "./stores/authStore";
-import depStore from "./stores/depStore";
-import taskStore from "./stores/taskStore";
-import updListStore from "./stores/updListStore";
-import statusesListStore from "./stores/statusesListStore";
+import Store from "./mobx";
 import {decode} from "base-64";
 import { Alert } from "react-native";
 import { err } from "react-native-svg";
@@ -35,41 +31,41 @@ export async function getAllStaticData(authToken:string){
     //         await axios.post(url).then(async(authData)=>{
     //             console.log(authData)
     //             if(authData.data.result ===undefined) return false;
-    //             authStore.setUserData(authData.data.result);
-    //             console.log(authStore.userData[0].ID)
+    //             Store.setUserData(authData.data.result);
+    //             console.log(Store.userData[0].ID)
 
     //                 //получение подразделения
     //             let depConfig = {
     //                 method: 'get',
     //                 maxBodyLength: Infinity,
-    //                 url: `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/department.get.json?ID=${authStore.userData[0].UF_DEPARTMENT}`
+    //                 url: `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/department.get.json?ID=${Store.userData[0].UF_DEPARTMENT}`
     //             };
     //             await axios.request(depConfig).then(async(depData) =>{
-    //                 depStore.setDepData(depData.data.result);
-    //                 console.log(depStore.depData[0].NAME)
+    //                 Store.setDepData(depData.data.result);
+    //                 console.log(Store.depData[0].NAME)
     //                 if(depData.data.result===undefined) return false;
     //                 const bodyToTask ={
     //                     filter:
     //                         {
     //                             "<REAL_STATUS": "5",
-    //                             "RESPONSIBLE_ID": authStore.userData[0].ID
+    //                             "RESPONSIBLE_ID": Store.userData[0].ID
     //                         }
     //                 };
     //                     //получение задач
     //                 axios.post(`https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/tasks.task.list`, bodyToTask).then(async(taskData)=>{
     //                     console.log('таски ---- '+taskData.data.result.tasks[0].title)
-    //                     taskStore.setTaskData(taskData.data.result.tasks);
+    //                     Store.setTaskData(taskData.data.result.tasks);
     //                     console.log(taskData.data.result.tasks)
-    //                     if(taskStore.taskData===undefined) return false;
+    //                     if(Store.taskData===undefined) return false;
 
     //                         //получение статусов упд
     //                     await axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_168_STAGE_9").then(async(updStatusesData)=>{
-    //                         statusesListStore.setStatusesListData(updStatusesData.data.result);
+    //                         Store.setStatusesListData(updStatusesData.data.result);
     //                         if(updStatusesData.data.result===undefined) return false;
 
     //                             //получение статусов маршрутных листов
     //                         const itineraryStatusesData = await axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_133_STAGE_10").then(async(itineraryStatusesData)=>{
-    //                             statusesListStore.setItineraryListData(itineraryStatusesData.data.result);
+    //                             Store.setItineraryListData(itineraryStatusesData.data.result);
     //                             if(itineraryStatusesData.data.result ===undefined) return false;
     //                         })
     //                         .catch((err)=>'ошибка получения статусов маршрутных листов: '+ err);

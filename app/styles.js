@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-class projColors{
+export class projColors{
 
     static lightVerse = {
         main: "#eee",
@@ -33,7 +33,7 @@ class projColors{
     // }
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   authContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -206,5 +206,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-export default styles;
