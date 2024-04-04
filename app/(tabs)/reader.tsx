@@ -4,7 +4,7 @@ import { Camera } from "expo-camera";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "../Modals/chooseStateDialog";
 import Svg,{Polyline} from "react-native-svg";
-import { getAllStaticData } from "../stores/http";
+import { getDataAboutDocs } from "../stores/http";
 import { styles } from "../styles";
 import Store from "../stores/mobx";
 
@@ -27,7 +27,7 @@ export default function Reader() {
      const handleBarCodeScanned = async ({ data }) => {
         try{
             setScanned(true)
-            await getAllStaticData(data)
+            await getDataAboutDocs(data)
             .then((res) => {
                 if(res.data.result.items[0]){
                     const item = res.data.result.items[0];

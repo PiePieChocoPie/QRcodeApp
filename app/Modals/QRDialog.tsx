@@ -1,11 +1,11 @@
 import React from "react";
-import {Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import {Modal, View, Text, TouchableOpacity, Dimensions} from 'react-native';
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import QRCode from "react-native-qrcode-svg";
-import authStore from "../../stores/authStore";
-import projColors from "../../stores/staticColors";
+import { projColors, styles } from "../styles";
+import Store from "../stores/mobx";
 const QRDialog = ({ visible, onClose }) => {
-    const [qrValue] = React.useState(authStore.userData[0].UF_USR_GUID);
+    const [qrValue] = React.useState(Store.userData[0].UF_USR_GUID);
 
 
 
@@ -28,36 +28,5 @@ const QRDialog = ({ visible, onClose }) => {
         </Modal>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    dialog: {
-        backgroundColor: projColors.currentVerse.second,
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-        borderColor:projColors.currentVerse.main,
-        borderWidth:2,
-    },
-    text: {
-        marginVertical: 10,
-        fontSize: 16,
-        textAlign: "center",
-        color:projColors.currentVerse.font
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 60
-    },
-    opacities:{
-        alignItems: "center",
-        marginTop:30,
-    },
-});
 
 export default QRDialog;
