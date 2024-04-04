@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "../Modals/chooseStateDialog";
 import Svg,{Polyline} from "react-native-svg";
-import {getDataAboutDocs} from "../http";
+import {getAllStaticData} from "../http";
 import updStore from "../stores/updStore";
 const { width, height } = Dimensions.get('window');
 
@@ -38,36 +38,36 @@ export default function Reader() {
         setPhotoUrl(authStore.userData[0].PERSONAL_PHOTO);
     }, [authStore.userData[0]]);
 
-    const handleBarCodeScanned = async ({ data }) => {
-        try{
-            setScanned(true)
-            await getDataAboutDocs(data)
-            .then((res) => {
-                if(res.data.result.items[0]){
-                    const item = res.data.result.items[0];
-                    console.log(item.entityTypeId, item.stageId, item.entityTypeId==="133", item.stageId!="DT133_10:SUCCESS", item.stageId!="DT133_10:FAIL")
-                    let docIndex = 0;
-                    if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") docIndex++;
-                    else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") docIndex+=2;
-                    else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент")
-                    setModalVisibleState(true);
-                    updStore.setUpdData(res.data.result.items[0]);
-                    setModalText(res.data.result.items[0]);
-                }
-                else{
-                    console.log(`ошибка получения документа`);
-                    alert(`ошибка получения документа`);
+     const handleBarCodeScanned = async ({ data }) => {
+    //     try{
+    //         setScanned(true)
+    //         await getAllStaticData(data)
+    //         .then((res) => {
+    //             if(res.data.result.items[0]){
+    //                 const item = res.data.result.items[0];
+    //                 console.log(item.entityTypeId, item.stageId, item.entityTypeId==="133", item.stageId!="DT133_10:SUCCESS", item.stageId!="DT133_10:FAIL")
+    //                 let docIndex = 0;
+    //                 if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") docIndex++;
+    //                 else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") docIndex+=2;
+    //                 else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент")
+    //                 setModalVisibleState(true);
+    //                 updStore.setUpdData(res.data.result.items[0]);
+    //                 setModalText(res.data.result.items[0]);
+    //             }
+    //             else{
+    //                 console.log(`ошибка получения документа`);
+    //                 alert(`ошибка получения документа`);
                     
-                }
-            })
-            .catch((err) =>{
-                console.log(err);
-            })
-        }
-        catch(e){
-            console.log(`ошибка получения документа - ${e}`);
-        }
-    };
+    //             }
+    //         })
+    //         .catch((err) =>{
+    //             console.log(err);
+    //         })
+    //     }
+    //     catch(e){
+    //         console.log(`ошибка получения документа - ${e}`);
+    //     }
+     };
 
     const handleBack = async() =>{
        navigation.replace('MainPage');
