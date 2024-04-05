@@ -1,14 +1,14 @@
 import React from "react";
 import {Modal, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { storeAuthStatus } from '../../secStore';
+import { storeAuthStatus } from 'src/secStore';
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import QRDialog from "./QRDialog";
 import { router } from "expo-router";
-import Store from "../stores/mobx";
-import { projColors, styles } from "../styles";
+import Store from "src/stores/mobx";
+import { projColors, styles } from "src/stores/styles";
 let userData = '';
 const UserDataDialog = ({ visible, onClose }) => {
 const navigation = useNavigation<NativeStackNavigationProp<any>>()

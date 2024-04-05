@@ -2,11 +2,11 @@ import React from "react";
 import {Text, View, TouchableOpacity, Alert} from "react-native";
 import { Camera } from "expo-camera";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
-import ChooseStateDialog from "../Modals/chooseStateDialog";
+// import ChooseStateDialog from "/src/modals/chooseStateDialog";
 import Svg,{Polyline} from "react-native-svg";
-import { getDataAboutDocs } from "../stores/http";
-import { styles } from "../styles";
-import Store from "../stores/mobx";
+import { getDataAboutDocs } from "src/http";
+import { styles } from "src/stores/styles";
+import Store from "src/stores/mobx";
 
 export default function Reader() {
     const [hasPermission, setHasPermission] = React.useState(null);
@@ -126,7 +126,7 @@ export default function Reader() {
                             </TouchableOpacity>
                             )}
                         </View>
-                    <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText}/>
+                    {/* <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText}/> */}
                 </View>
             </Camera>
         </View>

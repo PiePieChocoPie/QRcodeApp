@@ -1,14 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import useLoading from "./hooks/useLoading";
 import {encode as base64encode} from 'base-64';
-import Store from "./stores/mobx";
 import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Alert} from "react-native";
 import { router } from "expo-router";
-import { styles, projColors } from "./styles";
-import { getAllStaticData } from "./stores/http";
-
-
+//
+import { styles, projColors } from "src/stores/styles";
+import { getAllStaticData } from "src/http";
+import Store from "src/stores/mobx";
+import useLoading from "src/useLoading";
 
 const authorize =() =>{
     const [login, setLogin] = useState('');
@@ -16,7 +15,6 @@ const authorize =() =>{
     const [isInvalidLogin, setIsInvalidLogin] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState(true);
     const {loading, startLoading, stopLoading} = useLoading()
-
     const buttonHandler = async () => {
         startLoading()
         if (login.length > 1) {
@@ -28,7 +26,7 @@ const authorize =() =>{
                 await getAllStaticData(token)
                      .then(async (res) => {
                         // console.log(authStore.userData[0].WORK_POSITION)
-                        router.push({pathname:"/tabs/reader"})
+                        router.push({pathname:"(tabs)/user/reader"})
                      })
                      .catch(err =>{
                      Alert.alert("ошибка",'Ошибка авторизации: \n' +err);

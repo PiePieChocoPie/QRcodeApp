@@ -3,9 +3,9 @@ import {Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions, Alert} from
 import {RadioButton} from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {Camera} from "expo-camera";
-import { projColors, styles } from "../styles";
-import Store from "../stores/mobx";
-import { updItineraryStatus, updUpdStatus } from "../stores/http";
+import { projColors, styles } from "src/stores/styles";
+import Store from "src/stores/mobx";
+import { updItineraryStatus, updUpdStatus } from "src/http";
 const ChooseStateDialog = ({visible, onClose, docData}) => {
     const [checked, setChecked] = useState({label:'', value:''});
     const [updStatuses] = React.useState(Store.statusData);

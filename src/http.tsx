@@ -1,5 +1,5 @@
 import axios from "axios";
-import Store from "./mobx";
+import Store from "./stores/mobx";
 import {decode} from "base-64";
 import { Alert } from "react-native";
 import { err } from "react-native-svg";

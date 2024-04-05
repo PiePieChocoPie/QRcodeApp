@@ -1,11 +1,11 @@
 import React from "react";
 import {View, Text, TouchableOpacity, Animated, RefreshControl} from 'react-native';
 import Icon3 from 'react-native-vector-icons/Feather';
-import Store from "../stores/mobx";
+import Store from "src/stores/mobx";
 import ScrollView = Animated.ScrollView;
-import { projColors } from "../styles";
-import { getAllStaticData } from "../stores/http";
-import { styles } from "../styles";
+import { projColors } from "src/stores/styles";
+import { getAllStaticData } from "src/http";
+import { styles } from "src/stores/styles";
 
 
 let fullName = '';
