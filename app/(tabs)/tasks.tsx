@@ -12,18 +12,17 @@ import { useFocusEffect } from '@react-navigation/native';
 
 // let fullName = '';
 export default function MainPage () {
-    const [taskCount] = React.useState(Store.taskData && Store.taskData.length > 0);
+    const [taskCount] = React.useState(Store.taskData&&Store.taskData.length > 0);
     const [refreshing, setRefreshing] = React.useState(false);
 
-    useFocusEffect(
-        
+    useFocusEffect(        
         React.useCallback(() => {
             const getData = async () =>{
             await getAllStaticData(Store.tokenData, false, false, true, false);                
             }
             getData();    
-            return () => {
-            };
+            
+            return () => {}
         }, []) 
     );
 
@@ -36,7 +35,8 @@ export default function MainPage () {
         setRefreshing(false);
     }, []);
     
-    const elements = Store.taskData.map(item => {
+    
+    const elements = Store.taskData ? Store.taskData.map(item => {
         const [detailVisible, setDetailVisible] = React.useState(false);
         const [depDate, setDepDate] = React.useState('');
         const [depDLDate, setDepDLDate] = React.useState('');
@@ -88,8 +88,9 @@ export default function MainPage () {
                     )}
                 </View>
         )
-    });
-
+    }):(
+        <Text style={styles.noValueText}>Задачи не установлены</Text>
+    )
 
         return (
         <View style={styles.container}>
