@@ -62,16 +62,17 @@ export const styles = StyleSheet.create({
     backgroundColor: projColors.currentVerse.main
   },
   cameraContainer: {
+    flex: 0,
     width: Dimensions.get('window').width - 60,
     height: Dimensions.get('window').width - 60,
     alignItems: 'center',
     justifyContent: 'center',
-    verticalAlign:"middle",
-    borderWidth: 1,
+    verticalAlign:"middle",                   
     borderColor: projColors.currentVerse.second,
     overflow: 'hidden',
   },
   cameraBorder: {
+    flex: 1,
     position: 'absolute',
     width: '100%',
     height: '100%',
@@ -80,22 +81,19 @@ export const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
   },
   overlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
   overlayWithUser: {
     alignItems: "flex-end",
   },
   horizontalBorders: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 5,
+    flexDirection: 'row'
   },
   infoButtonContainer: {
+    flex: 1,
     margin: 0,
     flexDirection: 'row',
     justifyContent: "center",
