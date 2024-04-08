@@ -15,10 +15,7 @@ export default function MainPage () {
 
     const onRefresh = React.useCallback(async() => {
         setRefreshing(true);
-        // Ваш код обновления данных здесь
-        console.log('обновляем')
-        await getAllStaticData(Store.tokenData);
-        // Завершение обновления
+        await getAllStaticData(Store.tokenData, false, false, true, false)
         setRefreshing(false);
     }, []);
 
@@ -101,4 +98,3 @@ export default function MainPage () {
         </View>
     );
 }
-

@@ -1,91 +1,173 @@
 import axios from "axios";
-import Store from "./stores/mobx";
-import {decode} from "base-64";
-import { Alert } from "react-native";
-import { err } from "react-native-svg";
-import {url} from '@env';
+import Store from "src/stores/mobx";
 
-export async function getAllStaticData(authToken:string){
-    // try
-    // {
-        // //получение пользователя
-        // const decodedToken = decode(authToken);
-        // console.log(decodedToken);
-        // const trimAuth = decodedToken.trim();
-        // const login = trimAuth.split(':')[0];
-        // let config = {
-        //     method: 'get',
-        //     maxBodyLength: Infinity,
-        //     url: `https://bitrix24.martinural.ru/documents1c/dataByLogin.php/?login=${login}`,
-        //     headers: {
-        //         'Authorization': `Basic ${authToken}`
-        //     }
-        // };
-        console.log(url);
-    //     await axios.request(config).then(async(userData) =>{
-    //         // Alert.alert("ошибка", userData.data)
-    //         console.log(userData.data.NAME, userData.data.LAST_NAME);
-    //         const url =`https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/user.get.json?NAME=${userData.data.NAME}&LAST_NAME=${userData.data.LAST_NAME}`;
-    //         console.log(url)
+export async function getDataByToken(authToken:string){
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/mobileControllers/dataByToken.php/?token=${authToken}`,
+        headers: { 
+          'Authorization': `Basic ${authToken}`, 
+        },
+        withCredentials: false
 
-    //         await axios.post(url).then(async(authData)=>{
-    //             console.log(authData)
-    //             if(authData.data.result ===undefined) return false;
-    //             Store.setUserData(authData.data.result);
-    //             console.log(Store.userData[0].ID)
+      };
+      const response = await axios.request(config);
+      Store.setUserData(response.data);
+      return response;
+}
 
-    //                 //получение подразделения
-    //             let depConfig = {
-    //                 method: 'get',
-    //                 maxBodyLength: Infinity,
-    //                 url: `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/department.get.json?ID=${Store.userData[0].UF_DEPARTMENT}`
-    //             };
-    //             await axios.request(depConfig).then(async(depData) =>{
-    //                 Store.setDepData(depData.data.result);
-    //                 console.log(Store.depData[0].NAME)
-    //                 if(depData.data.result===undefined) return false;
-    //                 const bodyToTask ={
-    //                     filter:
-    //                         {
-    //                             "<REAL_STATUS": "5",
-    //                             "RESPONSIBLE_ID": Store.userData[0].ID
-    //                         }
-    //                 };
-    //                     //получение задач
-    //                 axios.post(`https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/tasks.task.list`, bodyToTask).then(async(taskData)=>{
-    //                     console.log('таски ---- '+taskData.data.result.tasks[0].title)
-    //                     Store.setTaskData(taskData.data.result.tasks);
-    //                     console.log(taskData.data.result.tasks)
-    //                     if(Store.taskData===undefined) return false;
+export async function getDepData(ID:string){
+    let data = {    
+        "ID": ID,
+    };
 
-    //                         //получение статусов упд
-    //                     await axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_168_STAGE_9").then(async(updStatusesData)=>{
-    //                         Store.setStatusesListData(updStatusesData.data.result);
-    //                         if(updStatusesData.data.result===undefined) return false;
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/rest/578/j919bucygnb3tdf9/department.get.json`,
+        headers: { 
 
-    //                             //получение статусов маршрутных листов
-    //                         const itineraryStatusesData = await axios.post("https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items?entityId=DYNAMIC_133_STAGE_10").then(async(itineraryStatusesData)=>{
-    //                             Store.setItineraryListData(itineraryStatusesData.data.result);
-    //                             if(itineraryStatusesData.data.result ===undefined) return false;
-    //                         })
-    //                         .catch((err)=>'ошибка получения статусов маршрутных листов: '+ err);
-    //                     })
-    //                     .catch((err)=>'ошибка получения статусов упд: '+err);
-    //                 })
-    //                 .catch((err)=>'ошибка получения тасков: '+err);
-    //             })
-    //             .catch((err)=>'ошибка получения подразделений: '+err);
-    //         })
-    //         .catch((err)=>console.log('ошибка авторизации 2: '+err));
-    //     })
-    //     .catch((err)=>console.log('ошибка авторизации: '+err));
-    // }
-    // catch(error)
-    // {
-    //     console.error;
-    //     return false;
-    //     // Alert.alert("ошибка", error);
-    // }
+          'Content-Type': 'application/json'
+        },
+        data : data,
+        withCredentials: false
+      };
+    const response = await axios.request(config)
+    Store.setDepData(response.data);   
+    return response;
+}
+
+export async function getTasksData(ID:string){
+    let data = JSON.stringify({
+        "filter": {
+            "<REAL_STATUS": "5",
+            "RESPONSIBLE_ID": ID
+        }
+        });
+        
+        let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/tasks.task.list`,
+        headers: { 
+            'Content-Type': 'application/json', 
+            
+        },
+        data : data,
+        withCredentials: false
+        };
+        
+    const response = await axios.request(config)    
+    Store.setTaskData(response.data.result.tasks)
+    return response;
+}
+
+export async function getUpdStatusesData(){
+    let data = JSON.stringify({
+        "entityId": "DYNAMIC_168_STAGE_9",
+        'Authorization': 'Basic YXJtOnp4YzEyMzQ1Ng==', 
+
+        });
+        
+        let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items`,
+        headers: { 
+            'Content-Type': 'application/json', 
+        },
+        data : data,
+        withCredentials: false
+        };
+        
+        const response = await axios.request(config)    
+        Store.setUpdStatusesData(response.data.result);
+        return response;
+}
+
+export async function getItineraryStatusesData(){
+    let data = JSON.stringify({
+        "entityId": "DYNAMIC_133_STAGE_10"
+        });
+        
+        let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items`,
+        headers: { 
+            'Content-Type': 'application/json', 
+        },
+        data : data,
+        withCredentials: false
+        };
+        
+        const response = await axios.request(config)    
+        Store.setItineraryStatusesData(response.data.result);
+        return response;
+
+}
+export async function getAllStaticData(authToken:string,userData: boolean, depData: boolean, TaskData: boolean, docsStatuses: boolean){
+    try
+    {
+        console.log("окружение - " +process.env.baseUrl)
+        let status = true,  curError = "Неверная авторизация";
+        // //получение пользователя       
+        if (userData) await getDataByToken(authToken)
+            .then(async(response) => {
+                console.log(JSON.stringify(Store.userData));                
+            })                                    
+            .catch((error) => {
+                console.log(error);
+                status = false;
+            })
+        curError = "Ошибка получения подразделения";
+        if (depData) await getDepData(Store.userData.UF_DEPARTMENT[0])
+            .then(async(response) => {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+                console.log(error);
+                status = false;
+            });
+        curError = "Ошибка получения задач пользователя";
+        if(TaskData) await getTasksData(Store.userData.ID)
+            .then(async(response) => {
+                console.log(JSON.stringify(response.data));
+               
+                
+            })
+            .catch((error) => {
+                console.log(error);
+                status = false;
+            }); 
+        curError = "Ошибка получения статусов документов";
+        if (docsStatuses) await getUpdStatusesData()
+            .then(async(response) => {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+                console.log(error);
+                status = false;                                        
+            })
+        if (docsStatuses) await getItineraryStatusesData()
+            .then((response) => 
+            {
+                console.log(JSON.stringify(response.data));
+            }) 
+            .catch((error) => {
+                console.log(false,  error);
+                status = false;
+            })     
+        
+        return {status: status, curError:curError};
+    }
+    catch(error)
+    {
+        console.error;
+        return {status: false, curError:"Непредвиденная ошибка"};
+        // Alert.alert("ошибка", error);
+    }
 }
 
 
@@ -153,6 +235,3 @@ export async function  updItineraryStatus(IDItinerary:string,IDStatus:string, us
     let req = await axios.post(url,body);
     return req;
 }
-
-
-

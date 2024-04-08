@@ -5,13 +5,18 @@ const TabsLayout = () => {
     return (
     <Tabs>
         <Tabs.Screen name ="reader" options={{
-            headerTitle: 'reader',
+            headerTitle: 'Сканер QR',
             title:"Сканер",
         }}/>
         <Tabs.Screen name ="tasks" options={{
-            headerTitle: 'task',
+            headerTitle: 'Задачи',
             title:"Задачи",
         }}/>
+        <Tabs.Screen name ="profile" options={{
+            headerTitle: 'Профиль',
+            title:"Профиль",
+        }}/>
+        
     </Tabs>
     );
 };

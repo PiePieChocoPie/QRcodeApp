@@ -10,23 +10,23 @@ import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 
 const authorize =() =>{
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
+    const [login, setLogin] = useState('arm');
+    const [password, setPassword] = useState('Zxc123');
     const [isInvalidLogin, setIsInvalidLogin] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState(true);
     const {loading, startLoading, stopLoading} = useLoading()
+
     const buttonHandler = async () => {
         startLoading()
         if (login.length > 1) {
             if (password.length > 1) {
                 const token = base64encode(`${login}:${password}`);
                 Store.setTokenData(token);
-                console.log(Store.tokenData);
                 
-                await getAllStaticData(token)
+                await getAllStaticData(token, true, false, false, false)
                      .then(async (res) => {
-                        // console.log(authStore.userData[0].WORK_POSITION)
-                        router.push({pathname:"(tabs)/user/reader"})
+                        if(res.status)  router.push({pathname:"/(tabs)/reader"});
+                        else Alert.alert("Ошибка авторизации", res.curError);
                      })
                      .catch(err =>{
                      Alert.alert("ошибка",'Ошибка авторизации: \n' +err);
