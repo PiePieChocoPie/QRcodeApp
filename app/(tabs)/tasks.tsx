@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {View, Text, TouchableOpacity, Animated, RefreshControl} from 'react-native';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Store from "src/stores/mobx";
@@ -7,24 +7,40 @@ import { projColors } from "src/stores/styles";
 import { getAllStaticData } from "src/http";
 import { styles } from "src/stores/styles";
 
+import { useFocusEffect } from '@react-navigation/native';
 
-let fullName = '';
+
+// let fullName = '';
 export default function MainPage () {
     const [taskCount] = React.useState(Store.taskData && Store.taskData.length > 0);
     const [refreshing, setRefreshing] = React.useState(false);
 
+    useFocusEffect(
+        
+        React.useCallback(() => {
+            const getData = async () =>{
+            await getAllStaticData(Store.tokenData, false, false, true, false);                
+            }
+            getData();    
+            return () => {
+            };
+        }, []) 
+    );
+
     const onRefresh = React.useCallback(async() => {
         setRefreshing(true);
-        await getAllStaticData(Store.tokenData, false, false, true, false)
+        // код обновления данных здесь
+        console.log('обновляем')
+        await getAllStaticData(Store.tokenData, false, false, true, false);
+        // Завершение обновления
         setRefreshing(false);
     }, []);
-
-
-
+    
     const elements = Store.taskData.map(item => {
         const [detailVisible, setDetailVisible] = React.useState(false);
         const [depDate, setDepDate] = React.useState('');
         const [depDLDate, setDepDLDate] = React.useState('');
+
         React.useEffect(() => {
             const onlyDate = item.createdDate.split('T')[0]
             setDepDate(onlyDate);
@@ -34,6 +50,8 @@ export default function MainPage () {
         const toggleMore = () => {
             setDetailVisible(!detailVisible);
         };
+
+
 
         return (
                 <View key={item.id} style={styles.taskView}>
