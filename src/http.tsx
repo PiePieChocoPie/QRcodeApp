@@ -110,53 +110,47 @@ export async function getItineraryStatusesData(){
 export async function getAllStaticData(authToken:string,userData: boolean, depData: boolean, TaskData: boolean, docsStatuses: boolean){
     try
     {
-        console.log("окружение - " +process.env.baseUrl)
         let status = true,  curError = "Неверная авторизация";
         // //получение пользователя       
         if (userData) await getDataByToken(authToken)
             .then(async(response) => {
-                console.log(JSON.stringify(Store.userData));                
             })                                    
             .catch((error) => {
-                console.log(error);
+                //console.log(error);
                 status = false;
             })
         curError = "Ошибка получения подразделения";
         if (depData) await getDepData(Store.userData.UF_DEPARTMENT[0])
             .then(async(response) => {
-                console.log(JSON.stringify(response.data));
             })
             .catch((error) => {
-                console.log(error);
+                //console.log(error);
                 status = false;
             });
         curError = "Ошибка получения задач пользователя";
         if(TaskData) await getTasksData(Store.userData.ID)
             .then(async(response) => {
-                console.log(JSON.stringify(response.data));
                
                 
             })
             .catch((error) => {
-                console.log(error);
+                //console.log(error);
                 status = false;
             }); 
         curError = "Ошибка получения статусов документов";
         if (docsStatuses) await getUpdStatusesData()
             .then(async(response) => {
-                console.log(JSON.stringify(response.data));
             })
             .catch((error) => {
-                console.log(error);
+                //console.log(error);
                 status = false;                                        
             })
         if (docsStatuses) await getItineraryStatusesData()
             .then((response) => 
             {
-                console.log(JSON.stringify(response.data));
             }) 
             .catch((error) => {
-                console.log(false,  error);
+                //console.log(false,  error);
                 status = false;
             })     
         
@@ -164,7 +158,7 @@ export async function getAllStaticData(authToken:string,userData: boolean, depDa
     }
     catch(error)
     {
-        console.error;
+        //console.error;
         return {status: false, curError:"Непредвиденная ошибка"};
         // Alert.alert("ошибка", error);
     }
@@ -217,7 +211,6 @@ export async function  updUpdStatus(IDUpd:string,IDStatus:string, userID: string
             "assignedById": userID
         }
     }
-    console.log(body);
     const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
     let req = await axios.post(url,body);
     return req;

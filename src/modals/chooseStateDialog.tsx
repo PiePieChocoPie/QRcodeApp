@@ -22,13 +22,11 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
         const newSt='Изменение статуса документа невозможно';
-        // console.log(updStatuses.length, docData.entityTypeId, curStatus)
 
         if (docData.entityTypeId=="168"){
             for(let i=0;i<updStatuses.length;i++){
-                console.log(Store.statusData[i].STATUS_ID ==curStatus, i!=updStatuses.length-2, updStatuses[i+1])
                 if(Store.statusData[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
-                console.log(123);
+                //console.log(123);
                 return updStatuses[i+1];
             }
         }
@@ -44,9 +42,8 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID, docData.stageId != updStatuses[4].STATUS_ID, docData.stageId != updStatuses[3].STATUS_ID, Store.userData[0].ID == docData.ufCrm6Driver)
             if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData[0].ID == docData.ufCrm6Driver) {
-console.log(123)
+//console.log(123)
                 if (checked.value === 'break') {
                     setableStatus = updStatuses[4];
                 } else if (checked.value === 'newStatus') {
@@ -67,7 +64,7 @@ console.log(123)
 
     const updHandling = async() =>{
         let setableStatus;
-        console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
+        //console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
         if (docData.stageId === updStatuses[0].STATUS_ID) {
 
             if (checked.value == 'break') {
@@ -91,7 +88,7 @@ console.log(123)
         if(docData.entityTypeId =="168") await updHandling();
         else if(docData.entityTypeId == "133") await itineraryHandling();
         else alert("Неверный формат обрабатываемого документа")
-        // console.log(checked)
+        // //console.log(checked)
     } catch(e){
         alert(e)
     }

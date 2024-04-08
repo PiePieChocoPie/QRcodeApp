@@ -20,23 +20,10 @@ function profile() {
         React.useCallback(() => {
             const secName = Store.userData.SECOND_NAME === undefined ? ' ' : Store.userData.SECOND_NAME;
             setUserdata(`${Store.userData.LAST_NAME} ${Store.userData.NAME} ${secName}\n${Store.userData.WORK_POSITION}`);
-    
-            console.log(userData);
-    
             return () => {
             };
-        }, [Store.userData[0]]) 
+        }, []) 
     );
-
-
-    React.useEffect(() => {
-        const secName = Store.userData.SECOND_NAME === undefined ? ' ' : Store.userData.SECOND_NAME;
-        const userData = `${Store.userData.LAST_NAME} ${Store.userData.NAME} ${secName}\n${Store.userData.WORK_POSITION}`;
-
-        console.log(userData);
-
-    }, [Store.userData[0]]); 
-
     return (
         <View>
             <Text>{userData}</Text>

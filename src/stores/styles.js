@@ -28,7 +28,7 @@ export class projColors{
     // static switchVerse() {
     //     isDark=!isDark;
     //     projColors.currentVerse = isDark? projColors.darkVerse : projColors.lightVerse;
-    //     console.log(projColors.currentVerse.main, isDark);
+    //     //console.log(projColors.currentVerse.main, isDark);
     //
     // }
 }
