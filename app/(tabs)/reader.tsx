@@ -4,10 +4,9 @@ import { Camera } from "expo-camera";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
 import Svg,{Polyline} from "react-native-svg";
-import { getDataAboutDocs } from "src/http";
+import { getDataAboutDocs } from "src/http"; 
 import { styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
-
 
 export default function Reader() {
     const [hasPermission, setHasPermission] = React.useState(null);
@@ -32,6 +31,7 @@ export default function Reader() {
             .then((res) => {
                 if(res.data.result.items[0]){
                     const item = res.data.result.items[0];
+                    console.log(item.entityTypeId, item.stageId, item.entityTypeId==="133", item.stageId!="DT133_10:SUCCESS", item.stageId!="DT133_10:FAIL")
                     let docIndex = 0;
                     if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") docIndex++;
                     else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") docIndex+=2;
@@ -73,7 +73,7 @@ export default function Reader() {
         <View style={styles.overlay} >
                 <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} >
                 {/* Верхняя часть: камера */}
-                    <View style={styles.container}>
+                    <View style={{flex:1}}>
                         <View style={styles.overlay} >
                         {scanned && (
                         <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
@@ -132,3 +132,4 @@ export default function Reader() {
         </View>
     );
 }
+
