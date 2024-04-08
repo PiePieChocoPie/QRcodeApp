@@ -27,8 +27,8 @@ const authorize =() =>{
                 
                 await getAllStaticData(token)
                      .then(async (res) => {
-                        // console.log(authStore.userData[0].WORK_POSITION)
-                        router.push({pathname:"/tabs/reader"})
+                        if(res.status)  router.push({pathname:"/tabs/reader"});
+                        else Alert.alert("Ошибка авторизации", res.curError);
                      })
                      .catch(err =>{
                      Alert.alert("ошибка",'Ошибка авторизации: \n' +err);
