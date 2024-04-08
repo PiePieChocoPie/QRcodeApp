@@ -1,23 +1,23 @@
 import axios from "axios";
 import Store from "./mobx";
-import {decode} from "base-64";
-import { Alert } from "react-native";
-import { err } from "react-native-svg";
-import {url} from '@env';
 
-export async function dataByToken(authToken:string){
+export async function getDataByToken(authToken:string){
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `https://bitrix24.martinural.ru/mobileControllers/dataByToken.php/?token=${authToken}`,
+        url: `${process.env.baseUrl}/mobileControllers/dataByToken.php/?token=${authToken}`,
         headers: { 
-          'Authorization': 'Basic YWRtaW5Nb2RlOlp4YzEyMw==', 
-        }
+          'Authorization': `Basic ${authToken}`, 
+        },
+        withCredentials: false
+
       };
-      return await axios.request(config);
+      const response = await axios.request(config);
+      Store.setUserData(response.data);
+      return response;
 }
 
-export async function depData(ID:string){
+export async function getDepData(ID:string){
     let data = {    
         "ID": ID,
     };
@@ -25,7 +25,7 @@ export async function depData(ID:string){
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/rest/578/j919bucygnb3tdf9/department.get.json',
+        url: `${process.env.baseUrl}/rest/578/j919bucygnb3tdf9/department.get.json`,
         headers: { 
 
           'Content-Type': 'application/json'
@@ -33,10 +33,12 @@ export async function depData(ID:string){
         data : data,
         withCredentials: false
       };
-    return await axios.request(config)
+    const response = await axios.request(config)
+    Store.setDepData(response.data);   
+    return response;
 }
 
-export async function taskData(ID:string){
+export async function getTasksData(ID:string){
     let data = JSON.stringify({
         "filter": {
             "<REAL_STATUS": "5",
@@ -47,7 +49,7 @@ export async function taskData(ID:string){
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/tasks.task.list',
+        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/tasks.task.list`,
         headers: { 
             'Content-Type': 'application/json', 
             
@@ -56,10 +58,12 @@ export async function taskData(ID:string){
         withCredentials: false
         };
         
-        return await axios.request(config)
+    const response = await axios.request(config)    
+    Store.setTaskData(response.data.result.tasks)
+    return response;
 }
 
-export async function updStatusesData(){
+export async function getUpdStatusesData(){
     let data = JSON.stringify({
         "entityId": "DYNAMIC_168_STAGE_9",
         'Authorization': 'Basic YXJtOnp4YzEyMzQ1Ng==', 
@@ -69,7 +73,7 @@ export async function updStatusesData(){
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items',
+        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items`,
         headers: { 
             'Content-Type': 'application/json', 
         },
@@ -77,10 +81,12 @@ export async function updStatusesData(){
         withCredentials: false
         };
         
-        return await axios.request(config)
+        const response = await axios.request(config)    
+        Store.setUpdStatusesData(response.data.result);
+        return response;
 }
 
-export async function itineraryStatusesData(){
+export async function getItineraryStatusesData(){
     let data = JSON.stringify({
         "entityId": "DYNAMIC_133_STAGE_10"
         });
@@ -88,7 +94,7 @@ export async function itineraryStatusesData(){
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items',
+        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items`,
         headers: { 
             'Content-Type': 'application/json', 
         },
@@ -96,64 +102,65 @@ export async function itineraryStatusesData(){
         withCredentials: false
         };
         
-        return await axios.request(config)
+        const response = await axios.request(config)    
+        Store.setItineraryStatusesData(response.data.result);
+        return response;
+
 }
 
-export async function getAllStaticData(authToken:string){
+export async function getAllStaticData(authToken:string,userData: boolean, depData: boolean, TaskData: boolean, docsStatuses: boolean){
     try
     {
+        console.log("окружение - " +process.env.url)
         let status = true,  curError = "Неверная авторизация";
         // //получение пользователя       
-        await dataByToken(authToken)
+        if (userData) await getDataByToken(authToken)
             .then(async(response) => {
-                Store.setUserData(response.data);
-                console.log(JSON.stringify(Store.userData));
-                })
-            .catch((error) => {
-                console.log(false,  error);
-                status = false;
-                });
-        curError = "Ошибка получения подразделения";
-        await depData(Store.userData.UF_DEPARTMENT[0])
-        //    console.log(check)
-            .then(async(response) => {
-                console.log(JSON.stringify(response.data));
-                Store.setDepData(response.data);                    
-                })
+                console.log(JSON.stringify(Store.userData));                
+            })                                    
             .catch((error) => {
                 console.log(error);
                 status = false;
-                });
-        curError = "Ошибка получения задач пользователя";
-        await taskData(Store.userData.ID)
+            })
+        curError = "Ошибка получения подразделения";
+        if (depData) await getDepData(Store.userData.UF_DEPARTMENT[0])
             .then(async(response) => {
                 console.log(JSON.stringify(response.data));
-                Store.setTaskData(response.data.result.tasks)
+            })
+            .catch((error) => {
+                console.log(error);
+                status = false;
+            });
+        curError = "Ошибка получения задач пользователя";
+        if(TaskData) await getTasksData(Store.userData.ID)
+            .then(async(response) => {
+                console.log(JSON.stringify(response.data));
+               
                 
             })
             .catch((error) => {
                 console.log(error);
                 status = false;
-            });
+            }); 
         curError = "Ошибка получения статусов документов";
-        await updStatusesData()
+        if (docsStatuses) await getUpdStatusesData()
             .then(async(response) => {
                 console.log(JSON.stringify(response.data));
-                Store.setUpdData(response.data.result);
             })
             .catch((error) => {
                 console.log(error);
-                status = false;
-            });
-        await itineraryStatusesData()
-            .then((response) => {
+                status = false;                                        
+            })
+        if (docsStatuses) await getItineraryStatusesData()
+            .then((response) => 
+            {
                 console.log(JSON.stringify(response.data));
-                // Store.set
-            })
+            }) 
             .catch((error) => {
-                console.log(error);
+                console.log(false,  error);
                 status = false;
-            });
+            })     
+        
         return {status: status, curError:curError};
     }
     catch(error)

@@ -1,8 +1,6 @@
 import React from "react";
-import {Modal, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Modal, View, Text, TouchableOpacity} from 'react-native';
 import { storeAuthStatus } from '../../secStore';
-import {useNavigation} from "@react-navigation/native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import QRDialog from "./QRDialog";
@@ -11,7 +9,6 @@ import Store from "../stores/mobx";
 import { projColors, styles } from "../styles";
 let userData = '';
 const UserDataDialog = ({ visible, onClose }) => {
-const navigation = useNavigation<NativeStackNavigationProp<any>>()
     const [modalVisible, setModalVisible] = React.useState(false);
 
     const handleLogout = async () => {
@@ -23,14 +20,14 @@ const navigation = useNavigation<NativeStackNavigationProp<any>>()
     };
 
     React.useEffect(() => {
-        const secName = Store.userData[0].SECOND_NAME === undefined ? ' ' : Store.userData[0].SECOND_NAME;
-        userData = `${Store.userData[0].LAST_NAME} ${Store.userData[0].NAME} ${secName}\n${Store.userData[0].WORK_POSITION}`;
-    }, [Store.userData[0]]);
+        const secName = Store.userData.SECOND_NAME === undefined ? ' ' : Store.userData.SECOND_NAME;
+        userData = `${Store.userData.LAST_NAME} ${Store.userData.NAME} ${secName}\n${Store.userData.WORK_POSITION}`;
+    }, [Store.userData]);
 
     React.useEffect(() => {
-        const secName = Store.userData[0].SECOND_NAME === undefined ? ' ' : Store.userData[0].SECOND_NAME;
+        const secName = Store.userData.SECOND_NAME === undefined ? ' ' : Store.userData.SECOND_NAME;
 
-        userData = userData.concat(`\n${Store.depData[0].NAME}`);
+        userData = userData.concat(`\n${Store.depData.NAME}`);
     }, [Store.depData[0]]);
 
     const toggleModal = () => {

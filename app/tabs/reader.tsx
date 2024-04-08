@@ -73,7 +73,7 @@ export default function Reader() {
         <View style={styles.overlay} >
                 <Camera style={styles.camera} onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} >
                 {/* Верхняя часть: камера */}
-                    <View style={styles.container}>
+                    <View style={{flex:1}}>
                         <View style={styles.overlay} >
                         {scanned && (
                         <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>

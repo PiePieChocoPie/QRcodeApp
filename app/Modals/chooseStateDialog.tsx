@@ -44,8 +44,8 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID, docData.stageId != updStatuses[4].STATUS_ID, docData.stageId != updStatuses[3].STATUS_ID, Store.userData[0].ID == docData.ufCrm6Driver)
-            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData[0].ID == docData.ufCrm6Driver) {
+            console.log(docData.stageId, updStatuses[3].STATUS_ID, updStatuses[4].STATUS_ID, docData.stageId != updStatuses[4].STATUS_ID, docData.stageId != updStatuses[3].STATUS_ID, Store.userData.ID == docData.ufCrm6Driver)
+            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData.ID == docData.ufCrm6Driver) {
 console.log(123)
                 if (checked.value === 'break') {
                     setableStatus = updStatuses[4];
@@ -55,7 +55,7 @@ console.log(123)
                 } else {
                     return Alert.alert('ошибка', "Неожиданная ошибка!");
                 }
-                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData[0].ID)
+                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                     .then()
                 Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
             } else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
@@ -79,7 +79,7 @@ console.log(123)
             } else {
                 return Alert.alert('ошибка', "Неожиданная ошибка!");
             }
-            await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData[0].ID)
+            await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                 .then()
             Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
         }

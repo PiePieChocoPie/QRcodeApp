@@ -5,7 +5,7 @@ import QRCode from "react-native-qrcode-svg";
 import { projColors, styles } from "../styles";
 import Store from "../stores/mobx";
 const QRDialog = ({ visible, onClose }) => {
-    const [qrValue] = React.useState(Store.userData[0].UF_USR_GUID);
+    const [qrValue] = React.useState(Store.userData.UF_USR_GUID);
 
 
 
