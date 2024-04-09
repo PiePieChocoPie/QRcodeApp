@@ -25,7 +25,7 @@ const authorize =() =>{
                 
                 await getAllStaticData(token, true, false, false, false)
                      .then(async (res) => {
-                        if(res.status)  router.push({pathname:"/(tabs)/reader"});
+                        if(res.status)  router.push({pathname:"/(tabs)/tasks"});
                         else Alert.alert("Ошибка авторизации", res.curError);
                      })
                      .catch(err =>{

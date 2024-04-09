@@ -18,7 +18,8 @@ export default function MainPage () {
     useFocusEffect(        
         React.useCallback(() => {
             const getData = async () =>{
-            await getAllStaticData(Store.tokenData, false, false, true, false);                
+            await getAllStaticData(Store.tokenData, false, false, true, false);
+            console.log(Store.taskData[0], taskCount)              
             }
             getData();    
             
