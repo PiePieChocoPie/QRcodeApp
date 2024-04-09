@@ -6,18 +6,18 @@ import { projColors } from "src/stores/styles";
 const TabsLayout = () => {
     return (
     <Tabs>
-        <Tabs.Screen name ="reader" options={{
-            headerTitle: 'Сканер QR',
-            title:"Сканер",
-            tabBarIcon:({})=>(
-                <Icon name="qrcode" size={25} color={projColors.currentVerse.font}/>
-            ),
-        }}/>
         <Tabs.Screen name ="tasks" options={{
             headerTitle: 'Задачи',
             title:"Задачи",
             tabBarIcon:({})=>(
                 <Icon name="tasks" size={25} color={projColors.currentVerse.font}/>
+            ),
+        }}/>
+        <Tabs.Screen name ="reader" options={{
+            headerTitle: 'Сканер QR',
+            title:"Сканер",
+            tabBarIcon:({})=>(
+                <Icon name="qrcode" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
         <Tabs.Screen name ="profile" options={{

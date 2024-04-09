@@ -17,9 +17,8 @@ function profile() {
     const {loading, startLoading, stopLoading} = useLoading()
 
     const handleLogout = async () => {
-        await  storeAuthStatus('');
-        Store.setUserData('');
-        router.navigate('..'); 
+
+        router.dismissAll();
     };
 
     useFocusEffect(
@@ -29,7 +28,6 @@ function profile() {
                 
             try {
                 startLoading();  
-                // Получаем данные о подразделении
                 await getAllStaticData(Store.tokenData, false, true, false, false)
                 .then(async (res) => {
                     if(res.status)  
