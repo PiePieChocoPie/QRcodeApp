@@ -36,13 +36,13 @@ export class projColors{
 export const styles = StyleSheet.create({
   authContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: projColors.currentVerse.main,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   fieldsContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: projColors.currentVerse.main,
     alignItems: 'center',
     justifyContent: 'flex-start',
     marginTop: Dimensions.get("window").height / 6
@@ -67,8 +67,7 @@ export const styles = StyleSheet.create({
     height: Dimensions.get('window').width - 60,
     alignItems: 'center',
     justifyContent: 'center',
-    verticalAlign:"middle",                   
-    borderColor: projColors.currentVerse.second,
+    verticalAlign:"middle",                 
     overflow: 'hidden',
   },
   cameraBorder: {
@@ -90,6 +89,7 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   horizontalBorders: {
+
     flexDirection: 'row'
   },
   infoButtonContainer: {
@@ -104,6 +104,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center"
+  },
+  textProfile: {
+    color: projColors.currentVerse.font,
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    fontSize:18
   },
   noValueText: {
     color: projColors.currentVerse.font,
@@ -204,4 +211,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  containerCentrallity:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });

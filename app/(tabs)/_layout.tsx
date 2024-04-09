@@ -10,21 +10,21 @@ const TabsLayout = () => {
             headerTitle: 'Сканер QR',
             title:"Сканер",
             tabBarIcon:({})=>(
-                <Icon name="qrcode" size={15} color={projColors.currentVerse.font}/>
+                <Icon name="qrcode" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
         <Tabs.Screen name ="tasks" options={{
             headerTitle: 'Задачи',
             title:"Задачи",
             tabBarIcon:({})=>(
-                <Icon name="tasks" size={15} color={projColors.currentVerse.font}/>
+                <Icon name="tasks" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
         <Tabs.Screen name ="profile" options={{
             headerTitle: 'Профиль',
             title:"Профиль",
             tabBarIcon:({})=>(
-                <Icon name="user" size={15} color={projColors.currentVerse.font}/>
+                <Icon name="user" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
         

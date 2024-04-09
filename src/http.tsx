@@ -34,7 +34,7 @@ export async function getDepData(ID:string){
         withCredentials: false
       };
     const response = await axios.request(config)
-    Store.setDepData(response.data);   
+    Store.setDepData(response.data.result[0]);   
     return response;
 }
 
