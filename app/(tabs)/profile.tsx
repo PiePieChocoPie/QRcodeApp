@@ -49,24 +49,29 @@ function profile() {
         }, []) 
     );
     return (
-        <View style={styles.container}>
+        <View style={styles.containerCentrallity}>
         {loading ?(
-            <View style={styles.cameraContainer}>
+            <View style={styles.containerCentrallity}>
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
             </View> 
         ):
            
         (
-        <View style={styles.authContainer}>
-            <QRCode 
-                value={qrValue}
-                size={Dimensions.get("window").width - 90}
-                backgroundColor={projColors.currentVerse.font}
-                color={projColors.currentVerse.main}
-                logoBackgroundColor="transparent"
-                ecl="H" // Установите уровень H (High) для более круглого QR-кода
-            />   
-                    
+        <View style = {styles.containerCentrallity}>
+            <View  style={{ 
+                alignItems: "center", 
+                justifyContent: "center",
+                borderColor:projColors.currentVerse.border,
+                borderWidth:3}}>
+                <QRCode 
+                    value={qrValue}
+                    size={Dimensions.get("window").width - 90}
+                    backgroundColor={projColors.currentVerse.main}
+                    color={projColors.currentVerse.font}
+                    logoBackgroundColor="transparent"
+                    ecl="H" // Установите уровень H (High) для более круглого QR-кода
+                />   
+            </View>
             <Text style={styles.textProfile}>{userData}</Text>
             <TouchableOpacity   style={styles.opacities} onPress={handleLogout}>
                             <Icon name="user-times" size={40} color={projColors.currentVerse.font}/>

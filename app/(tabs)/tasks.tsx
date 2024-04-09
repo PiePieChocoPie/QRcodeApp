@@ -82,7 +82,7 @@ export default function Tasks() {
                     <Icon3 name={'more-horizontal'} size={30}/>
                 </TouchableOpacity>
             </View>
-            {depDates[index] && (
+            {!depDates[index] && (
                 <View>
                     {item.description ? (
                         <Text style={styles.descriptionText}>{item.description}</Text>
