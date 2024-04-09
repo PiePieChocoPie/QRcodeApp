@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {encode as base64encode} from 'base-64';
 import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Alert} from "react-native";
-import { router } from "expo-router";
+import { router, Link} from "expo-router";
 //
 import { styles, projColors } from "src/stores/styles";
 import { getAllStaticData } from "src/http";
@@ -71,6 +71,9 @@ const authorize =() =>{
                            secureTextEntry={showPassword}
                            onChangeText={passwordHandler}
                 />
+
+                <Link href="/modal">Present modal</Link>
+
                 <TouchableOpacity
                     onPress={togglePasswordVisibility}
                 >

@@ -1,5 +1,5 @@
 
-import {Tabs} from "expo-router";
+import {Stack, Tabs} from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { projColors } from "src/stores/styles";
 
@@ -26,8 +26,7 @@ const TabsLayout = () => {
             tabBarIcon:({})=>(
                 <Icon name="user" size={15} color={projColors.currentVerse.font}/>
             ),
-        }}/>
-        
+        }}/>  
     </Tabs>
     );
 };

@@ -4,7 +4,7 @@ import { storeAuthStatus } from 'src/secStore';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { router } from "expo-router";
+import { router,Link } from "expo-router";
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
 
