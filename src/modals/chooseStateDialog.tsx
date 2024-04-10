@@ -26,7 +26,6 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
         const newSt='Изменение статуса документа невозможно';
-        console.log(Store.updStatusesData,updStatuses,`\n`,Store.itineraryStatusesData, itineraryStatuses)
         if (docNumber==1){
             for(let i=0;i<updStatuses.length;i++){
                 if(updStatuses[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
@@ -46,7 +45,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData[0].ID == docData.ufCrm6Driver) {
+            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData.ID == docData.ufCrm6Driver) {
 //console.log(123)
                 if (checked.value === 'break') {
                     setableStatus = updStatuses[4];
@@ -136,7 +135,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
                         onPress={() => setChecked(option)}
                         labelStyle={{color: checked.value === option.value ? projColors.currentVerse.fontAccent : projColors.currentVerse.font,
                             fontWeight:checked.value === option.value ? 'bold' : '300',
-                            width: Dimensions.get("window").width-190,
+                            width: Dimensions.get("window").width-150,
                             alignItems: 'center',
                             justifyContent: "center",
                             textAlign: "center"}}

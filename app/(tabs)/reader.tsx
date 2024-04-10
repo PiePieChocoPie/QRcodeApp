@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View,Alert, ActivityIndicator } from 'react-native';
-import { CameraView,useCameraPermissions  } from "expo-camera/next";
+import {Text, TouchableOpacity, View,Alert, ActivityIndicator } from 'react-native';
+import { CameraView} from "expo-camera/next";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
-import Svg,{Polyline} from "react-native-svg";
 import { getAllStaticData, getDataAboutDocs } from "src/http"; 
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
@@ -13,10 +12,10 @@ import { useState } from 'react';
 
 
 export default function Reader() {
-    const [scanned, setScanned] = React.useState(false);
-    const [modalVisibleState, setModalVisibleState] = React.useState(false);
-    const [modalText, setModalText] = React.useState('');
-    const [docNumber, setDocNumber] = React.useState(0);
+    const [scanned, setScanned] = useState(false);
+    const [modalVisibleState, setModalVisibleState] = useState(false);
+    const [modalText, setModalText] = useState('');
+    const [docNumber, setDocNumber] = useState(0);
     const {loading, startLoading, stopLoading} = useLoading()
     useFocusEffect(
         React.useCallback(() => {
@@ -97,21 +96,19 @@ export default function Reader() {
         (
       <View style={styles.overlay}>
 
-        <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}>
-
-            <View>
-
-
-            {scanned && (
+        {!scanned && (  // Добавленное условие
+                <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
+                    <View>
+                    </View>
+                </CameraView>
+                )}
+                {scanned && (
                 <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
                     <Icon2 name="refresh"  size={40} color="#fff"/>
                     <Text style={styles.text}>сканировать снова</Text>
                 </TouchableOpacity>
-            )}
-            </View>
-            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
-        </CameraView>
-
+                )}
+                    <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
         </View>
         )}
       </View>

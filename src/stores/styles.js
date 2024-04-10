@@ -210,6 +210,7 @@ export const styles = StyleSheet.create({
   RBView: {
     alignItems: "center",
     justifyContent: "center",
+    textAlign: "center"
   },
   containerCentrallity:{
     flex: 1,
