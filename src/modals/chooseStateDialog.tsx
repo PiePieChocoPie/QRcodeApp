@@ -147,11 +147,11 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
                 ))}
             </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.container} onPress={acceptAxios}>
+                    <TouchableOpacity style={styles.opacities} onPress={acceptAxios}>
                         <Icon name="check"  size={50} color={projColors.currentVerse.fontAccent}/>
                         <Text style={styles.text}>отправить</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={onClose} style={styles.container}>
+                    <TouchableOpacity onPress={onClose} style={styles.opacities}>
                     <Icon name="close"  size={50} color={projColors.currentVerse.fontAccent}/>
                     <Text style={styles.text}>отменить</Text>
                 </TouchableOpacity>

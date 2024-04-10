@@ -19,8 +19,6 @@ export default function Reader() {
     const [modalText, setModalText] = React.useState('');
     const [docNumber, setDocNumber] = React.useState(0);
     const {loading, startLoading, stopLoading} = useLoading()
-    
-
     useFocusEffect(
         React.useCallback(() => {
         const fetchData = async () => { 
@@ -82,7 +80,7 @@ export default function Reader() {
 
     const toggleModalState = () => {
         setModalVisibleState(!modalVisibleState);
-        setScanned(!scanned)
+        setScanned(false)
     };
     
 
