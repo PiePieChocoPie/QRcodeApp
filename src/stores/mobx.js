@@ -26,15 +26,15 @@ class store {
     }
     @action
     setItineraryData(updData) {
-        this.updData = updData;
+        this.itineraryData = updData;
     }
     @action
     setUpdStatusesData(updData) {
-        this.updData = updData;
+        this.updStatusesData = updData;
     }
     @action
     setItineraryStatusesData(updData) {
-        this.updData = updData;
+        this.itineraryStatusesData = updData;
     }
     @action
     setTaskData(taskData) {

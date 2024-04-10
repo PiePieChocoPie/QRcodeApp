@@ -1,38 +1,43 @@
 import React, {useState} from "react";
-import {Modal, View, StyleSheet, Text, TouchableOpacity, Dimensions, Alert} from 'react-native';
-import {RadioButton} from "react-native-paper";
+import {Modal, View,  Text, TouchableOpacity, Dimensions, Alert} from 'react-native';
+import {ActivityIndicator, RadioButton} from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {Camera} from "expo-camera";
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
-import { updItineraryStatus, updUpdStatus } from "src/http";
-const ChooseStateDialog = ({visible, onClose, docData}) => {
+import { getAllStaticData, updItineraryStatus, updUpdStatus } from "src/http";
+import { useFocusEffect } from "expo-router";
+import useLoading from "src/useLoading";
+
+const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const [checked, setChecked] = useState({label:'', value:''});
-    const [updStatuses] = React.useState(Store.statusData);
-    const [itineraryStatuses] = React.useState(Store.itineraryData);
-    React.useEffect(() => {
-        setChecked(RadioButtonOptions[0])
+    const [updStatuses] = React.useState(Store.updStatusesData);
+    const [itineraryStatuses] = React.useState(Store.itineraryStatusesData);
+    const {loading, startLoading, stopLoading} = useLoading()
 
-    }, [Store.statusData]);
-    React.useEffect(() => {
-        setChecked(RadioButtonOptions[0])
-
-    }, [Store.itineraryData]);
+    useFocusEffect(
+        
+        React.useCallback(() => {
+       
+            setChecked(RadioButtonOptions[0])
+                   
+        }, []) 
+    );
 
     const getNextStatus = () =>{
+        console.log(updStatuses, itineraryStatuses)
         const curStatus = docData.stageId;
         const newSt='Изменение статуса документа невозможно';
 
-        if (docData.entityTypeId=="168"){
+        if (docNumber==1){
             for(let i=0;i<updStatuses.length;i++){
-                if(Store.statusData[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
+                if(updStatuses[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
                 //console.log(123);
                 return updStatuses[i+1];
             }
         }
-        else if(docData.entityTypeId=="133")
+        else if(docNumber==2)
         for(let i=0;i<itineraryStatuses.length;i++){
-            if(Store.itineraryData[i].STATUS_ID ==curStatus&&i!=itineraryStatuses.length-2)
+            if(itineraryStatuses[i].STATUS_ID ==curStatus&&i!=itineraryStatuses.length-2)
                 return itineraryStatuses[i+1];
 
         }
@@ -52,7 +57,7 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
                 } else {
                     return Alert.alert('ошибка', "Неожиданная ошибка!");
                 }
-                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData[0].ID)
+                await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                     .then()
                 Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
             } else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
@@ -76,7 +81,7 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
             } else {
                 return Alert.alert('ошибка', "Неожиданная ошибка!");
             }
-            await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData[0].ID)
+            await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                 .then()
             Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
         }
@@ -107,12 +112,18 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
 
     return (
         <Modal
-            style={{flex:1}}
             visible={visible}
             transparent={true}
-            animationType="slide"
+            animationType="fade"
             onRequestClose={onClose}
         >
+            {loading ?(
+            <View style={styles.containerCentrallity}>
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            </View> 
+        ):
+           
+        (
             <View style={styles.container}>
             <View style={styles.dialog}>
                 <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
@@ -148,6 +159,7 @@ const ChooseStateDialog = ({visible, onClose, docData}) => {
                 </View>
             </View>
             </View>
+        )}
         </Modal>
     );
 };
