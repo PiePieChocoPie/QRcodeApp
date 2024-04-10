@@ -24,7 +24,6 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     );
 
     const getNextStatus = () =>{
-        console.log(updStatuses, itineraryStatuses)
         const curStatus = docData.stageId;
         const newSt='Изменение статуса документа невозможно';
 
@@ -124,7 +123,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         ):
            
         (
-            <View style={styles.container}>
+            <View style={styles.containerCentrallity}>
             <View style={styles.dialog}>
                 <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
             <View style={styles.RBView}>

@@ -81,7 +81,6 @@ export async function getUpdStatusesData(){
         
         const response = await axios.request(config)    
         Store.setUpdStatusesData(response.data.result);
-        console.log(Store.updStatusesData[0])
         return response;
 }
 
@@ -103,7 +102,6 @@ export async function getItineraryStatusesData(){
         
         const response = await axios.request(config)    
         Store.setItineraryStatusesData(response.data.result);
-        console.log(Store.itineraryStatusesData[0])
         return response;
 
 }
