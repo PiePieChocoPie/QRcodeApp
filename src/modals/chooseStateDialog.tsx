@@ -45,11 +45,12 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
+            console.log(docData.stageId != updStatuses[4].STATUS_ID , docData.stageId != updStatuses[3].STATUS_ID , Store.userData.ID == docData.ufCrm6Driver)
             if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData.ID == docData.ufCrm6Driver) {
 //console.log(123)
-                if (checked.value === 'break') {
+                if (checked.value == 'break') {
                     setableStatus = updStatuses[4];
-                } else if (checked.value === 'newStatus') {
+                } else if (checked.value == 'newStatus') {
                     setableStatus = getNextStatus();
 
                 } else {
@@ -68,7 +69,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const updHandling = async() =>{
         let setableStatus;
         //console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
-        if (docData.stageId === updStatuses[0].STATUS_ID) {
+        if (docData.stageId == updStatuses[0].STATUS_ID) {
 
             if (checked.value == 'break') {
                 setableStatus = updStatuses[6];
