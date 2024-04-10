@@ -16,7 +16,7 @@ export default function Reader() {
     const [modalVisibleState, setModalVisibleState] = React.useState(false);
     const [modalText, setModalText] = React.useState('');
     const [docNumber, setDocNumber] = React.useState(0);
-    const {loading, startLoading, stopLoading} = useLoading()
+    const {loading, startLoading, stopLoading} = useLoading();
     useFocusEffect(
         
         React.useCallback(() => {
@@ -86,7 +86,7 @@ export default function Reader() {
 
     const toggleModalState = () => {
         setModalVisibleState(!modalVisibleState);
-        setScanned(!scanned)
+        setScanned(false)
     };
 
     if (hasPermission === null) {
