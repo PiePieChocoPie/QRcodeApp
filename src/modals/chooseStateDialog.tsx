@@ -17,7 +17,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     useFocusEffect(
         
         React.useCallback(() => {
-       
+            
             setChecked(RadioButtonOptions[0])
                    
         }, []) 
@@ -26,7 +26,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
         const newSt='Изменение статуса документа невозможно';
-
+        console.log(Store.updStatusesData,updStatuses,`\n`,Store.itineraryStatusesData, itineraryStatuses)
         if (docNumber==1){
             for(let i=0;i<updStatuses.length;i++){
                 if(updStatuses[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
