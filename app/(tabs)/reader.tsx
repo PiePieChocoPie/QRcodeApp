@@ -1,6 +1,6 @@
 import React from "react";
 import {Text, TouchableOpacity, View,Alert, ActivityIndicator } from 'react-native';
-import { CameraView} from "expo-camera/next";
+import { CameraView, useCameraPermissions } from "expo-camera/next";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
 import { getAllStaticData, getDataAboutDocs } from "src/http"; 
@@ -17,6 +17,19 @@ export default function Reader() {
     const [modalText, setModalText] = useState('');
     const [docNumber, setDocNumber] = useState(0);
     const {loading, startLoading, stopLoading} = useLoading()
+    const [permission, requestPermission] = useCameraPermissions();
+    
+
+    
+    React.useEffect(() => {
+        const getCameraPermissions = async () => {
+            const { status } = await requestPermission();
+            return status === "granted";
+        };
+        getCameraPermissions().then(requestPermission);
+
+    }, []);
+
     useFocusEffect(
         React.useCallback(() => {
         const fetchData = async () => { 
