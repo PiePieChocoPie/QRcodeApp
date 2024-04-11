@@ -1,4 +1,4 @@
-import React from "react";
+import React, {} from "react";
 import {Text, TouchableOpacity, View,Alert, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from "expo-camera/next";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,6 +10,10 @@ import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
 import { useState } from 'react';
 
+import LottieView from 'lottie-react-native';
+import anim from 'src/anim.json';
+import anim2 from 'src/anim2.json';
+
 
 export default function Reader() {
     const [scanned, setScanned] = useState(false);
@@ -19,7 +23,6 @@ export default function Reader() {
     const {loading, startLoading, stopLoading} = useLoading()
     const [permission, requestPermission] = useCameraPermissions();
     
-
     
     React.useEffect(() => {
         const getCameraPermissions = async () => {
@@ -67,7 +70,6 @@ export default function Reader() {
             .then((res) => {
                 if(res.data.result.items[0]){
                     const item = res.data.result.items[0];
-                    let docIndex = 0;
                     if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") setDocNumber(1);
                     else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") setDocNumber(2);
                     else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент")
@@ -109,19 +111,25 @@ export default function Reader() {
         (
       <View style={styles.overlay}>
 
-        {!scanned && (  // Добавленное условие
+        {!scanned && 
+            (  
                 <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
-                    <View>
-                    </View>
+
+                    <LottieView source={anim2} style={{width: "100%", height: "100%"}} autoPlay loop/>
+
                 </CameraView>
-                )}
-                {scanned && (
+            )
+        }
                 <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
                     <Icon2 name="refresh"  size={40} color="#fff"/>
                     <Text style={styles.text}>сканировать снова</Text>
                 </TouchableOpacity>
-                )}
-                    <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
+                
+
+
+                <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
+
+
         </View>
         )}
       </View>
