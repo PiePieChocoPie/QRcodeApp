@@ -22,7 +22,6 @@ export default function Reader() {
     const [docNumber, setDocNumber] = useState(0);
     const {loading, startLoading, stopLoading} = useLoading()
     const [permission, requestPermission] = useCameraPermissions();
-    const [lottieViewBounds, setLottieViewBounds] = useState({ x: 0, y: 0, width: 0, height: 0 });
     
     React.useEffect(() => {
         const getCameraPermissions = async () => {
@@ -118,12 +117,14 @@ export default function Reader() {
                 <View style={styles.overlay}/>
                 <View style={styles.horizontalBorders}>
                     <View style={styles.overlay}/>
+                    <View style={styles.cameraContainer}>
                 <LottieView 
                     source={anim2} 
                     style={{width: "100%", height: "100%"}} 
                     autoPlay 
                     loop
                     />
+                    </View>
                     <View style={styles.overlay}/>
                 </View>
                 <View style={styles.overlay}/>
