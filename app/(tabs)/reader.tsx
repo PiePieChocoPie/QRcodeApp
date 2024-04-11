@@ -111,7 +111,7 @@ export default function Reader() {
         (
       <View style={styles.overlay}>
 
-        {!scanned && 
+        {!scanned ?
             (  
                 <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
 
@@ -119,12 +119,12 @@ export default function Reader() {
 
                 </CameraView>
             )
-        }
+        :(
                 <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
                     <Icon2 name="refresh"  size={40} color="#fff"/>
                     <Text style={styles.text}>сканировать снова</Text>
                 </TouchableOpacity>
-                
+        )}      
 
 
                 <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
