@@ -133,10 +133,12 @@ export default function Reader() {
                 </CameraView>
             )
         :(
+            <View style={styles.containerCentrallity}>
                 <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
-                    <Icon2 name="refresh"  size={40} color="#fff"/>
+                    <Icon2 name="refresh"  size={40} color={projColors.currentVerse.main}/>
                     <Text style={styles.text}>сканировать снова</Text>
                 </TouchableOpacity>
+            </View>
         )}      
 
 
