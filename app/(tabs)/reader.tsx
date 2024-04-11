@@ -22,7 +22,7 @@ export default function Reader() {
     const [docNumber, setDocNumber] = useState(0);
     const {loading, startLoading, stopLoading} = useLoading()
     const [permission, requestPermission] = useCameraPermissions();
-    
+    const [lottieViewBounds, setLottieViewBounds] = useState({ x: 0, y: 0, width: 0, height: 0 });
     
     React.useEffect(() => {
         const getCameraPermissions = async () => {
@@ -63,7 +63,7 @@ export default function Reader() {
     );
 
 
-    const handleBarCodeScanned = async ({ data }) => {
+    const handleBarCodeScanned = async ({ data}) => {
         try{
             setScanned(true)
             await getDataAboutDocs(data)
@@ -85,6 +85,7 @@ export default function Reader() {
             .catch((err) =>{
                 console.log(err);
             })
+            
         }
         catch(e){
             console.log(`ошибка получения документа - ${e}`);
@@ -114,8 +115,13 @@ export default function Reader() {
         {!scanned ?
             (  
                 <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
-
-                    <LottieView source={anim2} style={{width: "100%", height: "100%"}} autoPlay loop/>
+                <View style={styles.overlay}/>
+                    <LottieView 
+                        source={anim2} 
+                        style={{width: "100%", height: "100%"}} 
+                        autoPlay 
+                        loop
+                        />
 
                 </CameraView>
             )
