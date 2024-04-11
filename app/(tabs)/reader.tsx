@@ -116,13 +116,20 @@ export default function Reader() {
             (  
                 <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
                 <View style={styles.overlay}/>
-                    <LottieView 
-                        source={anim2} 
-                        style={{width: "100%", height: "100%"}} 
-                        autoPlay 
-                        loop
-                        />
+                <View style={styles.horizontalBorders}>
+                    <View style={styles.overlay}/>
+                <LottieView 
+                    source={anim2} 
+                    style={{width: "100%", height: "100%"}} 
+                    autoPlay 
+                    loop
+                    />
+                    <View style={styles.overlay}/>
+                </View>
+                <View style={styles.overlay}/>
+                
 
+                    
                 </CameraView>
             )
         :(
