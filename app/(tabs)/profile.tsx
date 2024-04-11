@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, Alert, Dimensions, TouchableOpacity} from 'react-native';
+import {View, Text, Alert, Dimensions, TouchableOpacity,ActivityIndicator} from 'react-native';
 import { storeAuthStatus } from 'src/secStore';
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
@@ -9,7 +9,6 @@ import { useFocusEffect} from '@react-navigation/native';
 import { getAllStaticData } from "src/http";
 import useLoading from "src/useLoading";
 import QRCode from "react-native-qrcode-svg";
-import { ActivityIndicator } from "react-native-paper";
 
 function profile() {
     const [userData, setUserdata] = React.useState('');

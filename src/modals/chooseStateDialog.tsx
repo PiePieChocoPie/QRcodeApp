@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {Modal, View,  Text, TouchableOpacity, Dimensions, Alert} from 'react-native';
-import {ActivityIndicator, RadioButton} from "react-native-paper";
+import {Modal, View,  Text, TouchableOpacity, Dimensions, Alert, ActivityIndicator} from 'react-native';
+import {RadioButton} from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
