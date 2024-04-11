@@ -1,6 +1,6 @@
-import React, {} from "react";
-import {Text, TouchableOpacity, View,Alert, ActivityIndicator } from 'react-native';
-import { CameraView, useCameraPermissions } from "expo-camera/next";
+import React, { useState, useEffect } from "react";
+import {Text, TouchableOpacity, View,Alert, ActivityIndicator, Button } from 'react-native';
+import { CameraView, Camera } from "expo-camera/next";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
 import { getAllStaticData, getDataAboutDocs } from "src/http"; 
@@ -8,7 +8,6 @@ import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
-import { useState } from 'react';
 
 import LottieView from 'lottie-react-native';
 import anim from 'src/anim.json';
@@ -16,22 +15,22 @@ import anim2 from 'src/anim2.json';
 
 
 export default function Reader() {
-    const [scanned, setScanned] = useState(false);
     const [modalVisibleState, setModalVisibleState] = useState(false);
     const [modalText, setModalText] = useState('');
     const [docNumber, setDocNumber] = useState(0);
     const {loading, startLoading, stopLoading} = useLoading()
-    const [permission, requestPermission] = useCameraPermissions();
-    const [lottieViewBounds, setLottieViewBounds] = useState({ x: 0, y: 0, width: 0, height: 0 });
     
-    React.useEffect(() => {
+    const [hasPermission, setHasPermission] = useState(null);
+    const [scanned, setScanned] = useState(false);
+    
+    useEffect(() => {
         const getCameraPermissions = async () => {
-            const { status } = await requestPermission();
-            return status === "granted";
+          const { status } = await Camera.requestCameraPermissionsAsync();
+          setHasPermission(status === "granted");
         };
-        getCameraPermissions().then(requestPermission);
-
-    }, []);
+    
+        getCameraPermissions();
+      }, []);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -63,41 +62,22 @@ export default function Reader() {
     );
 
 
-    const handleBarCodeScanned = async ({ data}) => {
-        try{
-            setScanned(true)
-            await getDataAboutDocs(data)
-            .then((res) => {
-                if(res.data.result.items[0]){
-                    const item = res.data.result.items[0];
-                    if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") setDocNumber(1);
-                    else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") setDocNumber(2);
-                    else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент")
-                    setModalVisibleState(true);
-                    Store.setUpdData(res.data.result.items[0]);
-                    setModalText(res.data.result.items[0]);
-                }
-                else{
-                    alert(`ошибка получения документа`);
-                    
-                }
-            })
-            .catch((err) =>{
-                console.log(err);
-            })
-            
-        }
-        catch(e){
-            console.log(`ошибка получения документа - ${e}`);
-        }
-     };
+    const handleBarCodeScanned = ({ type, data }) => {
+        setScanned(true);
+        console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
+      };
 
     const toggleModalState = () => {
         setModalVisibleState(!modalVisibleState);
         setScanned(false)
     };
-    
 
+    if (hasPermission === null) {
+        return <Text>Requesting for camera permission</Text>;
+      }
+      if (hasPermission === false) {
+        return <Text>No access to camera</Text>;
+      }
     
 
   
@@ -114,10 +94,17 @@ export default function Reader() {
 
         {!scanned ?
             (  
-                <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
+                <CameraView style={styles.camera}
+                    facing={'back'}
+                    // onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+                    onBarcodeScanned={(scanningResult) => console.log(scanningResult.bounds)}
+                    barcodeScannerSettings={{barcodeTypes: ["qr", "pdf417"], interval:20} }
+                    mute={true} 
+                    
+                >
                 <View style={styles.overlay}/>
                 <View style={styles.horizontalBorders}>
-                    <View style={styles.overlay}/>
+                <View style={styles.overlay}/>
                 <LottieView 
                     source={anim2} 
                     style={{width: "100%", height: "100%"}} 
@@ -134,10 +121,9 @@ export default function Reader() {
             )
         :(
             <View style={styles.containerCentrallity}>
-                <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
-                    <Icon2 name="refresh"  size={40} color={projColors.currentVerse.main}/>
-                    <Text style={styles.text}>сканировать снова</Text>
-                </TouchableOpacity>
+                {scanned && (
+                    <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+                )}
             </View>
         )}      
 
