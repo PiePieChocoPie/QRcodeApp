@@ -45,10 +45,10 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            if (docData.stageId != updStatuses[4].STATUS_ID && docData.stageId != updStatuses[3].STATUS_ID && Store.userData.ID == docData.ufCrm6Driver) {
+            if (docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId != itineraryStatuses[1].STATUS_ID) {
 //console.log(123)
                 if (checked.value == 'break') {
-                    setableStatus = updStatuses[4];
+                    setableStatus = itineraryStatuses[4];
                 } else if (checked.value == 'newStatus') {
                     setableStatus = getNextStatus();
 
@@ -105,7 +105,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         // { label: "4.Не сдан", value: "fourth" },
         // { label: "5.На исправлении", value: "fifth" },
         {label:getNextStatus().NAME, value:"newStatus"},
-        {label:"прервать документ", value:"break"},
+        //{label:"прервать документ", value:"break"},
     ]);
 
     return (
