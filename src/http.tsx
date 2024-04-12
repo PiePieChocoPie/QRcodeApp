@@ -12,8 +12,17 @@ export async function getDataByToken(authToken:string){
         withCredentials: false
 
       };
+      
       const response = await axios.request(config);
       Store.setUserData(response.data);
+      let config2 = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/rest/578/extp02nu56oz6zhn/user.get.json?NAME=${Store.userData.NAME}&LAST_NAME=${Store.userData.LAST_NAME}`,
+        withCredentials: false
+      };
+      const dataForPhoto = await axios.request(config2);
+      Store.setUserPhoto(dataForPhoto.data.result[0].PERSONAL_PHOTO);
       return response;
 }
 
@@ -60,6 +69,7 @@ export async function getTasksData(ID:string){
         
     const response = await axios.request(config)    
     Store.setTaskData(response.data.result.tasks)
+   
     return response;
 }
 

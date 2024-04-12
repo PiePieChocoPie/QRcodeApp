@@ -1,7 +1,7 @@
 import React from "react";
-import {View, Text, Alert, Dimensions, TouchableOpacity,ActivityIndicator} from 'react-native';
+import {View, Text, Alert, Dimensions, TouchableOpacity,ActivityIndicator, Image} from 'react-native';
 import { storeAuthStatus } from 'src/secStore';
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { router } from "expo-router";
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
@@ -13,7 +13,8 @@ import QRCode from "react-native-qrcode-svg";
 function profile() {
     const [userData, setUserdata] = React.useState('');
     const [qrValue] = React.useState(Store.tokenData);
-    const {loading, startLoading, stopLoading} = useLoading()
+    const {loading, startLoading, stopLoading} = useLoading();
+    const [photoUrl, setPhotoUrl] = React.useState('');
 
     const handleLogout = async () => {
 
@@ -29,8 +30,10 @@ function profile() {
                 startLoading();  
                 await getAllStaticData(Store.tokenData, false, true, false, false)
                 .then(async (res) => {
-                    if(res.status)  
+                    if(res.status){  
                         setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME}`);
+                        setPhotoUrl(Store.userPhoto);
+                    }
                     else 
                         Alert.alert("Ошибка", res.curError);
                  })
@@ -71,6 +74,15 @@ function profile() {
                     ecl="H" // Установите уровень H (High) для более круглого QR-кода
                 />   
             </View>
+            <View style={styles.overlayWithUser}>
+                        <View style={styles.avatarContainer}>
+                            {photoUrl ? (
+                                <Image source={{ uri: photoUrl }} style={styles.avatar} />
+                            ) : (
+                                <Icon name="user-o" size={40} color={projColors.currentVerse.font}
+                                />)}
+                        </View>
+                </View>
             <Text style={styles.textProfile}>{userData}</Text>
             <TouchableOpacity   style={styles.opacities} onPress={handleLogout}>
                             <Icon name="user-times" size={40} color={projColors.currentVerse.font}/>

@@ -10,11 +10,16 @@ class store {
     @observable taskData = null;
     @observable updData = null;
     @observable updStatusesData = null;
+    @observable userPhoto = null;
 
 
     @action
     setUserData(userData) {
         this.userData = userData;
+    } 
+    @action
+    setUserPhoto(userData) {
+        this.userPhoto = userData;
     }
     @action
     setTokenData(tokenData){
