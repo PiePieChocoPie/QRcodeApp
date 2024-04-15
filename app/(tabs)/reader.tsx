@@ -67,7 +67,6 @@ export default function Reader() {
             setScanned(true)
             await getDataAboutDocs(data)
             .then((res) => {
-                console.log(res.data.result.items)
                 if(res.data.result.items[0]){
                     const item = res.data.result.items[0];
                     if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") setDocNumber(1);

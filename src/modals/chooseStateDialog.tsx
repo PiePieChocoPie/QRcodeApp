@@ -45,7 +45,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            if (docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId != itineraryStatuses[1].STATUS_ID) {
+            if ((docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId == itineraryStatuses[1].STATUS_ID) && Store.userData.ID == docData.ufCrm6Driver) {
 //console.log(123)
                 if (checked.value == 'break') {
                     setableStatus = itineraryStatuses[4];

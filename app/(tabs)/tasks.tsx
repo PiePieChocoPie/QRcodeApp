@@ -14,6 +14,7 @@ export default function Tasks() {
     const [taskCount, setTaskCount] = useState(false);
     const [depDates, setDepDates] = useState([]);
     const [depDLDates, setDepDLDates] = useState([]);
+    
 
     useFocusEffect(
         React.useCallback(() => {
@@ -56,10 +57,20 @@ export default function Tasks() {
         }
     }, []);
 
+    const [taskDescriptions, setTaskDescriptions] = useState([]);
+
+    useEffect(() => {
+        if (Store.taskData && Store.taskData.length > 0) {
+            setTaskDescriptions(Array(Store.taskData.length).fill(false));
+        }
+    }, [Store.taskData]);
+
     const toggleMore = (index) => {
-        const updatedDepDates = [...depDates];
-        updatedDepDates[index] = !updatedDepDates[index];
-        setDepDates(updatedDepDates);
+        setTaskDescriptions(prevTaskDescriptions => {
+            const updatedTaskDescriptions = [...prevTaskDescriptions];
+            updatedTaskDescriptions[index] = !updatedTaskDescriptions[index];
+            return updatedTaskDescriptions;
+        });
     };
 
     const elements = Store.taskData ? Store.taskData.map((item, index) => (
