@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Text, TouchableOpacity, View,Alert, ActivityIndicator, Button } from 'react-native';
+import {Text, TouchableOpacity, View,Alert, ActivityIndicator, Button, Dimensions } from 'react-native';
 import { CameraView, Camera } from "expo-camera/next";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
@@ -22,6 +22,30 @@ export default function Reader() {
     
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height;
+
+    // const [qrBounds, setQrBounds] = useState({origin:{x:0,y:0},size:{height:0,width:0}});
+    const [qrBounds, setQrBounds] = useState([]);
+
+    const handleBarcodeScanned = (BarcodeScanningResult) => {
+        // BarcodeScanningResult.bounds
+        // setQrBounds(
+        //     {
+        //         origin: { x: Dimensions.get("window").height * BarcodeScanningResult.bounds.origin.x, y: Dimensions.get("window").width * BarcodeScanningResult.bounds.origin.y },
+        //         size: { height: Dimensions.get("window").height * BarcodeScanningResult.bounds.size.height, width: Dimensions.get("window").width * BarcodeScanningResult.bounds.size.width}
+        //     }
+        // );
+        setQrBounds(BarcodeScanningResult.cornerPoints);
+        //     setQrBounds(
+        //     {
+        //         origin: { x: screenHeight * BarcodeScanningResult.bounds.origin.x, y: screenWidth * BarcodeScanningResult.bounds.origin.y }
+        //     }
+        // );
+        console.log(qrBounds);
+    };
+
     
     useEffect(() => {
         const getCameraPermissions = async () => {
@@ -61,12 +85,6 @@ export default function Reader() {
         }, []) 
     );
 
-
-    const handleBarCodeScanned = ({ type, data }) => {
-        setScanned(true);
-        console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
-      };
-
     const toggleModalState = () => {
         setModalVisibleState(!modalVisibleState);
         setScanned(false)
@@ -92,40 +110,34 @@ export default function Reader() {
         (
       <View style={styles.overlay}>
 
-        {!scanned ?
-            (  
+        {/* {scanned ?
+            (   */}
                 <CameraView style={styles.camera}
                     facing={'back'}
-                    // onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-                    onBarcodeScanned={(scanningResult) => console.log(scanningResult.bounds)}
+                    onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
                     barcodeScannerSettings={{barcodeTypes: ["qr", "pdf417"], interval:20} }
                     mute={true} 
                     
                 >
-                <View style={styles.overlay}/>
-                <View style={styles.horizontalBorders}>
-                <View style={styles.overlay}/>
-                <LottieView 
-                    source={anim2} 
-                    style={{width: "100%", height: "100%"}} 
-                    autoPlay 
-                    loop
-                    />
-                    <View style={styles.overlay}/>
-                </View>
-                <View style={styles.overlay}/>
-                
 
-                    
+{qrBounds && (
+        <View style={styles.container2}>
+        {/* <View style={[styles.element, { right: qrBounds.origin.y, top: qrBounds.origin.x }]} /> */}
+        {/* Элемент будет расположен в точке, находящейся на 25% от левого края экрана и 25% от верхнего края экрана */}
+        {qrBounds.map((point, index) => (
+                <View key={index} style={[styles.element, { right: point.y * screenWidth * 0.85, top: point.x * screenHeight *0.8}]} />
+        ))}
+        </View>
+    )}
                 </CameraView>
-            )
+            {/* )
         :(
             <View style={styles.containerCentrallity}>
                 {scanned && (
                     <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
                 )}
             </View>
-        )}      
+        )}       */}
 
 
                 <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>

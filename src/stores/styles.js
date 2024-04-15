@@ -34,6 +34,25 @@ export class projColors{
 }
 
 export const styles = StyleSheet.create({
+
+qrBorder: {
+
+    backgroundColor: 'red', 
+},
+
+container2: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+element: {
+  width: 50, // Ширина элемента
+  height: 50, // Высота элемента
+  backgroundColor: 'red', // Цвет элемента
+  position: 'absolute', // Позиционирование абсолютное
+},
+
+
   authContainer: {
     flex: 1,
     backgroundColor: projColors.currentVerse.main,
