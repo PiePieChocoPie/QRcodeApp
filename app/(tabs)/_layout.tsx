@@ -1,10 +1,11 @@
-
+import {Dimensions} from 'react-native';
 import {Tabs} from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { projColors } from "src/stores/styles";
 
 const TabsLayout = () => {
     return (
+        
     <Tabs>
         <Tabs.Screen name ="tasks" options={{
             headerTitle: 'Задачи',
@@ -31,5 +32,5 @@ const TabsLayout = () => {
     </Tabs>
     );
 };
-
+console.log(Dimensions.get('screen').height + " = " + Dimensions.get('screen').width)
 export default TabsLayout;

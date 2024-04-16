@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Text, TouchableOpacity, View,Alert, ActivityIndicator, Button, Dimensions, Image } from 'react-native';
+import {Text, TouchableOpacity, View,Alert, ActivityIndicator, Button, Dimensions } from 'react-native';
 import { CameraView, Camera } from "expo-camera/next";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
@@ -9,10 +9,6 @@ import Store from "src/stores/mobx";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
 
-// import image from "src/";
-
-const windowDimensions = Dimensions.get('window');
-const screenDimensions = Dimensions.get('screen');
 
 
 export default function Reader() {
@@ -24,18 +20,27 @@ export default function Reader() {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height;
 
-    const [cameraWidth, setCameraWidth] = useState(0);
-    const [cameraHeight, setCameraHeight] = useState(0);
-
-
+    // const [qrBounds, setQrBounds] = useState({origin:{x:0,y:0},size:{height:0,width:0}});
     const [qrBounds, setQrBounds] = useState([]);
 
     const handleBarcodeScanned = (BarcodeScanningResult) => {
-
+        // BarcodeScanningResult.bounds
+        // setQrBounds(
+        //     {
+        //         origin: { x: Dimensions.get("window").height * BarcodeScanningResult.bounds.origin.x, y: Dimensions.get("window").width * BarcodeScanningResult.bounds.origin.y },
+        //         size: { height: Dimensions.get("window").height * BarcodeScanningResult.bounds.size.height, width: Dimensions.get("window").width * BarcodeScanningResult.bounds.size.width}
+        //     }
+        // );
         setQrBounds(BarcodeScanningResult.cornerPoints);
-        console.log(cameraWidth + " = " + cameraHeight);
-        // console.log(qrBounds);
+        //     setQrBounds(
+        //     {
+        //         origin: { x: screenHeight * BarcodeScanningResult.bounds.origin.x, y: screenWidth * BarcodeScanningResult.bounds.origin.y }
+        //     }
+        // );
+        console.log(qrBounds);
     };
 
     
@@ -82,19 +87,12 @@ export default function Reader() {
         setScanned(false)
     };
 
-    const onCameraLayout = (event) => {
-        const { width, height } = event.nativeEvent.layout;
-        setCameraWidth(width);
-        setCameraHeight(height);
-
-    };
-
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
-    }
-    if (hasPermission === false) {
+      }
+      if (hasPermission === false) {
         return <Text>No access to camera</Text>;
-    }
+      }
     
 
   
@@ -109,41 +107,37 @@ export default function Reader() {
         (
       <View style={styles.overlay}>
 
-            <CameraView style={styles.camera}
-                facing={'back'}
-                onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
-                barcodeScannerSettings={{barcodeTypes: ["qr", "pdf417"], interval:20} }
-                mute={true}
-                onLayout={onCameraLayout}
+        {/* {scanned ?
+            (   */}
+                <CameraView style={styles.camera}
+                    facing={'back'}
+                    onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
+                    barcodeScannerSettings={{barcodeTypes: ["qr", "pdf417"], interval:20} }
+                    mute={true} 
+                    
                 >
 
-            {
-            qrBounds 
-            && 
-                (
-                    <View style={styles.container2}>
-
-                        <Image
-                            source={require('src/qr-scan')} 
-                            style={[
-                                {
-                                    position: 'absolute',
-                                    right: qrBounds[0].y * cameraWidth,
-                                    top: qrBounds[0].x * cameraHeight,
-                                    width: (qrBounds[1].y - qrBounds[0].y) * cameraWidth,
-                                    height: (qrBounds[2].x - qrBounds[0].x) * cameraHeight, 
-                                }
-                            ]}
-                        />
-
-                    </View>
-                )
-            }
-            </CameraView>
+{qrBounds && (
+        <View style={styles.container2}>
+        {/* <View style={[styles.element, { right: qrBounds.origin.y, top: qrBounds.origin.x }]} /> */}
+        {/* Элемент будет расположен в точке, находящейся на 25% от левого края экрана и 25% от верхнего края экрана */}
+        {qrBounds.map((point, index) => (
+                <View key={index} style={[styles.element, { right: point.y * screenWidth * 0.85, top: point.x * screenHeight *0.8}]} />
+        ))}
+        </View>
+    )}
+                </CameraView>
+            {/* )
+        :(
+            <View style={styles.containerCentrallity}>
+                {scanned && (
+                    <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+                )}
+            </View>
+        )}       */}
 
 
-
-            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
+                <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
 
 
         </View>
