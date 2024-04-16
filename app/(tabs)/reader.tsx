@@ -113,7 +113,7 @@ export default function Reader() {
 
         {!scanned ?
             (  
-                <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned}>
+                <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned} mute>
                 <View style={styles.overlay}/>
                 <View style={styles.horizontalBorders}>
                     <View style={styles.overlay}/>
