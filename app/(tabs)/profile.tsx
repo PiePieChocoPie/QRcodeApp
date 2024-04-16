@@ -31,11 +31,13 @@ function profile() {
                 await getAllStaticData(Store.tokenData, false, true, false, false)
                 .then(async (res) => {
                     if(res.status){  
-                        setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME}`);
+                        setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME&&Store.depData.NAME}`);
                         setPhotoUrl(Store.userPhoto);
                     }
                     else 
-                        Alert.alert("Ошибка", res.curError);
+                        // Alert.alert("Ошибка", res.curError);
+                        setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
+                        setPhotoUrl(Store.userPhoto);
                  })
                  .catch(err =>{
                  Alert.alert("ошибка",'Ошибка: \n' +err);

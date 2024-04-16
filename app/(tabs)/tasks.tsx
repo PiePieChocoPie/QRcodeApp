@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
@@ -7,7 +7,6 @@ import { getAllStaticData } from "src/http";
 import { styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import { ActivityIndicator } from "react-native-paper";
 
 export default function Tasks() {
     const { loading, startLoading, stopLoading } = useLoading();

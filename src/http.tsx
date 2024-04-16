@@ -127,15 +127,15 @@ export async function getAllStaticData(authToken:string,userData: boolean, depDa
                 //console.log(error);
                 status = false;
             })
-        curError = "Ошибка получения подразделения";
+        
         if (depData) await getDepData(Store.userData.UF_DEPARTMENT[0])
             .then(async(response) => {
             })
             .catch((error) => {
                 //console.log(error);
+                curError = "Ошибка получения подразделения";
                 status = false;
             });
-        curError = "Ошибка получения задач пользователя";
         if(TaskData) await getTasksData(Store.userData.ID)
             .then(async(response) => {
                
@@ -143,14 +143,15 @@ export async function getAllStaticData(authToken:string,userData: boolean, depDa
             })
             .catch((error) => {
                 //console.log(error);
+        curError = "Ошибка получения задач пользователя";
                 status = false;
             }); 
-        curError = "Ошибка получения статусов документов";
         if (docsStatuses) await getUpdStatusesData()
             .then(async(response) => {
             })
             .catch((error) => {
                 //console.log(error);
+        curError = "Ошибка получения статусов документов";
                 status = false;                                        
             })
         if (docsStatuses) await getItineraryStatusesData()
@@ -159,6 +160,7 @@ export async function getAllStaticData(authToken:string,userData: boolean, depDa
             }) 
             .catch((error) => {
                 //console.log(false,  error);
+        curError = "Ошибка получения статусов документов";
                 status = false;
             })     
         
@@ -193,7 +195,7 @@ export async function getDataAboutDocs(raw:string){
         }
     }
     url = `https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list`;
-    const response = await axios.post(url, body);
+        const response = await axios.post(url, body);
     return response;
 }
 
