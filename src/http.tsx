@@ -218,7 +218,9 @@ export async function  updUpdStatus(IDUpd:string,IDStatus:string, userID: string
         "id": IDUpd,
         "fields":{
             "stageId":IDStatus,
-            "assignedById": userID
+            "updatedBy": userID,
+            "assignedById": userID,
+            "movedBy": userID
         }
     }
     const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
@@ -231,7 +233,8 @@ export async function  updItineraryStatus(IDItinerary:string,IDStatus:string, us
         "id": IDItinerary,
         "fields":{
             "stageId":IDStatus,
-            "updatedBy": userID
+            "updatedBy": userID,
+            "movedBy": userID
         }
     }
     const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
