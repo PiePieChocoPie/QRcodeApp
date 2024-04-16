@@ -11,8 +11,6 @@ import useLoading from "src/useLoading";
 export default function Tasks() {
     const { loading, startLoading, stopLoading } = useLoading();
     const [taskCount, setTaskCount] = useState(false);
-    const [depDates, setDepDates] = useState([]);
-    const [depDLDates, setDepDLDates] = useState([]);
     
 
     useFocusEffect(
@@ -35,102 +33,99 @@ export default function Tasks() {
         }, [])
     );
 
-    useEffect(() => {
-        if (Store.taskData && Store.taskData.length > 0) {
-            const dates = Store.taskData.map(item => {
-                const onlyDate = item.createdDate.split('T')[0];
-                const onlyDLDate = item.deadline ? item.deadline.split('T')[0] : "не установлен";
-                return { depDate: onlyDate, depDLDate: onlyDLDate };
-            });
-            setDepDates(dates.map(date => date.depDate));
-            setDepDLDates(dates.map(date => date.depDLDate));
-        }
-    }, [Store.taskData]);
+    const [refreshing, setRefreshing] = React.useState(false);
 
-    const onRefresh = React.useCallback(async () => {
-        try {
-            await getAllStaticData(Store.tokenData, false, false, true, false);
-            setTaskCount(Store.taskData && Store.taskData.length > 0);
-        } catch (error) {
-            console.error('Error refreshing data:', error);
-        }
+    const onRefresh = React.useCallback(async() => {
+        setRefreshing(true);
+        // код обновления данных здесь
+        console.log('обновляем')
+        await getAllStaticData(Store.tokenData, false, false, true, false);
+        // Завершение обновления
+        setRefreshing(false);
     }, []);
-
-    const [taskDescriptions, setTaskDescriptions] = useState([]);
-
-    useEffect(() => {
-        if (Store.taskData && Store.taskData.length > 0) {
-            setTaskDescriptions(Array(Store.taskData.length).fill(false));
-        }
-    }, [Store.taskData]);
-
-    const toggleMore = (index) => {
-        setTaskDescriptions(prevTaskDescriptions => {
-            const updatedTaskDescriptions = [...prevTaskDescriptions];
-            updatedTaskDescriptions[index] = !updatedTaskDescriptions[index];
-            return updatedTaskDescriptions;
-        });
-    };
-
-    const elements = Store.taskData ? Store.taskData.map((item, index) => (
-        <View key={item.id} style={styles.taskView}>
-            <Text style={{fontSize: 16, textAlign: "center"}}>{item.title}</Text>
-            <View style={styles.taskInternalView}>
-                <View style={styles.internalTextRowView}>
-                    <Text>постановщик: </Text>
-                    <Text style={{fontSize: 16}}>{item.creator.name}</Text>
-                </View>
-                <View style={styles.internalTextRowView}>
-                    <Text>дата постановки: </Text>
-                    <Text style={styles.text}>{depDates[index]}</Text>
-                </View>
-                <View style={styles.internalTextRowView}>
-                    <Text>дедлайн: </Text>
-                    <Text style={styles.text}>{depDLDates[index]}</Text>
-                </View>
-                <TouchableOpacity style={styles.moreButton} onPress={() => toggleMore(index)}>
-                    <Icon3 name={'more-horizontal'} size={30}/>
-                </TouchableOpacity>
-            </View>
-            {!depDates[index] && (
-                <View>
-                    {item.description ? (
-                        <Text style={styles.descriptionText}>{item.description}</Text>
-                    ) : (
-                        <Text style={styles.descriptionText}>Дополнительная информация отсутствует</Text>
+    const elements = Store.taskData ? Store.taskData.map(item => {
+        const [detailVisible, setDetailVisible] = React.useState(false);
+        const [depDate, setDepDate] = React.useState('');
+        const [depDLDate, setDepDLDate] = React.useState('');
+        React.useEffect(() => {
+            const onlyDate = item.createdDate.split('T')[0]
+            setDepDate(onlyDate);
+            const onlyDLDate = item.deadline ? item.deadline.split('T')[0] : "не установлен";
+            setDepDLDate(onlyDLDate);
+        }, [Store.taskData[0]]);
+        const toggleMore = () => {
+            setDetailVisible(!detailVisible);
+        };
+        return (
+                <View key={item.id} style={styles.taskView}>
+                    <Text style={{fontSize: 16, textAlign: "center"}}>{item.title}</Text>
+                    <View style={styles.taskInternalView}>
+                        <View style={styles.internalTextRowView}>
+                            <Text>постановщик: </Text>
+                            <Text style={{fontSize: 16}}>{item.creator.name}</Text>
+                        </View>
+                        <View style={styles.internalTextRowView}>
+                            <Text>дата постановки: </Text>
+                            <Text style={styles.text}>{depDate}</Text>
+                        </View>
+                        <View style={styles.internalTextRowView}>
+                            <Text>дедлайн: </Text>
+                            {item.deadline ? (
+                                <Text style={styles.text}>{depDLDate}</Text>
+                            ) : (
+                                <Text style={styles.text}>не установлен</Text>
+                            )}
+                        </View>
+                        <TouchableOpacity style={styles.moreButton} onPress={toggleMore}>
+                            <Icon3 name={'more-horizontal'} size={30}/>
+                        </TouchableOpacity>
+                    </View>
+                    {detailVisible && (
+                        <View>
+                            {item.description ? (
+                                <Text style={styles.descriptionText}>{item.description}</Text>
+                            ) : (
+                                <Text style={styles.descriptionText}>Дополнительная информация отсутствует</Text>
+                            )}
+                        </View>
                     )}
                 </View>
-            )}
-        </View>
-    )) : (
+        )
+    }):(
         <Text style={styles.noValueText}>Задачи не установлены</Text>
-    );
+    )
 
-    return (
-        <View style={styles.containerCentrallity}>
-            <View style={styles.containerCentrallity}>
-                {loading ? (
-                    <View style={styles.containerCentrallity}>
-                        <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />                    
-                    </View>
-                ) : (
-                    taskCount ? (
-                        <ScrollView style={{flex:1}}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={loading}
-                                    onRefresh={onRefresh}
-                                    colors={[projColors.currentVerse.accent]}
-                                />
-                            }
-                        >
-                            {elements}
-                        </ScrollView>
-                    ) : (
-                        <Text style={styles.noValueText}>Задачи не установлены</Text>
-                    )
-                )}
-            </View>
+        return (
+        <View style={styles.container}>
+            
+                <View style={styles.horizontalBorders}>
+                        {taskCount?
+                            (<ScrollView
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={refreshing}
+                                        onRefresh={onRefresh}
+                                        colors={[projColors.currentVerse.accent]}
+                                    />
+                                }>
+                                {loading ? (
+                                    <View style={styles.containerCentrallity}>
+                                        <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                                    </View>
+                                ) : (
+                                    elements
+                                )}
+                            </ScrollView>
+                            )
+                            :(
+                                <Text style={styles.noValueText}>Задачи не установлены</Text>
+                            )
+                        }
+                </View>
+                <View style={styles.infoButtonContainer}>
+                </View>
         </View>
     );
 }
+                
+                 

@@ -88,7 +88,9 @@ export default function Reader() {
         }
         catch(e){
             console.log(`ошибка получения документа - ${e}`);
+            Alert.alert(`ошибка получения документа - ${e}`);
         }
+        setScanned(false);
      };
 
     const toggleModalState = () => {
