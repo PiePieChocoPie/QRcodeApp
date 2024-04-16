@@ -69,7 +69,7 @@ export default function Reader() {
             .then((res) => {
                 if(res.data.result.items[0]){
                     const item = res.data.result.items[0];
-                    if(item.entityTypeId=="168"&&item.stageId=="DT168_9:NEW") setDocNumber(1);
+                    if(item.entityTypeId=="168") setDocNumber(1);
                     else if(item.entityTypeId=="133"&&item.stageId!="DT133_10:SUCCESS"&&item.stageId!="DT133_10:FAIL") setDocNumber(2);
                     else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент")
                     setModalVisibleState(true);

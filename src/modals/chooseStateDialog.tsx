@@ -9,7 +9,7 @@ import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
 
 const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
-    // const [checked, setChecked] = useState({label:'', value:''});
+    const [checked, setChecked] = useState({label:'', value:''});
     const [updStatuses] = React.useState(Store.updStatusesData);
     const [itineraryStatuses] = React.useState(Store.itineraryStatusesData);
     const {loading, startLoading, stopLoading} = useLoading()
@@ -18,7 +18,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         
     //     React.useCallback(() => {
             
-    //         setChecked(RadioButtonOptions[0])
+    //         // setChecked(RadioButtonOptions[0])
                    
     //     }, []) 
     // );
@@ -45,14 +45,11 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
-            if ((docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId == itineraryStatuses[1].STATUS_ID) && Store.userData.ID == docData.ufCrm6Driver) 
-                {
-// //console.log(123)
-//                 if (checked.value == 'break') {
-//                     setableStatus = itineraryStatuses[4];
-                // } else
-                // if (checked.value == 'newStatus') {
-                    // if (checked.value == 'newStatus') {
+            if ((docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId == itineraryStatuses[1].STATUS_ID) && Store.userData.ID == docData.ufCrm6Driver) {
+//console.log(123)
+                // if (checked.value == 'break') {
+                //     setableStatus = itineraryStatuses[4];
+                // } else if (checked.value == 'newStatus') {
                     setableStatus = getNextStatus();
 
                 // } else {
@@ -61,8 +58,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
                 await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                     .then()
                 Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
-            }
-             else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
+            } else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
         }
         catch (e){
             alert(e)
@@ -71,6 +67,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
 
     const updHandling = async() =>{
         let setableStatus;
+        console.log(updStatuses[1].STATUS_ID)
         //console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
         if (docData.stageId == updStatuses[0].STATUS_ID||docData.stageId == updStatuses[1].STATUS_ID) {
 
@@ -128,7 +125,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         (
             <View style={styles.containerCentrallity}>
             <View style={styles.dialog}>
-                <Text style={styles.text}>обновление статуса документа {docData.title} с текущим статусом {docData.stageId}</Text>
+                <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
             <View style={styles.RBView}>
                 {/* {RadioButtonOptions.map((option) => (
                     <RadioButton.Item
@@ -150,13 +147,13 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
                 ))} */}
             </View>
                 {/* <View style={styles.buttonContainer}> */}
-                <View style={styles.containerCentrallity}>
-                    <TouchableOpacity style={styles.opacities} onPress={acceptAxios}>
+                <View style={styles.buttonVertContainer}>
+                    <TouchableOpacity style={styles.btnopacities} onPress={acceptAxios}>
                         <Icon name="check"  size={50} color={projColors.currentVerse.fontAccent}/>
-                        <Text style={styles.text}>установить статус {getNextStatus().NAME}</Text>
+                        <Text style={styles.text}>установить статус - {getNextStatus().NAME}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={onClose} style={styles.opacities}>
-                    <Icon name="close"  size={50} color="#00abc0"/>
+                    <TouchableOpacity onPress={onClose} style={styles.btnopacities}>
+                    <Icon name="close"  size={50} color={projColors.currentVerse.fontAccent}/>
                     <Text style={styles.text}>отменить</Text>
                 </TouchableOpacity>
                 </View>

@@ -136,6 +136,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     margin: 15,
   },
+  btnopacities: {
+    alignItems: "center",
+    margin: 15,
+    borderColor: projColors.currentVerse.font,
+    borderRadius:7,
+    borderWidth:2
+  },
   userB: {
     margin: 10,
     flexDirection: "row",
@@ -204,6 +211,10 @@ export const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 40,
+  },
+  buttonVertContainer: {
     justifyContent: 'space-between',
     gap: 40,
   },
