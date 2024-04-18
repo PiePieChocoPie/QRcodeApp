@@ -5,17 +5,16 @@ import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions,
 import { router } from "expo-router";
 //
 import { styles, projColors } from "src/stores/styles";
-import { getAllStaticData } from "src/http";
+import { getAllStaticData, statusDay } from "src/http";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 
 const authorize =() =>{
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
+    const [login, setLogin] = useState('arm');
+    const [password, setPassword] = useState('Zxc123');
     const [isInvalidLogin, setIsInvalidLogin] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState(true);
     const {loading, startLoading, stopLoading} = useLoading()
-
     const buttonHandler = async () => {
         startLoading()
         if (login.length > 1) {

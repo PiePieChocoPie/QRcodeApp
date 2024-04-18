@@ -143,7 +143,7 @@ export default function Reader() {
         )}      
 
 
-                <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
+            <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState}  docData={modalText} docNumber={docNumber}/>
 
 
         </View>

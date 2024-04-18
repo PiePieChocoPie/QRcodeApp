@@ -6,13 +6,14 @@ import { router } from "expo-router";
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect} from '@react-navigation/native';
-import { getAllStaticData } from "src/http";
+import { getAllStaticData, openDay } from "src/http";
 import useLoading from "src/useLoading";
 import QRCode from "react-native-qrcode-svg";
+import { Button } from "react-native-paper";
 
 function profile() {
     const [userData, setUserdata] = React.useState('');
-    const [qrValue] = React.useState(Store.tokenData);
+    const [qrValue] = React.useState(Store.userData.ID);
     const {loading, startLoading, stopLoading} = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
 
@@ -20,7 +21,17 @@ function profile() {
 
         router.dismissAll();
     };
+    // console.log(Store.statusWorkDay)
+    const startDay = async () => {
+        try {
+            const response = await openDay(Store.userData.ID);
+            console.log(response);
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
 
+    
     useFocusEffect(
         
         React.useCallback(() => {
@@ -35,7 +46,6 @@ function profile() {
                         setPhotoUrl(Store.userPhoto);
                     }
                     else 
-                        // Alert.alert("Ошибка", res.curError);
                         setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
                         setPhotoUrl(Store.userPhoto);
                  })
@@ -73,7 +83,7 @@ function profile() {
                     backgroundColor={projColors.currentVerse.main}
                     color={projColors.currentVerse.font}
                     logoBackgroundColor="transparent"
-                    ecl="H" // Установите уровень H (High) для более круглого QR-кода
+                    ecl="H" 
                 />   
             </View>
             <View style={styles.overlayWithUser}>
@@ -87,9 +97,11 @@ function profile() {
                 </View>
             <Text style={styles.textProfile}>{userData}</Text>
             <TouchableOpacity   style={styles.opacities} onPress={handleLogout}>
-                            <Icon name="user-times" size={40} color={projColors.currentVerse.font}/>
-                            <Text style={styles.text}>выход</Text>
+                <Icon name="user-times" size={40} color={projColors.currentVerse.font}/>
+                <Text style={styles.text}>выход</Text>
             </TouchableOpacity>   
+            <Button onPress={startDay}>Начать рабочий день</Button>
+            <Text>{Store.statusWorkDay}</Text>
             </View>
             )}      
         </View>
