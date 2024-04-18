@@ -18,7 +18,7 @@ export async function getDataByToken(authToken:string){
       let config2 = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}/rest/578/extp02nu56oz6zhn/user.get.json?NAME=${Store.userData.NAME}&LAST_NAME=${Store.userData.LAST_NAME}`,
+        url: `${process.env.baseUrl}${process.env.NikitaToken}user.get.json?NAME=${Store.userData.NAME}&LAST_NAME=${Store.userData.LAST_NAME}`,
         withCredentials: false
       };
       const dataForPhoto = await axios.request(config2);
@@ -34,7 +34,7 @@ export async function getDepData(ID:string){
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}/rest/578/j919bucygnb3tdf9/department.get.json`,
+        url: `${process.env.baseUrl}${process.env.NikitaToken}department.get.json`,
         headers: { 
 
           'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ export async function getTasksData(ID:string){
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/tasks.task.list`,
+        url: `${process.env.baseUrl}${process.env.DanilaToken}tasks.task.list`,
         headers: { 
             'Content-Type': 'application/json', 
             
@@ -115,7 +115,7 @@ export async function getUpdStatusesData(){
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items`,
+        url: `${process.env.baseUrl}${process.env.DanilaToken}crm.status.entity.items`,
         headers: { 
             'Content-Type': 'application/json', 
         },
@@ -136,7 +136,7 @@ export async function getItineraryStatusesData(){
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/crm.status.entity.items`,
+        url: `${process.env.baseUrl}${process.env.DanilaToken}crm.status.entity.items`,
         headers: { 
             'Content-Type': 'application/json', 
         },
@@ -228,7 +228,7 @@ export async function getDataAboutDocs(raw:string){
             }
         }
     }
-    url = `https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list`;
+    url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.list`;
         const response = await axios.post(url, body);
     return response;
 }
@@ -240,7 +240,7 @@ export function  getUserCurUpds(ID:string){
             "assignedById":ID
         }
     }
-    const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list'
+    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.list`
     let req = axios.post(url,body);
     return req;
 }
@@ -257,7 +257,7 @@ export async function  updUpdStatus(IDUpd:string,IDStatus:string, userID: string
             "movedBy": userID
         }
     }
-    const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
+    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`
     let req = await axios.post(url,body);
     return req;
 }
@@ -271,7 +271,23 @@ export async function  updItineraryStatus(IDItinerary:string,IDStatus:string, us
             "movedBy": userID
         }
     }
-    const url = 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.update'
+    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`
     let req = await axios.post(url,body);
     return req;
+}
+
+export async function getUsersTrafficStatistics(Month:number, Year:number){
+        
+        let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}${process.env.DanilaToken}timeman.timecontrol.reports.get?MONTH=${Month}&YEAR=${Year}&USER_ID=${Store.userData.ID}`,
+        headers: { 
+            'Content-Type': 'application/json', 
+        },
+        withCredentials: false
+        };
+        
+        const response = await axios.request(config)    
+        return response.data.result.report;
 }
