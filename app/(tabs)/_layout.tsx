@@ -42,7 +42,16 @@ const TabsLayout = () => {
                 <Icon name="user" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
-        
+        <Tabs.Screen name ="calendar"  options={{
+            headerTitle: 'календарь',
+            title:"календарь",
+            headerRight: ({})=>(
+                <Text>{Store.statusWorkDay}</Text>
+            ),
+            tabBarIcon:({})=>(
+                <Icon name="calendar" size={25} color={projColors.currentVerse.font}/>
+            ),
+        }}/>
     </Tabs>
     );
 };
