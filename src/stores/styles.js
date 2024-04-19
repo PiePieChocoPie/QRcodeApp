@@ -34,6 +34,21 @@ export class projColors{
 }
 
 export const styles = StyleSheet.create({
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+},
+  modalContainer: {
+    backgroundColor: 'white',
+    marginTop: Dimensions.get("window").height / 6,
+    flex: 1,
+    alignItems: 'center',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20 ,
+    
+
+},
   authContainer: {
     flex: 1,
     backgroundColor: projColors.currentVerse.main,
@@ -83,10 +98,10 @@ export const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+
   },
   overlayWithUser: {
-    alignItems: "flex-end",
+    alignItems: "center",
   },
   horizontalBorders: {
 
@@ -154,7 +169,8 @@ export const styles = StyleSheet.create({
     borderRadius: 50,
     overflow: 'hidden',
     marginTop: 15,
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent:"center"
   },
   avatar: {
     flex: 1,
@@ -227,5 +243,5 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });

@@ -4,6 +4,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
 
+import LottieView from 'lottie-react-native';
+import anim from 'src/job_anim.json';
+
 import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Alert} from "react-native";
 const TabsLayout = () => {
     statusDay(Store.userData.ID);
@@ -14,7 +17,12 @@ const TabsLayout = () => {
             headerTitle: 'Задачи',
             title:"Задачи",
             headerRight: ({})=>(
-                <Text>{Store.statusWorkDay}</Text>
+                <LottieView 
+                source={anim} 
+                style={{width: "100%", height: "100%"}} 
+                autoPlay 
+                loop
+                />
             ),
             tabBarIcon:({})=>(
                 <Icon name="tasks" size={25} color={projColors.currentVerse.font}/>
@@ -26,7 +34,12 @@ const TabsLayout = () => {
             headerTitle: 'Сканер QR',
             title:"Сканер",
             headerRight: ({})=>(
-                <Text>{Store.statusWorkDay}</Text>
+                <LottieView 
+                source={anim} 
+                style={{width: "100%", height: "100%"}} 
+                autoPlay 
+                loop
+                />
             ),
             tabBarIcon:({})=>(
                 <Icon name="qrcode" size={25} color={projColors.currentVerse.font}/>
@@ -36,7 +49,12 @@ const TabsLayout = () => {
             headerTitle: 'Профиль',
             title:"Профиль",
             headerRight: ({})=>(
-                <Text>{Store.statusWorkDay}</Text>
+                <LottieView 
+                source={anim} 
+                style={{width: "100%", height: "100%"}} 
+                autoPlay 
+                loop
+                />
             ),
             tabBarIcon:({})=>(
                 <Icon name="user" size={25} color={projColors.currentVerse.font}/>

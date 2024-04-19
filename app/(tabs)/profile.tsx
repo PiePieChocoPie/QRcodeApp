@@ -1,27 +1,30 @@
 import React from "react";
-import {View, Text, Alert, Dimensions, TouchableOpacity,ActivityIndicator, Image} from 'react-native';
+import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, Modal } from 'react-native';
 import { storeAuthStatus } from 'src/secStore';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { router } from "expo-router";
+import { router, Link} from "expo-router";
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect} from '@react-navigation/native';
 import { getAllStaticData, openDay } from "src/http";
 import useLoading from "src/useLoading";
-import QRCode from "react-native-qrcode-svg";
 import { Button } from "react-native-paper";
-
+import modalQR from 'src/modals/modal'
+import ModalForm from "src/modals/modal";
 function profile() {
     const [userData, setUserdata] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
     const {loading, startLoading, stopLoading} = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
+    const [modalVisible, setModalVisible] = React.useState(false);
 
     const handleLogout = async () => {
 
         router.dismissAll();
     };
-    // console.log(Store.statusWorkDay)
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
     const startDay = async () => {
         try {
             const response = await openDay(Store.userData.ID);
@@ -62,52 +65,44 @@ function profile() {
         fetchData();        
         }, []) 
     );
+
+
     return (
-        <View style={styles.containerCentrallity}>
+        <View style={styles.container}>
         {loading ?(
             <View style={styles.containerCentrallity}>
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
             </View> 
-        ):
-           
-        (
-        <View style = {styles.containerCentrallity}>
-            <View  style={{ 
-                alignItems: "center", 
-                justifyContent: "center",
-                borderColor:projColors.currentVerse.border,
-                borderWidth:3}}>
-                <QRCode 
-                    value={qrValue}
-                    size={Dimensions.get("window").width - 90}
-                    backgroundColor={projColors.currentVerse.main}
-                    color={projColors.currentVerse.font}
-                    logoBackgroundColor="transparent"
-                    ecl="H" 
-                />   
-            </View>
-            <View style={styles.overlayWithUser}>
+        )
+             : 
+            (
+                <View>
+                    <View style={styles.overlayWithUser}>
                         <View style={styles.avatarContainer}>
                             {photoUrl ? (
                                 <Image source={{ uri: photoUrl }} style={styles.avatar} />
                             ) : (
-                                <Icon name="user-o" size={40} color={projColors.currentVerse.font}
-                                />)}
+                                <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
+                            )}
                         </View>
+                    </View>
+                    <Text style={styles.textProfile}>{userData}</Text>
+                    <TouchableOpacity style={styles.opacities} onPress={handleLogout}>
+                        <Icon name="user-times" size={40} color={projColors.currentVerse.font} />
+                        <Text style={styles.text}>выход</Text>
+                    </TouchableOpacity>
+                    <Button onPress={startDay}>Начать рабочий день</Button>
+                    <Button onPress={toggleModal}>open modal</Button>
                 </View>
-            <Text style={styles.textProfile}>{userData}</Text>
-            <TouchableOpacity   style={styles.opacities} onPress={handleLogout}>
-                <Icon name="user-times" size={40} color={projColors.currentVerse.font}/>
-                <Text style={styles.text}>выход</Text>
-            </TouchableOpacity>   
-            <Button onPress={startDay}>Начать рабочий день</Button>
-            <Text>{Store.statusWorkDay}</Text>
-            </View>
-            )}      
+                
+            )}
+            <ModalForm modalVisible={modalVisible} toggleModal={toggleModal} ID={qrValue}/>
+
+            
         </View>
     );
-
 }
+
 
 
 export default profile;
