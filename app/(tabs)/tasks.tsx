@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, RefreshControl, TouchableOpacity, ActivityIndicator } from 'react-native';
-import Icon3 from 'react-native-vector-icons/Feather';
+import React, { useState} from "react";
+import { View, Text, ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
 import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
 import { getAllStaticData } from "src/http";
 import { styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import TaskItem from "src/taskItem";
+import TaskItem from "src/ListItems/taskItem";
 
 
 
@@ -40,7 +39,7 @@ const Tasks = () => {
     const onRefresh = React.useCallback(async() => {
         setRefreshing(true);
         // код обновления данных здесь
-        console.log('обновляем')
+        console.log('обновляем задачи')
         await getAllStaticData(Store.tokenData, false, false, true, false);
         // Завершение обновления
         setRefreshing(false);

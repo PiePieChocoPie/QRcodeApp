@@ -1,43 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert, ActivityIndicator } from "react-native";
+import { View, Alert, ActivityIndicator, ScrollView, RefreshControl, Text } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { getUsersTrafficStatistics } from "src/http";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
+import СalendarItem from "src/ListItems/calendarItem";
+import Store from "src/stores/mobx";
+
 
 export default function Calendar() {
     const { loading, startLoading, stopLoading } = useLoading();
     const [markedDates, setMarkedDates] = useState({});
-    const [customDatesStyles, setCustomDatesStyles] = useState([])
+    const [customDatesStyles, setCustomDatesStyles] = useState([]);
+    const [month, setMonth] = useState(0);
+    const [year, setYear] = useState(0);
     // Формируем массив объектов для customDatesStyles
     
     useFocusEffect(
         React.useCallback(() => {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            setYear(currentYear)
+            const currentMonth = currentDate.getMonth() + 1; // Добавляем 1, так как месяцы в JS начинаются с 0
+            setMonth(currentMonth)
             fetchData();
         }, []) 
     );
 
     const fetchData = async () => {
         try {
-            startLoading();
-            const currentDate = new Date();
-            const currentYear = currentDate.getFullYear();
-            const currentMonth = currentDate.getMonth() + 1; // Добавляем 1, так как месяцы в JS начинаются с 0
-            const res = await getUsersTrafficStatistics(currentMonth, currentYear);
-            console.log(res.days)
-            const customStyles = res.days.map(day => {
-                const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
-                const color = startTime < 9 * 60 + 15 ? '#FFD700' : '#FFA07A'; // Если время меньше 09:15, то желтый, иначе оранжевый
-                return {
-                    date: new Date(day.day_title.split('.').reverse().join('-')),
-                    style: { backgroundColor: color },
-                    textStyle: {},
-                    containerStyle: [],
-                    allowDisabled: true,
-                };
+            startLoading();           
+            await getUsersTrafficStatistics(month, year)            
+            .then((res)=>{    
+                if(res){
+                    console.log(Store.trafficData)
+                    const customStyles = Store.trafficData.map(day => {
+                    const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
+                    const color = startTime < 9 * 60 + 15 ? '#FFD700' : '#FFA07A'; // Если время меньше 09:15, то желтый, иначе оранжевый
+                    return {
+                        date: new Date(day.day_title.split('.').reverse().join('-')),
+                        style: { backgroundColor: color },
+                        textStyle: {},
+                        containerStyle: [],
+                        allowDisabled: true,
+                    };
             });
             setCustomDatesStyles(customStyles);
+            }
+            else{
+                Alert.alert("ошибка", "непредвиденная ошибка")
+            }
+        })
+        .catch((err)=>{
+            Alert.alert("ошибка",err)
+        })
+
         
         } catch (error) {
             Alert.alert("Ошибка", 'Ошибка: \n' + error);
@@ -50,17 +68,30 @@ export default function Calendar() {
     const handleMonthChange = async (date) => {
         startLoading();
         console.log('Новый выбранный месяц:', date);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        console.log(year,month)
+        const newYear = date.getFullYear();
+        setYear(newYear);
+        const newMonth = date.getMonth() + 1;
+        setMonth(newMonth);
+        console.log(year,month);
         try {
             const res = await getUsersTrafficStatistics(year, month);
-            console.log(res.days)
+            if(!res) Alert.alert('ошибка','ошибка получения ')
         } catch (err) {
             Alert.alert("Ошибка", 'Ошибка: \n' + err);
         }
         stopLoading();
     };
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(async() => {
+        setRefreshing(true);
+        // код обновления данных здесь
+        console.log('обновляем календарь')
+        fetchData();
+        // Завершение обновления
+        setRefreshing(false);
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -69,16 +100,38 @@ export default function Calendar() {
                     <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
                 </View>
             ) : (
-                <CalendarPicker
-                    previousTitle="Предыдущий"
-                    nextTitle="Следующий"
-                    startFromMonday
-                    weekdays={["пн", "вт", "ср", "чт", "пт", "сб", "вс"]}
-                    months={['янв', 'фев', 'март', 'апр', 'май', 'июнь', 'июль', 'авг', 'сент', 'окт', 'нояб', 'дек']}
-                    onMonthChange={handleMonthChange}
-                    customDatesStyles={customDatesStyles} // Если вам нужно будет использовать стилизацию для определенных дат
-                    // onDateChange={undefined}
-                />
+                <View>
+                    <CalendarPicker
+                        previousTitle="Предыдущий"
+                        nextTitle="Следующий"
+                        startFromMonday
+                        weekdays={["пн", "вт", "ср", "чт", "пт", "сб", "вс"]}
+                        months={['янв', 'фев', 'март', 'апр', 'май', 'июнь', 'июль', 'авг', 'сент', 'окт', 'нояб', 'дек']}
+                        onMonthChange={handleMonthChange}
+                        customDatesStyles={customDatesStyles} // Если вам нужно будет использовать стилизацию для определенных дат
+                        // onDateChange={undefined}
+                    />
+                    <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={[projColors.currentVerse.accent]}
+                        />
+                        }
+                    >
+                        {Store.trafficData ?
+                            
+                        (Store.trafficData.map(item => <СalendarItem key={item.index} item={item}/>))
+                        :
+                        (
+                            <View style={styles.containerCentrallity}>
+                                <Text style={styles.internalTextRowView}>Записи о времени отсутствуют</Text>
+                            </View>
+                        )
+}
+                    </ScrollView>
+            </View>
             )}
         </View>
     );
