@@ -8,6 +8,7 @@ class store {
     @observable itineraryData = null;
     @observable itineraryStatusesData = null;
     @observable taskData = null;
+    @observable trafficData = null;
     @observable updData = null;
     @observable updStatusesData = null;
     @observable userPhoto = null;
@@ -53,6 +54,11 @@ class store {
     @action
     setDepData(depData) {
         this.depData = depData;
+    }
+    @action
+    setTrafficData(trafficData){
+        this.trafficData = trafficData;
+
     }
 }
 

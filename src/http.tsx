@@ -277,7 +277,7 @@ export async function  updItineraryStatus(IDItinerary:string,IDStatus:string, us
 }
 
 export async function getUsersTrafficStatistics(Month:number, Year:number){
-        
+    try{
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -289,5 +289,11 @@ export async function getUsersTrafficStatistics(Month:number, Year:number){
         };
         
         const response = await axios.request(config)    
-        return response.data.result.report;
+        Store.setTrafficData(response.data.result.report.days)
+        console.log(Store.trafficData)
+        return true;
+    }
+    catch{
+        return false;
+    }
 }
