@@ -64,7 +64,12 @@ const TabsLayout = () => {
             headerTitle: 'календарь',
             title:"календарь",
             headerRight: ({})=>(
-                <Text>{Store.statusWorkDay}</Text>
+                <LottieView 
+                source={anim} 
+                style={{width: "100%", height: "100%"}} 
+                autoPlay 
+                loop
+                />
             ),
             tabBarIcon:({})=>(
                 <Icon name="calendar" size={25} color={projColors.currentVerse.font}/>
