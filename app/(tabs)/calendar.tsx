@@ -36,16 +36,37 @@ export default function Calendar() {
                 if(res){
                     console.log(Store.trafficData)
                     const customStyles = Store.trafficData.map(day => {
-                    const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
-                    const color = startTime < 9 * 60 + 15 ? '#FFD700' : '#FFA07A'; // Если время меньше 09:15, то желтый, иначе оранжевый
-                    return {
-                        date: new Date(day.day_title.split('.').reverse().join('-')),
-                        style: { backgroundColor: color },
-                        textStyle: {},
-                        containerStyle: [],
-                        allowDisabled: true,
-                    };
-            });
+                        let dayStatus = 0;
+                        const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
+                        console.log('начало дня - ', startTime)
+                        dayStatus = startTime < 9 * 60 + 15 ? 0 : 1;
+                        if (day.workday_complete){
+                            const endTime = new Date(day.workday_date_finish).getHours() * 60 + new Date(day.workday_date_finish).getMinutes();
+                            console.log('конец дня - ',endTime)
+                            dayStatus = endTime < 17 * 60 + 45 ? dayStatus+1 : dayStatus;
+                        }
+                        console.log(day.day_title,dayStatus)
+                        let color = '';
+                        switch(dayStatus){
+                            case 0:
+                                color = '#33ff00';
+                                break;
+                            case 1:
+                                color = '#ffc400';
+                                break;
+                            case 2:
+                                color = '#ff0000';
+                                break;
+                        }
+
+                        return {
+                            date: new Date(day.day_title.split('.').reverse().join('-')),
+                            style: { backgroundColor: color },
+                            textStyle: {},
+                            containerStyle: [],
+                            allowDisabled: true,
+                        };
+                    });
             setCustomDatesStyles(customStyles);
             }
             else{
@@ -68,6 +89,9 @@ export default function Calendar() {
     const handleMonthChange = async (date) => {
         startLoading();
         console.log('Новый выбранный месяц:', date);
+
+
+
         const newYear = date.getFullYear();
         setYear(newYear);
         const newMonth = date.getMonth() + 1;
@@ -95,11 +119,7 @@ export default function Calendar() {
 
     return (
         <View style={styles.container}>
-            {loading ? (
-                <View style={styles.containerCentrallity}>
-                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-                </View>
-            ) : (
+           
                 <View>
                     <CalendarPicker
                         previousTitle="Предыдущий"
@@ -111,6 +131,11 @@ export default function Calendar() {
                         customDatesStyles={customDatesStyles} // Если вам нужно будет использовать стилизацию для определенных дат
                         // onDateChange={undefined}
                     />
+                     {loading ? (
+                <View style={styles.containerCentrallity}>
+                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                </View>
+            ) : (
                     <ScrollView
                     refreshControl={
                         <RefreshControl
@@ -131,8 +156,8 @@ export default function Calendar() {
                         )
 }
                     </ScrollView>
-            </View>
             )}
+            </View>
         </View>
     );
 }
