@@ -103,9 +103,21 @@ export async function statusDay(ID:string){
         
     const response = await axios.request(config)    
     Store.setStatusWorkDay(response.data.result.STATUS);
-
     return response;
 }
+export async function getReports(){
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/MartinAPI/API.php`,
+        withCredentials: false
+    };
+        
+    const response = await axios.request(config)    
+    console.log(JSON.stringify(response.data, null, 2));
+    return response;
+}
+
 
 export async function getUpdStatusesData(){
     let data = JSON.stringify({

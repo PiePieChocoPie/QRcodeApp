@@ -6,10 +6,9 @@ import { router, Link} from "expo-router";
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect} from '@react-navigation/native';
-import { getAllStaticData, openDay } from "src/http";
+import { getAllStaticData, openDay, statusDay } from "src/http";
 import useLoading from "src/useLoading";
 import { Button } from "react-native-paper";
-import modalQR from 'src/modals/modal'
 import ModalForm from "src/modals/modal";
 function profile() {
     const [userData, setUserdata] = React.useState('');
@@ -24,6 +23,9 @@ function profile() {
     };
     const toggleModal = () => {
         setModalVisible(!modalVisible);
+    };
+    const updateStatus = () => {
+        statusDay(Store.userData.ID);
     };
     const startDay = async () => {
         try {
@@ -92,7 +94,8 @@ function profile() {
                         <Text style={styles.text}>выход</Text>
                     </TouchableOpacity>
                     <Button onPress={startDay}>Начать рабочий день</Button>
-                    <Button onPress={toggleModal}>open modal</Button>
+                    <Button onPress={toggleModal}>Просмотр QR-кода</Button>
+                    <Button onPress={updateStatus}>Обновить данные</Button>
                 </View>
                 
             )}
