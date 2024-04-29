@@ -5,16 +5,17 @@ import { getUsersTrafficStatistics } from "src/http";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import СalendarItem from "src/ListItems/calendarItem";
 import Store from "src/stores/mobx";
 
 
 export default function Calendar() {
     const { loading, startLoading, stopLoading } = useLoading();
-    const [markedDates, setMarkedDates] = useState({});
     const [customDatesStyles, setCustomDatesStyles] = useState([]);
     const [month, setMonth] = useState(0);
     const [year, setYear] = useState(0);
+    const [fullTime, setFullTime] = useState('');
+    const [middleTime, setmiddleTime] = useState('');
+    const [daysCount, setDaysCount] = useState(0);
     // Формируем массив объектов для customDatesStyles
     
     useFocusEffect(
@@ -34,19 +35,52 @@ export default function Calendar() {
             await getUsersTrafficStatistics(month, year)            
             .then((res)=>{    
                 if(res){
-                    console.log(Store.trafficData)
+                    console.log(Store.trafficData);
+                    let days = 0;
+                    let fullTimeCounter = 0;
                     const customStyles = Store.trafficData.map(day => {
-                    const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
-                    const color = startTime < 9 * 60 + 15 ? '#FFD700' : '#FFA07A'; // Если время меньше 09:15, то желтый, иначе оранжевый
-                    return {
-                        date: new Date(day.day_title.split('.').reverse().join('-')),
-                        style: { backgroundColor: color },
-                        textStyle: {},
-                        containerStyle: [],
-                        allowDisabled: true,
-                    };
-            });
-            setCustomDatesStyles(customStyles);
+                        let dayStatus = 0;
+                        const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
+                        console.log('начало дня - ', startTime)
+                        dayStatus = startTime < 9 * 60 + 15 ? 0 : 1;
+                        if (day.workday_complete){
+                            const endTime = new Date(day.workday_date_finish).getHours() * 60 + new Date(day.workday_date_finish).getMinutes();
+                            console.log('конец дня - ',endTime)
+                            dayStatus = endTime < 17 * 60 + 45 ? dayStatus+1 : dayStatus;
+                            fullTimeCounter = fullTimeCounter + endTime-startTime;
+                            days++;
+                        }
+                        console.log(day.day_title,dayStatus)
+                        let color = '';
+                        switch(dayStatus){
+                            case 0:
+                                color = '#33ff00';
+                                break;
+                            case 1:
+                                color = '#ffc400';
+                                break;
+                            case 2:
+                                color = '#ff0000';
+                                break;
+                        }
+
+                        return {
+                            date: new Date(day.day_title.split('.').reverse().join('-')),
+                            style: { backgroundColor: color },
+                            textStyle: {},
+                            containerStyle: [],
+                            allowDisabled: true,
+                        };
+                    });
+                    let hours = Math.floor(fullTimeCounter / 60); // Получаем количество целых часов
+                    let minutes = fullTimeCounter % 60;
+                    const middleMin = fullTimeCounter/days;
+                    setDaysCount(days);
+                    setFullTime(`${hours}ч${minutes}мин`);
+                    hours = Math.floor(middleMin / 60); // Получаем количество целых часов
+                    minutes =  Math.floor(middleMin % 60);
+                    setmiddleTime(`${hours}ч${minutes}мин`)
+                    setCustomDatesStyles(customStyles);
             }
             else{
                 Alert.alert("ошибка", "непредвиденная ошибка")
@@ -68,6 +102,9 @@ export default function Calendar() {
     const handleMonthChange = async (date) => {
         startLoading();
         console.log('Новый выбранный месяц:', date);
+
+
+
         const newYear = date.getFullYear();
         setYear(newYear);
         const newMonth = date.getMonth() + 1;
@@ -81,25 +118,13 @@ export default function Calendar() {
         }
         stopLoading();
     };
-
-    const [refreshing, setRefreshing] = React.useState(false);
-
-    const onRefresh = React.useCallback(async() => {
-        setRefreshing(true);
-        // код обновления данных здесь
-        console.log('обновляем календарь')
-        fetchData();
-        // Завершение обновления
-        setRefreshing(false);
-    }, []);
-
+    const onDateChange =async(date) => {
+        console.log(date);
+      }
+    
     return (
         <View style={styles.container}>
-            {loading ? (
-                <View style={styles.containerCentrallity}>
-                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-                </View>
-            ) : (
+           
                 <View>
                     <CalendarPicker
                         previousTitle="Предыдущий"
@@ -108,31 +133,32 @@ export default function Calendar() {
                         weekdays={["пн", "вт", "ср", "чт", "пт", "сб", "вс"]}
                         months={['янв', 'фев', 'март', 'апр', 'май', 'июнь', 'июль', 'авг', 'сент', 'окт', 'нояб', 'дек']}
                         onMonthChange={handleMonthChange}
-                        customDatesStyles={customDatesStyles} // Если вам нужно будет использовать стилизацию для определенных дат
-                        // onDateChange={undefined}
+                        customDatesStyles={customDatesStyles}
+                        onDateChange={onDateChange}
+                    
                     />
-                    <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                            colors={[projColors.currentVerse.accent]}
-                        />
-                        }
-                    >
+                     {loading ? (
+                <View style={styles.containerCentrallity}>
+                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                </View>
+            ) : (
+                   <View>
                         {Store.trafficData ?
                             
-                        (Store.trafficData.map(item => <СalendarItem key={item.index} item={item}/>))
+                        (<View>
+                            <Text style={styles.text}>закрыто дней - {daysCount}</Text>
+                            <Text style={styles.text}>времени на работе - {fullTime}</Text>
+                            <Text style={styles.text}>среднее время - {middleTime}</Text>
+                        </View>)
                         :
                         (
                             <View style={styles.containerCentrallity}>
                                 <Text style={styles.internalTextRowView}>Записи о времени отсутствуют</Text>
                             </View>
-                        )
-}
-                    </ScrollView>
-            </View>
+                        )}                   
+                    </View>
             )}
+            </View>
         </View>
     );
 }

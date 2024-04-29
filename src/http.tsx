@@ -302,7 +302,6 @@ export async function getUsersTrafficStatistics(Month:number, Year:number){
         
         const response = await axios.request(config)    
         Store.setTrafficData(response.data.result.report.days)
-        console.log(Store.trafficData)
         return true;
     }
     catch{
