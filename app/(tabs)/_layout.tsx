@@ -3,27 +3,29 @@ import {Tabs} from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
-
+import {json_styles} from "src/stores/styles";
 import LottieView from 'lottie-react-native';
 import anim from 'src/job_anim.json';
+import React, { useEffect, useRef } from "react";
+import { useFocusEffect} from '@react-navigation/native';
 
-import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Alert} from "react-native";
 const TabsLayout = () => {
-    statusDay(Store.userData.ID);
-    console.log(Store.statusWorkDay)
+    const animationRef = useRef<LottieView>(null);
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            statusDay(Store.userData.ID);
+            // console.log('Метод исполняется каждые 1000 миллисекунд = ' + Store.statusWorkDay);
+
+        }, 1000);
+    
+        return () => clearInterval(intervalId);
+      }, []); 
     return (
     <Tabs>
         <Tabs.Screen name ="tasks" options={{
             headerTitle: 'Задачи',
             title:"Задачи",
-            headerRight: ({})=>(
-                <LottieView 
-                source={anim} 
-                style={{width: "100%", height: "100%"}} 
-                autoPlay 
-                loop
-                />
-            ),
+
             tabBarIcon:({})=>(
                 <Icon name="tasks" size={25} color={projColors.currentVerse.font}/>
             ),
@@ -33,14 +35,7 @@ const TabsLayout = () => {
         <Tabs.Screen name ="reader" options={{
             headerTitle: 'Сканер QR',
             title:"Сканер",
-            headerRight: ({})=>(
-                <LottieView 
-                source={anim} 
-                style={{width: "100%", height: "100%"}} 
-                autoPlay 
-                loop
-                />
-            ),
+
             tabBarIcon:({})=>(
                 <Icon name="qrcode" size={25} color={projColors.currentVerse.font}/>
             ),
@@ -49,10 +44,10 @@ const TabsLayout = () => {
             headerTitle: 'Профиль',
             title:"Профиль",
             headerRight: ({})=>(
-                <LottieView 
-                source={anim} 
-                style={{width: "100%", height: "100%"}} 
-                autoPlay 
+                <LottieView
+                ref={animationRef}
+                source={anim}
+                style={json_styles.header_right_activity} 
                 loop
                 />
             ),
@@ -61,11 +56,9 @@ const TabsLayout = () => {
             ),
         }}/>
         <Tabs.Screen name ="calendar"  options={{
-            headerTitle: 'календарь',
-            title:"календарь",
-            headerRight: ({})=>(
-                <Text>{Store.statusWorkDay}</Text>
-            ),
+            headerTitle: 'Календарь',
+            title:"Календарь",
+
             tabBarIcon:({})=>(
                 <Icon name="calendar" size={25} color={projColors.currentVerse.font}/>
             ),

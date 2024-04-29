@@ -24,7 +24,11 @@ const authorize =() =>{
                 
                 await getAllStaticData(token, true, false, false, false)
                      .then(async (res) => {
-                        if(res.status)  router.push({pathname:"/(tabs)/profile"});
+                        if(res.status){
+                            router.push({pathname:"/(tabs)/profile"});
+                            console.log("store = "+ Store.userData.ID)
+                            statusDay(Store.userData.ID);
+                        }  
                         else Alert.alert("Ошибка авторизации", res.curError);
                      })
                      .catch(err =>{

@@ -32,6 +32,17 @@ export class projColors{
     //
     // }
 }
+export const json_styles = StyleSheet.create({
+  header_right_activity:{
+    width: 50, 
+    height: 50, 
+    flex: 1, 
+    flexDirection:'row', 
+    justifyContent: 'flex-end'
+  }
+
+}
+)
 
 export const styles = StyleSheet.create({
   modalTitle: {
