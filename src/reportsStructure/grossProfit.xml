@@ -1,0 +1,806 @@
+﻿<Settings xmlns="http://v8.1c.ru/8.1/data-composition-system/settings" xmlns:dcscor="http://v8.1c.ru/8.1/data-composition-system/core" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Settings">
+	<selection>
+		<item xsi:type="SelectedItemField">
+			<use>false</use>
+			<field>Номенклатура.Артикул</field>
+			<title>Артикул</title>
+		</item>
+		<item xsi:type="SelectedItemField">
+			<field>Количество</field>
+		</item>
+		<item xsi:type="SelectedItemField">
+			<field>Вес</field>
+		</item>
+		<item xsi:type="SelectedItemField">
+			<use>false</use>
+			<field>Объем</field>
+		</item>
+		<item xsi:type="SelectedItemField">
+			<field>Выручка</field>
+		</item>
+		<item xsi:type="SelectedItemFolder">
+			<use>false</use>
+			<title>Скидки</title>
+			<item xsi:type="SelectedItemField">
+				<field>ВсегоСкидок</field>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<field>СуммаАвтоматическойСкидки</field>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<field>СуммаРучнойСкидки</field>
+			</item>
+			<placement>Horizontally</placement>
+		</item>
+		<item xsi:type="SelectedItemFolder">
+			<use>false</use>
+			<title>Себестоимость товаров</title>
+			<item xsi:type="SelectedItemField">
+				<field>СебестоимостьИтого</field>
+				<title>Всего</title>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<field>Себестоимость</field>
+				<title>Стоимость закупки</title>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<field>ДопРасходы</field>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<use>false</use>
+				<field>Трудозатраты</field>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<use>false</use>
+				<field>ПостатейныеПостоянные</field>
+			</item>
+			<item xsi:type="SelectedItemField">
+				<use>false</use>
+				<field>ПостатейныеПеременные</field>
+			</item>
+			<placement>Horizontally</placement>
+		</item>
+		<item xsi:type="SelectedItemField">
+			<use>false</use>
+			<field>ВаловаяПрибыль</field>
+		</item>
+		<item xsi:type="SelectedItemField">
+			<use>false</use>
+			<field>Рентабельность</field>
+		</item>
+		<viewMode>Normal</viewMode>
+		<userSettingID>7cc7fcfb-8b84-4870-a98e-3017f3e0648b</userSettingID>
+	</selection>
+	<filter>
+		<item xsi:type="FilterItemComparison">
+			<use>false</use>
+			<left xsi:type="dcscor:Field">Подразделение</left>
+			<comparisonType>InListByHierarchy</comparisonType>
+			<right xsi:type="v8:ValueListType">
+				<v8:valueType/>
+				<v8:lastId xsi:type="xs:decimal">-1</v8:lastId>
+			</right>
+			<userSettingID>fcf4fcd2-4270-4709-bf2f-a26afed64171</userSettingID>
+		</item>
+		<item xsi:type="FilterItemComparison">
+			<left xsi:type="dcscor:Field">Менеджер</left>
+			<comparisonType>InList</comparisonType>
+			<right xmlns:d4p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="d4p1:CatalogRef.Пользователи">31bb2c91-fa4a-11e9-8164-e03f4980f4ff</right>
+			<userSettingID>a59054dc-d784-49b7-a1d5-f1bce8c95dcb</userSettingID>
+		</item>
+		<item xsi:type="FilterItemComparison">
+			<use>false</use>
+			<left xsi:type="dcscor:Field">СегментНоменклатуры</left>
+			<comparisonType>Equal</comparisonType>
+			<viewMode>Normal</viewMode>
+			<userSettingID>c4b6309a-4b32-476b-bd55-f865e6ba08fc</userSettingID>
+		</item>
+		<item xsi:type="FilterItemComparison">
+			<use>false</use>
+			<left xsi:type="dcscor:Field">Номенклатура</left>
+			<comparisonType>InList</comparisonType>
+			<right xmlns:d4p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="d4p1:CatalogRef.Номенклатура">4a91a1b6-df63-11e9-8160-e03f4980f4ff</right>
+			<viewMode>Normal</viewMode>
+			<userSettingID>ac1baf1f-452b-4935-a4b7-fedbd793a416</userSettingID>
+		</item>
+		<item xsi:type="FilterItemComparison">
+			<use>false</use>
+			<left xsi:type="dcscor:Field">Менеджер.[Регион (Пользователи)]</left>
+			<comparisonType>Equal</comparisonType>
+			<right xmlns:d4p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="d4p1:CatalogRef.ЗначенияСвойствОбъектов">00000000-0000-0000-0000-000000000000</right>
+			<viewMode>Normal</viewMode>
+			<userSettingID>74f9b950-be78-4f3b-95b7-3a31318cd8e8</userSettingID>
+		</item>
+		<item xsi:type="FilterItemComparison">
+			<use>false</use>
+			<left xsi:type="dcscor:Field">Партнер</left>
+			<comparisonType>InList</comparisonType>
+			<right xsi:type="v8:ValueListType">
+				<v8:valueType/>
+				<v8:lastId xsi:type="xs:decimal">-1</v8:lastId>
+			</right>
+			<userSettingID>92524b8c-1250-44ba-b2cf-64fa976f2bee</userSettingID>
+		</item>
+		<viewMode>Normal</viewMode>
+		<userSettingID>b771e5df-9eb6-43b6-9758-25a6da3eca4e</userSettingID>
+	</filter>
+	<dataParameters>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>Период</dcscor:parameter>
+			<dcscor:value xsi:type="v8:StandardPeriod">
+				<v8:variant xsi:type="v8:StandardPeriodVariant">Custom</v8:variant>
+				<v8:startDate>2023-01-01T00:00:00</v8:startDate>
+				<v8:endDate>2023-12-31T23:59:59</v8:endDate>
+			</dcscor:value>
+			<userSettingID>3fddba72-7a69-4252-9fa0-7877c02a0813</userSettingID>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:use>false</dcscor:use>
+			<dcscor:parameter>ИспользуетсяОтборПоСегментуНоменклатуры</dcscor:parameter>
+			<dcscor:value xsi:type="xs:boolean">true</dcscor:value>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:use>false</dcscor:use>
+			<dcscor:parameter>ИспользуетсяОтборПоСегментуПартнеров</dcscor:parameter>
+			<dcscor:value xsi:type="xs:boolean">true</dcscor:value>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>СтрокаПродажиПоЗаказам</dcscor:parameter>
+			<dcscor:value xsi:type="xs:string">Продажи по заказам</dcscor:value>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>СтрокаПродажиБезЗаказов</dcscor:parameter>
+			<dcscor:value xsi:type="xs:string">Продажи без заказов</dcscor:value>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ПоказыватьПродажи</dcscor:parameter>
+			<dcscor:value xsi:type="xs:decimal">1</dcscor:value>
+			<viewMode>Normal</viewMode>
+			<userSettingID>faa94701-370a-4e34-b044-8e9052f01c8d</userSettingID>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ДанныеОтчета</dcscor:parameter>
+			<dcscor:value xsi:type="xs:decimal">1</dcscor:value>
+			<viewMode>Normal</viewMode>
+			<userSettingID>be556b03-46b2-4a14-a4e9-c8d6ea8a4845</userSettingID>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ЕдиницыКоличества</dcscor:parameter>
+			<dcscor:value xsi:type="xs:decimal">0</dcscor:value>
+			<viewMode>Normal</viewMode>
+			<userSettingID>d3c418ac-fa06-4deb-a2c9-b049628c600f</userSettingID>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>КоличественныеИтогиПоЕдИзм</dcscor:parameter>
+			<dcscor:value xsi:type="xs:boolean">true</dcscor:value>
+			<viewMode>Normal</viewMode>
+			<userSettingID>52bc5392-9024-4674-8642-53eb786761da</userSettingID>
+		</dcscor:item>
+	</dataParameters>
+	<order>
+		<item xsi:type="OrderItemField">
+			<field>ВаловаяПрибыль</field>
+			<orderType>Desc</orderType>
+		</item>
+		<viewMode>Normal</viewMode>
+		<userSettingID>ab2a0df7-becd-498c-a3d2-31a5c7bbdca7</userSettingID>
+	</order>
+	<conditionalAppearance>
+		<item>
+			<use>false</use>
+			<selection>
+				<item>
+					<field>Организация</field>
+				</item>
+				<item>
+					<field>Подразделение</field>
+				</item>
+				<item>
+					<field>Менеджер</field>
+				</item>
+				<item>
+					<field>ГруппаАналитическогоУчета</field>
+				</item>
+			</selection>
+			<filter/>
+			<appearance>
+				<dcscor:item xsi:type="SettingsParameterValue">
+					<dcscor:parameter>МинимальнаяШирина</dcscor:parameter>
+					<dcscor:value xsi:type="xs:decimal">40</dcscor:value>
+				</dcscor:item>
+				<dcscor:item xsi:type="SettingsParameterValue">
+					<dcscor:parameter>МаксимальнаяШирина</dcscor:parameter>
+					<dcscor:value xsi:type="xs:decimal">40</dcscor:value>
+				</dcscor:item>
+			</appearance>
+		</item>
+		<item>
+			<use>false</use>
+			<selection>
+				<item>
+					<field>ЗаказКлиента</field>
+				</item>
+			</selection>
+			<filter>
+				<item xsi:type="FilterItemComparison">
+					<left xsi:type="dcscor:Field">ЗаказКлиента</left>
+					<comparisonType>NotFilled</comparisonType>
+				</item>
+			</filter>
+			<appearance>
+				<dcscor:item xsi:type="SettingsParameterValue">
+					<dcscor:parameter>ЦветФона</dcscor:parameter>
+					<dcscor:value xsi:type="v8ui:Color">style:НезаполненноеПолеТаблицы</dcscor:value>
+				</dcscor:item>
+				<dcscor:item xsi:type="SettingsParameterValue">
+					<dcscor:parameter>Текст</dcscor:parameter>
+					<dcscor:value xsi:type="xs:string">&lt;Продажи без заказа&gt;</dcscor:value>
+				</dcscor:item>
+			</appearance>
+			<presentation xsi:type="xs:string">Оформление незаполненных заказов</presentation>
+		</item>
+		<viewMode>Normal</viewMode>
+	</conditionalAppearance>
+	<outputParameters>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>МакетОформления</dcscor:parameter>
+			<dcscor:value xsi:type="xs:string">ОформлениеОтчетовБежевый</dcscor:value>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ГоризонтальноеРасположениеОбщихИтогов</dcscor:parameter>
+			<dcscor:value xsi:type="dcscor:DataCompositionTotalPlacement">None</dcscor:value>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ВыводитьЗаголовок</dcscor:parameter>
+			<dcscor:value xsi:type="DataCompositionTextOutputType">DontOutput</dcscor:value>
+			<viewMode>Inaccessible</viewMode>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:use>false</dcscor:use>
+			<dcscor:parameter>Заголовок</dcscor:parameter>
+			<dcscor:value xsi:type="xs:string">Валовая прибыль предприятия %ВалютаОтчета%</dcscor:value>
+			<viewMode>Normal</viewMode>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ВыводитьПараметрыДанных</dcscor:parameter>
+			<dcscor:value xsi:type="DataCompositionTextOutputType">DontOutput</dcscor:value>
+			<viewMode>Normal</viewMode>
+		</dcscor:item>
+		<dcscor:item xsi:type="SettingsParameterValue">
+			<dcscor:parameter>ВыводитьОтбор</dcscor:parameter>
+			<dcscor:value xsi:type="DataCompositionTextOutputType">DontOutput</dcscor:value>
+			<viewMode>Inaccessible</viewMode>
+		</dcscor:item>
+	</outputParameters>
+	<item xsi:type="StructureItemGroup">
+		<use>false</use>
+		<groupItems>
+			<item xsi:type="GroupItemField">
+				<field>Партнер</field>
+				<groupType>Items</groupType>
+				<periodAdditionType>None</periodAdditionType>
+				<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+				<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+			</item>
+		</groupItems>
+		<order>
+			<item xsi:type="OrderItemAuto"/>
+		</order>
+		<selection>
+			<item xsi:type="SelectedItemAuto"/>
+		</selection>
+		<item xsi:type="StructureItemGroup">
+			<use>false</use>
+			<groupItems>
+				<item xsi:type="GroupItemField">
+					<field>Номенклатура</field>
+					<groupType>Hierarchy</groupType>
+					<periodAdditionType>None</periodAdditionType>
+					<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+					<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+				</item>
+				<item xsi:type="GroupItemField">
+					<field>НоменклатураДетализация</field>
+					<groupType>Items</groupType>
+					<periodAdditionType>None</periodAdditionType>
+					<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+					<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+				</item>
+			</groupItems>
+			<order>
+				<item xsi:type="OrderItemAuto"/>
+			</order>
+			<selection>
+				<item xsi:type="SelectedItemAuto"/>
+				<item xsi:type="SelectedItemFolder">
+					<item xsi:type="SelectedItemField">
+						<field>Номенклатура</field>
+					</item>
+					<placement>Together</placement>
+				</item>
+			</selection>
+			<item xsi:type="StructureItemGroup">
+				<use>false</use>
+				<groupItems>
+					<item xsi:type="GroupItemField">
+						<field>Менеджер.Подразделение</field>
+						<groupType>Items</groupType>
+						<periodAdditionType>None</periodAdditionType>
+						<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+						<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+					</item>
+				</groupItems>
+				<order>
+					<item xsi:type="OrderItemAuto"/>
+				</order>
+				<selection>
+					<item xsi:type="SelectedItemAuto"/>
+				</selection>
+				<item xsi:type="StructureItemGroup">
+					<use>false</use>
+					<groupItems>
+						<item xsi:type="GroupItemField">
+							<field>Менеджер</field>
+							<groupType>Items</groupType>
+							<periodAdditionType>None</periodAdditionType>
+							<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+							<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+						</item>
+					</groupItems>
+					<order>
+						<item xsi:type="OrderItemAuto"/>
+					</order>
+					<selection>
+						<item xsi:type="SelectedItemAuto"/>
+					</selection>
+					<outputParameters>
+						<dcscor:item xsi:type="SettingsParameterValue">
+							<dcscor:parameter>ВыводитьЗаголовок</dcscor:parameter>
+							<dcscor:value xsi:type="DataCompositionTextOutputType">DontOutput</dcscor:value>
+						</dcscor:item>
+						<dcscor:item xsi:type="SettingsParameterValue">
+							<dcscor:parameter>Заголовок</dcscor:parameter>
+							<dcscor:value xsi:type="xs:string"/>
+						</dcscor:item>
+					</outputParameters>
+					<viewMode>Normal</viewMode>
+					<userSettingID>87930706-097b-4fef-bbd0-c3f07dead309</userSettingID>
+					<itemsViewMode>Normal</itemsViewMode>
+				</item>
+			</item>
+			<userSettingID>81bcbf53-5f22-4979-8797-c303c0655ac5</userSettingID>
+			<itemsViewMode>Normal</itemsViewMode>
+		</item>
+	</item>
+	<item xsi:type="StructureItemGroup">
+		<use>false</use>
+		<groupItems>
+			<item xsi:type="GroupItemField">
+				<field>Менеджер.[Регион (Пользователи)]</field>
+				<groupType>Items</groupType>
+				<periodAdditionType>None</periodAdditionType>
+				<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+				<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+			</item>
+		</groupItems>
+		<order>
+			<item xsi:type="OrderItemAuto"/>
+		</order>
+		<selection>
+			<item xsi:type="SelectedItemAuto"/>
+		</selection>
+	</item>
+	<item xsi:type="StructureItemTable">
+		<column>
+			<groupItems>
+				<item xsi:type="GroupItemField">
+					<field>ПериодМесяц</field>
+					<groupType>Items</groupType>
+					<periodAdditionType>None</periodAdditionType>
+					<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+					<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+				</item>
+			</groupItems>
+			<order>
+				<item xsi:type="OrderItemAuto"/>
+			</order>
+			<selection>
+				<item xsi:type="SelectedItemAuto"/>
+			</selection>
+		</column>
+		<row>
+			<groupItems>
+				<item xsi:type="GroupItemField">
+					<field>Номенклатура</field>
+					<groupType>HierarchyOnly</groupType>
+					<periodAdditionType>None</periodAdditionType>
+					<periodAdditionBegin xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionBegin>
+					<periodAdditionEnd xsi:type="xs:dateTime">0001-01-01T00:00:00</periodAdditionEnd>
+				</item>
+			</groupItems>
+			<order>
+				<item xsi:type="OrderItemAuto"/>
+			</order>
+			<selection>
+				<item xsi:type="SelectedItemAuto"/>
+			</selection>
+		</row>
+	</item>
+	<additionalProperties>
+		<v8:Property name="КлючТекущегоВарианта">
+			<v8:Value xsi:type="xs:string">15071cca-3b16-408c-9cb9-e0391c0a21b2</v8:Value>
+		</v8:Property>
+		<v8:Property name="АдресСхемы">
+			<v8:Value xsi:type="xs:string">e1cib/tempstorage/c2904001-7e59-465e-8960-383b027899b8?seanceId=YWFlM2E2MGItNWJmZC00MzE4LTlhMjctZjBjYmYwMTlmN2IynkcftDRs0U21xAp9PLoChAAAAAA</v8:Value>
+		</v8:Property>
+		<v8:Property name="ПараметрыПодбора">
+			<v8:Value xsi:type="v8:Map">
+				<v8:pair>
+					<v8:Key xmlns:d6p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="v8:Type">d6p1:CatalogRef.Партнеры</v8:Key>
+					<v8:Value xsi:type="xs:string">Справочник.Партнеры.ФормаВыбора</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xmlns:d6p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="v8:Type">d6p1:CatalogRef.Пользователи</v8:Key>
+					<v8:Value xsi:type="xs:string">Справочник.Пользователи.ФормаВыбора</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xmlns:d6p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="v8:Type">d6p1:CatalogRef.СтруктураПредприятия</v8:Key>
+					<v8:Value xsi:type="xs:string">Справочник.СтруктураПредприятия.ФормаВыбора</v8:Value>
+				</v8:pair>
+			</v8:Value>
+		</v8:Property>
+		<v8:Property name="РасширенноеОписаниеТипов">
+			<v8:Value xsi:type="v8:Map">
+				<v8:pair>
+					<v8:Key xsi:type="xs:decimal">11</v8:Key>
+					<v8:Value xsi:type="v8:Structure">
+						<v8:Property name="СодержитТипТип">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипДата">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипБулево">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипСтрока">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипЧисло">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипПериод">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипУИД">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипХранилище">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитОбъектныеТипы">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОграниченнойДлины">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоТипов">
+							<v8:Value xsi:type="xs:decimal">1</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоПримитивныхТипов">
+							<v8:Value xsi:type="xs:decimal">0</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОбъектныеТипы">
+							<v8:Value xsi:type="v8:Array">
+								<v8:Value xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="v8:Type">d9p1:CatalogRef.Партнеры</v8:Value>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповИсходное">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config">d9p1:CatalogRef.Партнеры</v8:Type>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповДляФормы">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config">d9p1:CatalogRef.Партнеры</v8:Type>
+							</v8:Value>
+						</v8:Property>
+					</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:decimal">7</v8:Key>
+					<v8:Value xsi:type="v8:Structure">
+						<v8:Property name="СодержитТипТип">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипДата">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипБулево">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипСтрока">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипЧисло">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипПериод">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипУИД">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипХранилище">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитОбъектныеТипы">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОграниченнойДлины">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоТипов">
+							<v8:Value xsi:type="xs:decimal">1</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоПримитивныхТипов">
+							<v8:Value xsi:type="xs:decimal">0</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОбъектныеТипы">
+							<v8:Value xsi:type="v8:Array">
+								<v8:Value xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="v8:Type">d9p1:CatalogRef.Пользователи</v8:Value>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповИсходное">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config">d9p1:CatalogRef.Пользователи</v8:Type>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповДляФормы">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config">d9p1:CatalogRef.Пользователи</v8:Type>
+							</v8:Value>
+						</v8:Property>
+					</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:decimal">6</v8:Key>
+					<v8:Value xsi:type="v8:Structure">
+						<v8:Property name="СодержитТипТип">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипДата">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипБулево">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипСтрока">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипЧисло">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипПериод">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипУИД">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипХранилище">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитОбъектныеТипы">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОграниченнойДлины">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоТипов">
+							<v8:Value xsi:type="xs:decimal">1</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоПримитивныхТипов">
+							<v8:Value xsi:type="xs:decimal">0</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОбъектныеТипы">
+							<v8:Value xsi:type="v8:Array">
+								<v8:Value xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config" xsi:type="v8:Type">d9p1:CatalogRef.СтруктураПредприятия</v8:Value>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповИсходное">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config">d9p1:CatalogRef.СтруктураПредприятия</v8:Type>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповДляФормы">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type xmlns:d9p1="http://v8.1c.ru/8.1/data/enterprise/current-config">d9p1:CatalogRef.СтруктураПредприятия</v8:Type>
+							</v8:Value>
+						</v8:Property>
+					</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:decimal">0</v8:Key>
+					<v8:Value xsi:type="v8:Structure">
+						<v8:Property name="СодержитТипТип">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипДата">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипБулево">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипСтрока">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипЧисло">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипПериод">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипУИД">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитТипХранилище">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="СодержитОбъектныеТипы">
+							<v8:Value xsi:type="xs:boolean">false</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОграниченнойДлины">
+							<v8:Value xsi:type="xs:boolean">true</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоТипов">
+							<v8:Value xsi:type="xs:decimal">1</v8:Value>
+						</v8:Property>
+						<v8:Property name="КоличествоПримитивныхТипов">
+							<v8:Value xsi:type="xs:decimal">0</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОбъектныеТипы">
+							<v8:Value xsi:type="v8:Array"/>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповИсходное">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type>v8:StandardPeriod</v8:Type>
+							</v8:Value>
+						</v8:Property>
+						<v8:Property name="ОписаниеТиповДляФормы">
+							<v8:Value xsi:type="v8:TypeDescription">
+								<v8:Type>v8:StandardPeriod</v8:Type>
+							</v8:Value>
+						</v8:Property>
+					</v8:Value>
+				</v8:pair>
+			</v8:Value>
+		</v8:Property>
+		<v8:Property name="СтандартныеСвойстваПредопределенныхПараметровВывода">
+			<v8:Value xsi:type="v8:Array">
+				<v8:Value xsi:type="v8:Structure">
+					<v8:Property name="Идентификатор">
+						<v8:Value xsi:type="xs:string">TITLE</v8:Value>
+					</v8:Property>
+					<v8:Property name="Использование">
+						<v8:Value xsi:type="xs:boolean">true</v8:Value>
+					</v8:Property>
+					<v8:Property name="Значение">
+						<v8:Value xsi:type="xs:string">Валовая прибыль предприятия %ВалютаОтчета%</v8:Value>
+					</v8:Property>
+				</v8:Value>
+				<v8:Value xsi:type="v8:Structure">
+					<v8:Property name="Идентификатор">
+						<v8:Value xsi:type="xs:string">TITLEOUTPUT</v8:Value>
+					</v8:Property>
+					<v8:Property name="Использование">
+						<v8:Value xsi:type="xs:boolean">true</v8:Value>
+					</v8:Property>
+					<v8:Property name="Значение">
+						<v8:Value xsi:type="DataCompositionTextOutputType">Auto</v8:Value>
+					</v8:Property>
+				</v8:Value>
+				<v8:Value xsi:type="v8:Structure">
+					<v8:Property name="Идентификатор">
+						<v8:Value xsi:type="xs:string">DATAPARAMETERSOUTPUT</v8:Value>
+					</v8:Property>
+					<v8:Property name="Использование">
+						<v8:Value xsi:type="xs:boolean">true</v8:Value>
+					</v8:Property>
+					<v8:Property name="Значение">
+						<v8:Value xsi:type="DataCompositionTextOutputType">Auto</v8:Value>
+					</v8:Property>
+				</v8:Value>
+				<v8:Value xsi:type="v8:Structure">
+					<v8:Property name="Идентификатор">
+						<v8:Value xsi:type="xs:string">FILTEROUTPUT</v8:Value>
+					</v8:Property>
+					<v8:Property name="Использование">
+						<v8:Value xsi:type="xs:boolean">true</v8:Value>
+					</v8:Property>
+					<v8:Property name="Значение">
+						<v8:Value xsi:type="DataCompositionTextOutputType">Auto</v8:Value>
+					</v8:Property>
+				</v8:Value>
+			</v8:Value>
+		</v8:Property>
+		<v8:Property name="ПорядокЭлементовНастроек">
+			<v8:Value xsi:type="v8:Map">
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">3fddba72-7a69-4252-9fa0-7877c02a0813</v8:Key>
+					<v8:Value xsi:type="xs:decimal">1</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">52bc5392-9024-4674-8642-53eb786761da</v8:Key>
+					<v8:Value xsi:type="xs:decimal">8</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">fcf4fcd2-4270-4709-bf2f-a26afed64171</v8:Key>
+					<v8:Value xsi:type="xs:decimal">2</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">a59054dc-d784-49b7-a1d5-f1bce8c95dcb</v8:Key>
+					<v8:Value xsi:type="xs:decimal">3</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">c4b6309a-4b32-476b-bd55-f865e6ba08fc</v8:Key>
+					<v8:Value xsi:type="xs:decimal">9</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">7cc7fcfb-8b84-4870-a98e-3017f3e0648b</v8:Key>
+					<v8:Value xsi:type="xs:decimal">14</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">74f9b950-be78-4f3b-95b7-3a31318cd8e8</v8:Key>
+					<v8:Value xsi:type="xs:decimal">4</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">faa94701-370a-4e34-b044-8e9052f01c8d</v8:Key>
+					<v8:Value xsi:type="xs:decimal">5</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">be556b03-46b2-4a14-a4e9-c8d6ea8a4845</v8:Key>
+					<v8:Value xsi:type="xs:decimal">6</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">92524b8c-1250-44ba-b2cf-64fa976f2bee</v8:Key>
+					<v8:Value xsi:type="xs:decimal">11</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">d3c418ac-fa06-4deb-a2c9-b049628c600f</v8:Key>
+					<v8:Value xsi:type="xs:decimal">7</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">ac1baf1f-452b-4935-a4b7-fedbd793a416</v8:Key>
+					<v8:Value xsi:type="xs:decimal">10</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">81bcbf53-5f22-4979-8797-c303c0655ac5</v8:Key>
+					<v8:Value xsi:type="xs:decimal">12</v8:Value>
+				</v8:pair>
+				<v8:pair>
+					<v8:Key xsi:type="xs:string">ab2a0df7-becd-498c-a3d2-31a5c7bbdca7</v8:Key>
+					<v8:Value xsi:type="xs:decimal">13</v8:Value>
+				</v8:pair>
+			</v8:Value>
+		</v8:Property>
+		<v8:Property name="КлючВарианта">
+			<v8:Value xsi:type="xs:string">15071cca-3b16-408c-9cb9-e0391c0a21b2</v8:Value>
+		</v8:Property>
+		<v8:Property name="КлючПредопределенногоВарианта">
+			<v8:Value xsi:type="xs:string">ПродажиСводно</v8:Value>
+		</v8:Property>
+		<v8:Property name="КонтекстВарианта">
+			<v8:Value xsi:type="xs:string"/>
+		</v8:Property>
+		<v8:Property name="ФормаПараметрыОтбор">
+			<v8:Value xsi:type="v8:Structure"/>
+		</v8:Property>
+		<v8:Property name="ВариантНаименование">
+			<v8:Value xsi:type="xs:string">Валовая прибыль предприятия (менеджер и номенклатура)</v8:Value>
+		</v8:Property>
+		<v8:Property name="ИмяОтчета">
+			<v8:Value xsi:type="xs:string">ВыручкаИСебестоимостьПродаж</v8:Value>
+		</v8:Property>
+	</additionalProperties>
+	<itemsViewMode>Normal</itemsViewMode>
+</Settings>

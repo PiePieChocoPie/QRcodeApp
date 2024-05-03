@@ -27,11 +27,11 @@ export default function Calendar() {
             setYear(currentYear)
             const currentMonth = currentDate.getMonth() + 1; // Добавляем 1, так как месяцы в JS начинаются с 0
             setMonth(currentMonth)
-            fetchData();
+            fetchData(currentYear,currentMonth);
         }, []) 
     );
 
-    const fetchData = async () => {
+    const fetchData = async (year, month) => {
         try {
             startLoading();           
             await getUsersTrafficStatistics(month, year)            
@@ -75,6 +75,7 @@ export default function Calendar() {
                         };
                     });
                     let hours = Math.floor(fullTimeCounter / 60); // Получаем количество целых часов
+                    console.log(fullTimeCounter)
                     let minutes = fullTimeCounter % 60;
                     const middleMin = fullTimeCounter/days;
                     setDaysCount(days);
@@ -82,6 +83,8 @@ export default function Calendar() {
                     hours = Math.floor(middleMin / 60); // Получаем количество целых часов
                     minutes =  Math.floor(middleMin % 60);
                     setmiddleTime(`${hours}ч${minutes}мин`)
+                    if(fullTimeCounter==0)  
+                    setmiddleTime(`0ч0мин`)
                     setCustomDatesStyles(customStyles);
             }
             else{
@@ -104,22 +107,25 @@ export default function Calendar() {
     const handleMonthChange = async (date) => {
         startLoading();
         console.log('Новый выбранный месяц:', date);
-
-
-
         const newYear = date.getFullYear();
         setYear(newYear);
-        const newMonth = date.getMonth() + 1;
-        setMonth(newMonth);
-        console.log(year,month);
-        try {
-            const res = await getUsersTrafficStatistics(year, month);
-            if(!res) Alert.alert('ошибка','ошибка получения ')
-        } catch (err) {
-            Alert.alert("Ошибка", 'Ошибка: \n' + err);
-        }
-        stopLoading();
+        const newMonth = date.getMonth()+1;
+        const currentMonth = month;
+        const updatedMonth = currentMonth + (newMonth - currentMonth);
+        setMonth(newMonth); 
+            console.log(year, month);
+            console.log(newYear, newMonth)
+            try {
+                await fetchData(newYear, newMonth);
+            } catch (err) {
+                Alert.alert("Ошибка", 'Ошибка: \n' + err);
+            }
+            stopLoading();
+        
     };
+    
+    
+    
     const onDateChange = async (date) => {
         const formattedDate = date.toISOString().split('T')[0].split('-').reverse().join('.');
         const selectedDayData = Store.trafficData.find(item => item.day_title === formattedDate);
@@ -136,9 +142,15 @@ export default function Calendar() {
                 const formattedEndTime = `конец: ${endTimeHours.toString().padStart(2, '0')}:${endTimeMinutes.toString().padStart(2, '0')}`;
                 
                 let durationInMinute = selectedDayData.workday_duration_final / 60;
+                let duration = '';
+                console.log(durationInMinute)
+                if(durationInMinute>0){
                 let hours = Math.floor(durationInMinute / 60); // Получаем количество целых часов
                 let minutes = Math.floor(durationInMinute % 60);
-                let duration = `${hours}ч${minutes}мин`;
+                duration = `${hours}ч${minutes}мин`;
+                }
+                else duration = 'не установлено';
+                setmiddleTime(duration);
                 
                 endTime = `${formattedEndTime}\nдлительность: ${duration}`;
             }
