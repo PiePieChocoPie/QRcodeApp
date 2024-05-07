@@ -4,6 +4,7 @@ import { projColors, styles } from "src/stores/styles";
 import QRCode from "react-native-qrcode-svg";
 
 const ModalForm = ({ modalVisible, toggleModal, ID}) => {
+    
     return (
         <Modal
             animationType="slide"

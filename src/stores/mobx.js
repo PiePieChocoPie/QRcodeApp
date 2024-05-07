@@ -13,11 +13,16 @@ class store {
     @observable updStatusesData = null;
     @observable userPhoto = null;
     @observable statusWorkDay = null;
+    @observable storages = null;
 
 
     @action
     setUserData(userData) {
         this.userData = userData;
+    } 
+    @action
+    setUserStorage(userData) {
+        this.storages = userData;
     } 
     @action
     setStatusWorkDay(statusWorkDay) {

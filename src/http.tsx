@@ -1,6 +1,9 @@
 import axios from "axios";
 import Store from "src/stores/mobx";
 
+
+
+
 export async function getDataByToken(authToken:string){
     let config = {
         method: 'get',
@@ -14,6 +17,7 @@ export async function getDataByToken(authToken:string){
       };
       
       const response = await axios.request(config);
+      Store.setUserStorage(response.data.UF_USR_STORAGES);
       Store.setUserData(response.data);
       let config2 = {
         method: 'get',

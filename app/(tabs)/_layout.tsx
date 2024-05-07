@@ -1,6 +1,7 @@
 import {statusDay } from "src/http";
 import {Tabs} from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/Ionicons";
 import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import {json_styles} from "src/stores/styles";
@@ -56,13 +57,26 @@ const TabsLayout = () => {
             ),
         }}/>
         <Tabs.Screen name ="calendar"  options={{
+
             headerTitle: 'календарь',
             title:"календарь",
             headerRight: ({})=>(
-                <Text>{Store.statusWorkDay}</Text>
+                <LottieView 
+                source={anim} 
+                style={{width: "100%", height: "100%"}} 
+                autoPlay 
+                loop
+                />
             ),
             tabBarIcon:({})=>(
                 <Icon name="calendar" size={25} color={projColors.currentVerse.font}/>
+            ),
+        }}/>
+        <Tabs.Screen name ="reports"  options={{
+            headerTitle: 'Отчеты',
+            title:"Отчеты",
+            tabBarIcon:({})=>(
+                <Icon2 name="document-outline" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
     </Tabs>
