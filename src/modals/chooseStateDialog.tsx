@@ -8,6 +8,8 @@ import { getAllStaticData, updItineraryStatus, updUpdStatus } from "src/http";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
 import CustomModal from "src/components/custom-modal";
+import Toast from 'react-native-root-toast';
+
 
 const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const [checked, setChecked] = useState({label:'', value:''});
@@ -38,12 +40,22 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const itineraryHandling = async() =>{
         try {
             let setableStatus;
+            let alertMes=''
             if ((docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId == itineraryStatuses[1].STATUS_ID) && Store.userData.ID == docData.ufCrm6Driver) {
                     setableStatus = getNextStatus();
                 await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                     .then()
-                Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
-            } else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
+                alertMes=`Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
+            } else alertMes="На данном этапе взаимодействие с документом невозможно";
+            let toast = Toast.show(alertMes, {
+                duration: Toast.durations.LONG,
+                position: Toast.positions.TOP,
+
+            });
+            
+            setTimeout(function hideToast() {
+                Toast.hide(toast);
+              }, 15000);
         }
         catch (e){
             alert(e)
@@ -52,14 +64,22 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
 
     const updHandling = async() =>{
         let setableStatus;
+        let alertMes = '';
         console.log(updStatuses[1].STATUS_ID)
         if (docData.stageId == updStatuses[0].STATUS_ID||docData.stageId == updStatuses[1].STATUS_ID) {
                 setableStatus = getNextStatus();
             await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                 .then()
-            Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
-        }
-        else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
+                alertMes=`Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
+            } else alertMes="На данном этапе взаимодействие с документом невозможно";
+            let toast = Toast.show(alertMes, {
+                duration: Toast.durations.LONG,
+                position: Toast.positions.TOP,
+            });
+            
+            setTimeout(function hideToast() {
+                Toast.hide(toast);
+              }, 15000);
     }
     const acceptAxios = async () => {
     try {
@@ -86,20 +106,29 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
                 ):
                    
                 (
-                    <View>
-                        <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
+                    <View style={styles.containerCentrallityFromUpper}>
+                            <Text style={styles.textProfile}>обновление статуса документа</Text>
+                            <Text style={styles.selectDateText}>{docData.title}</Text>
+                            <Text style={styles.textProfile}>установить статус -</Text>
+                            <Text style={styles.selectDateText}> {getNextStatus().NAME}</Text>                            
                     <View style={styles.RBView}>
         
                     </View>
-                        <View style={styles.buttonVertContainer}>
-                            <TouchableOpacity style={styles.btnopacities} onPress={acceptAxios}>
-                                <Icon name="check"  size={50} color={projColors.currentVerse.fontAccent}/>
-                                <Text style={styles.text}>установить статус - {getNextStatus().NAME}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={onClose} style={styles.btnopacities}>
-                            <Icon name="close"  size={50} color={projColors.currentVerse.fontAccent}/>
-                            <Text style={styles.text}>отменить</Text>
-                        </TouchableOpacity>
+                        <View style={styles.containerCentrallityFromUpper}>
+                            <View style={{flexDirection:'row'}}>
+                                <View style={{backgroundColor:'#d2ff41', margin:'10%',width:'30%', alignContent:"center",alignItems:"center", borderRadius:20}}>
+                                    <TouchableOpacity onPress={acceptAxios}>
+                                            <Text style={{fontSize: 20,  fontWeight: 'bold',margin:15,color:'#008000'}}>ок</Text>                               
+                                            
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{backgroundColor:'#db6464', margin:'10%',width:'30%', alignContent:"center", alignItems:"center", borderRadius:20}}>
+                                    <TouchableOpacity onPress={onClose} >
+                                        <Text style={{fontSize: 20,  fontWeight: 'bold', margin:15, color:'#a20808'}}>отмена</Text>                            
+
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
                     </View>
                 )

@@ -268,11 +268,14 @@ textInput: {
     margin: 15,
   },
   btnopacities: {
+    width:'20%',
     alignItems: "center",
+    alignContent: 'center',
     margin: 15,
     borderColor: projColors.currentVerse.font,
-    borderRadius:7,
-    borderWidth:2
+    overflow:'hidden',
+    borderRadius:15,
+    // borderWidth:2
   },
   userB: {
     margin: 10,
@@ -359,5 +362,10 @@ textInput: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  containerCentrallityFromUpper:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: 'flex-start',
   },
 });

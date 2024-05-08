@@ -9,6 +9,7 @@ import Store from "src/stores/mobx";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
 import { useState } from 'react';
+import Toast from 'react-native-root-toast';
 
 import LottieView from 'lottie-react-native';
 import anim from 'src/anim.json';
@@ -77,8 +78,14 @@ export default function Reader() {
                     setModalText(res.data.result.items[0]);
                 }
                 else{
-                    alert(`ошибка получения документа`);
+                    // Add a Toast on screen.
+                    let toast = Toast.show(`ошибка получения документа`, {
+                        duration: Toast.durations.LONG,
+                    });
                     
+                    setTimeout(function hideToast() {
+                        Toast.hide(toast);
+                      }, 15000);
                 }
             })
             .catch((err) =>{
@@ -87,8 +94,14 @@ export default function Reader() {
             
         }
         catch(e){
+            let toast = Toast.show(`ошибка получения документа - ${e}`, {
+                duration: Toast.durations.LONG,
+            });
+            
+            setTimeout(function hideToast() {
+                Toast.hide(toast);
+              }, 500);
             console.log(`ошибка получения документа - ${e}`);
-            Alert.alert(`ошибка получения документа - ${e}`);
         }
         setScanned(false);
      };
