@@ -7,6 +7,7 @@ import Store from "src/stores/mobx";
 import { getAllStaticData, updItineraryStatus, updUpdStatus } from "src/http";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
+import CustomModal from "src/components/custom-modal";
 
 const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const [checked, setChecked] = useState({label:'', value:''});
@@ -14,14 +15,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const [itineraryStatuses] = React.useState(Store.itineraryStatusesData);
     const {loading, startLoading, stopLoading} = useLoading()
 
-    // useFocusEffect(
-        
-    //     React.useCallback(() => {
-            
-    //         // setChecked(RadioButtonOptions[0])
-                   
-    //     }, []) 
-    // );
+
 
     const getNextStatus = () =>{
         const curStatus = docData.stageId;
@@ -29,7 +23,6 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         if (docNumber==1){
             for(let i=0;i<updStatuses.length;i++){
                 if(updStatuses[i].STATUS_ID ==curStatus&&i!=updStatuses.length-2)
-                //console.log(123);
                 return updStatuses[i+1];
             }
         }
@@ -46,15 +39,7 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         try {
             let setableStatus;
             if ((docData.stageId == itineraryStatuses[0].STATUS_ID || docData.stageId == itineraryStatuses[1].STATUS_ID) && Store.userData.ID == docData.ufCrm6Driver) {
-//console.log(123)
-                // if (checked.value == 'break') {
-                //     setableStatus = itineraryStatuses[4];
-                // } else if (checked.value == 'newStatus') {
                     setableStatus = getNextStatus();
-
-                // } else {
-                //     return Alert.alert('ошибка', "Неожиданная ошибка!");
-                // }
                 await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                     .then()
                 Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
@@ -68,18 +53,8 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
     const updHandling = async() =>{
         let setableStatus;
         console.log(updStatuses[1].STATUS_ID)
-        //console.log(docData.stageId, updStatuses[5].STATUS_ID, updStatuses[6].STATUS_ID)
         if (docData.stageId == updStatuses[0].STATUS_ID||docData.stageId == updStatuses[1].STATUS_ID) {
-
-            // if (checked.value == 'break') {
-            //     setableStatus = updStatuses[6];
-            // }
-            // else if(checked.value == 'newStatus'){
                 setableStatus = getNextStatus();
-
-            // } else {
-            //     return Alert.alert('ошибка', "Неожиданная ошибка!");
-            // }
             await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID)
                 .then()
             Alert.alert('успешно', `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`);
@@ -87,80 +62,50 @@ const ChooseStateDialog = ({visible, onClose, docData, docNumber}) => {
         else Alert.alert("Нет доступа", "На данном этапе взаимодействие с документом невозможно");
     }
     const acceptAxios = async () => {
-        // меняем статус документа
     try {
         if(docData.entityTypeId =="168") await updHandling();
         else if(docData.entityTypeId == "133") await itineraryHandling();
         else alert("Неверный формат обрабатываемого документа")
-        // //console.log(checked)
     } catch(e){
         alert(e)
     }
         onClose();
     };
 
-    // const RadioButtonOptions = ([
-    //     // { label: "1.На выдаче", value: "first" },
-    //     // { label: "2.Предпроверка", value: "second" },
-    //     // { label: "3.Сдан", value: "third" },
-    //     // { label: "4.Не сдан", value: "fourth" },
-    //     // { label: "5.На исправлении", value: "fifth" },
-    //     {label:getNextStatus().NAME, value:"newStatus"},
-    //     //{label:"прервать документ", value:"break"},
-    // ]);
+
 
     return (
-        <Modal
+        <CustomModal
             visible={visible}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={onClose}
-        >
-            {loading ?(
-            <View style={styles.containerCentrallity}>
-                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-            </View> 
-        ):
-           
-        (
-            <View style={styles.containerCentrallity}>
-            <View style={styles.dialog}>
-                <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
-            <View style={styles.RBView}>
-                {/* {RadioButtonOptions.map((option) => (
-                    <RadioButton.Item
-                        key={option.value}
-                        label={option.label}
-                        value={option.value}
-                        status={checked === option ? 'checked' : 'unchecked'}
-                        onPress={() => setChecked(option)}
-                        labelStyle={{color: checked.value === option.value ? projColors.currentVerse.fontAccent : projColors.currentVerse.font,
-                            fontWeight:checked.value === option.value ? 'bold' : '300',
-                            width: Dimensions.get("window").width-150,
-                            alignItems: 'center',
-                            justifyContent: "center",
-                            textAlign: "center"}}
-                        uncheckedColor={projColors.currentVerse.font}
-                        color={projColors.currentVerse.extra}
+            onClose={onClose}
+            content= {
+                loading ?(
+                    <View style={styles.containerCentrallity}>
+                        <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                    </View> 
+                ):
+                   
+                (
+                    <View>
+                        <Text style={styles.text}>обновление статуса документа {docData.title}</Text>
+                    <View style={styles.RBView}>
+        
+                    </View>
+                        <View style={styles.buttonVertContainer}>
+                            <TouchableOpacity style={styles.btnopacities} onPress={acceptAxios}>
+                                <Icon name="check"  size={50} color={projColors.currentVerse.fontAccent}/>
+                                <Text style={styles.text}>установить статус - {getNextStatus().NAME}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={onClose} style={styles.btnopacities}>
+                            <Icon name="close"  size={50} color={projColors.currentVerse.fontAccent}/>
+                            <Text style={styles.text}>отменить</Text>
+                        </TouchableOpacity>
+                        </View>
+                    </View>
+                )
+            }
+        />
 
-                    />
-                ))} */}
-            </View>
-                {/* <View style={styles.buttonContainer}> */}
-                <View style={styles.buttonVertContainer}>
-                    <TouchableOpacity style={styles.btnopacities} onPress={acceptAxios}>
-                        <Icon name="check"  size={50} color={projColors.currentVerse.fontAccent}/>
-                        <Text style={styles.text}>установить статус - {getNextStatus().NAME}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={onClose} style={styles.btnopacities}>
-                    <Icon name="close"  size={50} color={projColors.currentVerse.fontAccent}/>
-                    <Text style={styles.text}>отменить</Text>
-                </TouchableOpacity>
-                </View>
-            </View>
-            </View>
-        )}
-        </Modal>
     );
 };
 export default ChooseStateDialog;

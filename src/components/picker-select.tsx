@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
+import CustomModal from 'src/components/custom-modal';
 
 const MultiSelect = ({ storages }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -26,35 +27,24 @@ const MultiSelect = ({ storages }) => {
         </View>
         <Text style={styles.inputText}>{selectedItems.length > 0 ? '' : 'Выберите элементы'}</Text>
       </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <CustomModal
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContent}>
-            <ScrollView>
-              {storages.map((storage, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.option,
-                    selectedItems.includes(storage) && styles.selectedOption,
-                  ]}
-                  onPress={() => toggleItem(storage)}
-                >
-                  <Text>{storage}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Закрыть</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setModalVisible(false)}
+        content={
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            {storages.map((storage, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.option, selectedItems.includes(storage) && styles.selectedOption]}
+                onPress={() => toggleItem(storage)}
+              >
+                <Text>{storage}</Text>
+              </TouchableOpacity>
+            ))}
+
+          </ScrollView>
+        }
+      />
     </View>
   );
 };
@@ -89,7 +79,6 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },

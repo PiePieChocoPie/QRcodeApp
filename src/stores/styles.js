@@ -202,12 +202,19 @@ textInput: {
     borderWidth: 5,
     borderColor: projColors.currentVerse.second,
   },
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black color
+  },
   camera: {
     flex: 1,
   },
   overlay: {
     flex: 1,
 
+  },
+  absoluteFill : {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
   overlayWithUser: {
     alignItems: "center",

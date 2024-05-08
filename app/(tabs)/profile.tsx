@@ -9,7 +9,8 @@ import { useFocusEffect} from '@react-navigation/native';
 import { getAllStaticData, openDay, statusDay } from "src/http";
 import useLoading from "src/useLoading";
 import { Button } from "react-native-paper";
-import ModalForm from "src/modals/modal";
+import CustomModal from "src/components/custom-modal";
+import QRCode from "react-native-qrcode-svg";
 function profile() {
     const [userData, setUserdata] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
@@ -99,7 +100,13 @@ function profile() {
                 </View>
                 
             )}
-            <ModalForm modalVisible={modalVisible} toggleModal={toggleModal} ID={qrValue}/>
+            <CustomModal 
+                visible={modalVisible}
+                onClose={toggleModal} 
+                content={
+                    <QRCode value={Store.userData.ID} size={Dimensions.get('window').width - 60}/>
+                }
+            />
 
             
         </View>
