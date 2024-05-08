@@ -13,7 +13,7 @@ class store {
     @observable updStatusesData = null;
     @observable userPhoto = null;
     @observable statusWorkDay = null;
-
+    @observable excelBinData = null;
 
     @action
     setUserData(userData) {
@@ -58,6 +58,11 @@ class store {
     @action
     setTrafficData(trafficData){
         this.trafficData = trafficData;
+
+    }
+    @action
+    setExcelBinData(excelBinData){
+        this.excelBinData = excelBinData;
 
     }
 }

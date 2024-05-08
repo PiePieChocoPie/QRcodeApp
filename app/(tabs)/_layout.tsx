@@ -65,6 +65,16 @@ const TabsLayout = () => {
                 <Icon name="calendar" size={25} color={projColors.currentVerse.font}/>
             ),
         }}/>
+        <Tabs.Screen name ="excelTable"  options={{
+            headerTitle: 'табличка',
+            title:"табличка",
+            // headerRight: ({})=>(
+            //      <Text>{Store.statusWorkDay}</Text>
+            // ),
+            tabBarIcon:({})=>(
+                <Icon name="table" size={25} color={projColors.currentVerse.font}/>
+            ),
+        }}/>
     </Tabs>
     );
 };
