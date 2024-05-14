@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Alert, ActivityIndicator, ScrollView, RefreshControl, Text } from "react-native";
+import React, { useState} from "react";
+import { View, Alert, ActivityIndicator, Text } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { getUsersTrafficStatistics } from "src/http";
 import { projColors, styles } from "src/stores/styles";
@@ -16,6 +16,8 @@ export default function Calendar() {
     const [fullTime, setFullTime] = useState('');
     const [middleTime, setmiddleTime] = useState('');
     const [daysCount, setDaysCount] = useState(0);
+    const [modalVisible, setModalVisible] = React.useState(false);
+
     // Формируем массив объектов для customDatesStyles
     
     useFocusEffect(
@@ -25,11 +27,11 @@ export default function Calendar() {
             setYear(currentYear)
             const currentMonth = currentDate.getMonth() + 1; // Добавляем 1, так как месяцы в JS начинаются с 0
             setMonth(currentMonth)
-            fetchData();
+            fetchData(currentYear,currentMonth);
         }, []) 
     );
 
-    const fetchData = async () => {
+    const fetchData = async (year, month) => {
         try {
             startLoading();           
             await getUsersTrafficStatistics(month, year)            
@@ -73,6 +75,7 @@ export default function Calendar() {
                         };
                     });
                     let hours = Math.floor(fullTimeCounter / 60); // Получаем количество целых часов
+                    console.log(fullTimeCounter)
                     let minutes = fullTimeCounter % 60;
                     const middleMin = fullTimeCounter/days;
                     setDaysCount(days);
@@ -80,6 +83,8 @@ export default function Calendar() {
                     hours = Math.floor(middleMin / 60); // Получаем количество целых часов
                     minutes =  Math.floor(middleMin % 60);
                     setmiddleTime(`${hours}ч${minutes}мин`)
+                    if(fullTimeCounter==0)  
+                    setmiddleTime(`0ч0мин`)
                     setCustomDatesStyles(customStyles);
             }
             else{
@@ -102,25 +107,59 @@ export default function Calendar() {
     const handleMonthChange = async (date) => {
         startLoading();
         console.log('Новый выбранный месяц:', date);
-
-
-
         const newYear = date.getFullYear();
         setYear(newYear);
-        const newMonth = date.getMonth() + 1;
-        setMonth(newMonth);
-        console.log(year,month);
-        try {
-            const res = await getUsersTrafficStatistics(year, month);
-            if(!res) Alert.alert('ошибка','ошибка получения ')
-        } catch (err) {
-            Alert.alert("Ошибка", 'Ошибка: \n' + err);
-        }
-        stopLoading();
+        const newMonth = date.getMonth()+1;
+        const currentMonth = month;
+        const updatedMonth = currentMonth + (newMonth - currentMonth);
+        setMonth(newMonth); 
+            console.log(year, month);
+            console.log(newYear, newMonth)
+            try {
+                await fetchData(newYear, newMonth);
+            } catch (err) {
+                Alert.alert("Ошибка", 'Ошибка: \n' + err);
+            }
+            stopLoading();
+        
     };
-    const onDateChange =async(date) => {
-        console.log(date);
-      }
+    
+    
+    
+    const onDateChange = async (date) => {
+        const formattedDate = date.toISOString().split('T')[0].split('-').reverse().join('.');
+        const selectedDayData = Store.trafficData.find(item => item.day_title === formattedDate);
+        
+        if (selectedDayData) {
+            const startTimeHours = new Date(selectedDayData.workday_date_start).getHours();
+            const startTimeMinutes = new Date(selectedDayData.workday_date_start).getMinutes();
+            const startTime = `начало: ${startTimeHours.toString().padStart(2, '0')}:${startTimeMinutes.toString().padStart(2, '0')}`;
+            
+            let endTime = 'рабочий день незавершен';
+            if (selectedDayData.workday_complete) {
+                const endTimeHours = new Date(selectedDayData.workday_date_finish).getHours();
+                const endTimeMinutes = new Date(selectedDayData.workday_date_finish).getMinutes();
+                const formattedEndTime = `конец: ${endTimeHours.toString().padStart(2, '0')}:${endTimeMinutes.toString().padStart(2, '0')}`;
+                
+                let durationInMinute = selectedDayData.workday_duration_final / 60;
+                let duration = '';
+                console.log(durationInMinute)
+                if(durationInMinute>0){
+                let hours = Math.floor(durationInMinute / 60); // Получаем количество целых часов
+                let minutes = Math.floor(durationInMinute % 60);
+                duration = `${hours}ч${minutes}мин`;
+                }
+                else duration = 'не установлено';
+                setmiddleTime(duration);
+                
+                endTime = `${formattedEndTime}\nдлительность: ${duration}`;
+            }
+            
+            let dayInfo = `${startTime}\n${endTime}`;
+            Alert.alert(formattedDate, dayInfo);
+        }
+    }
+    
     
     return (
         <View style={styles.container}>
