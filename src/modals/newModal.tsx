@@ -4,18 +4,26 @@ import { styles } from "src/stores/styles";
 import CalendarPicker from 'react-native-calendar-picker';
 import Store from "src/stores/mobx";
 import MultiSelect from "src/components/picker-select"
+import ClientSelect from "src/components/clients-select"
 import CustomModal from 'src/components/custom-modal';
+import { Button } from 'react-native-paper';
+import {getHierarchy} from 'src/http'
 
 const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedStartDate, setSelectedStartDate] = useState(null); 
+const [selectedDate, setSelectedDate] = useState(null);
+const [selectedStartDate, setSelectedStartDate] = useState(null); 
 const [showCalendarModal, setShowCalendarModal] = useState(false);
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedStartDate(date); 
     setShowCalendarModal(false);
   };
+  const ReqRepost = async () => {
 
+    const response = await getHierarchy();
+    console.log(JSON.stringify(response.data));
+
+};
   return (
     <CustomModal
       visible={modalVisible}
@@ -28,17 +36,21 @@ const [showCalendarModal, setShowCalendarModal] = useState(false);
               
               <View style={styles.filterContainer}>
 
-                  <MultiSelect storages={Store.storages}/>
+                  <Text>{reportName.filters[0].view}</Text>
+
+                  <MultiSelect storages={Store.storages} title={'Выберите склады'}/>
+
                
               </View>
-
-              <View style={styles.parameterContainer}>
-
+              <View style={styles.filterContainer}>
+                 <ClientSelect/>
               </View>
+
+
               {reportName.parameters.map((parameter, index) => (
               <View key={index} >
                   <Text>{parameter.view}:</Text>
-                  <TouchableOpacity onPress={() => setShowCalendarModal(true)}>
+                  <TouchableOpacity style={styles.textInput} onPress={() => setShowCalendarModal(true)}>
                   <View style={styles.dateField}>
                       <Text style={selectedDate ? styles.selectedDateText : styles.placeholderText}>
                       {selectedDate ? selectedDate.toString() : 'Выберите дату'}
@@ -60,6 +72,9 @@ const [showCalendarModal, setShowCalendarModal] = useState(false);
                       />
                   </View>
                   </TouchableOpacity>
+                  <Button onPress={ReqRepost}>
+                    <Text>Запросить отчет</Text>
+                  </Button>
               </View>
               ))}
           </View>

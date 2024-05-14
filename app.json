@@ -13,7 +13,9 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
         }
-      ]
+      ],
+      "expo-router",
+      "expo-secure-store"
     ],
     "splash": {
       "image": "./assets/splash.png",

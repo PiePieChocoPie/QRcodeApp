@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
 import CustomModal from 'src/components/custom-modal';
 
-const MultiSelect = ({ storages }) => {
+const MultiSelect = ({ storages, title }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -31,7 +31,8 @@ const MultiSelect = ({ storages }) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         content={
-          <ScrollView contentContainerStyle={styles.modalContent}>
+          <ScrollView style={styles.modalContent}>
+            <Text style={styles.title}> {title}</Text>
             {storages.map((storage, index) => (
               <TouchableOpacity
                 key={index}
@@ -53,20 +54,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center', 
+},
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
     padding: 10,
     marginBottom: 10,
-    height: 80
-    
+    height: 50,
+    borderRadius: 5,
+    borderColor: '#ccc',
+    borderWidth: 1, 
   },
   selectedItemsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 5,
     
   },
+
   selectedItem: {
     backgroundColor: 'lightblue',
     padding: 5,
@@ -81,13 +88,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   modalContent: {
-    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
-    width: '80%',
-    maxHeight: '80%',
+    width: '80%'
   },
   option: {
     padding: 10,
@@ -97,6 +103,7 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     backgroundColor: 'lightblue',
+    
   },
   closeButton: {
     marginTop: 10,

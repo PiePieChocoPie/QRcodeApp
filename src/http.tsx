@@ -3,7 +3,6 @@ import Store from "src/stores/mobx";
 
 
 
-
 export async function getDataByToken(authToken:string){
     let config = {
         method: 'get',
@@ -118,7 +117,7 @@ export async function getReports(){
     };
         
     const response = await axios.request(config)    
-    console.log(JSON.stringify(response.data, null, 2));
+    // console.log(JSON.stringify(response.data, null, 2));
     return response;
 }
 
@@ -224,6 +223,18 @@ export async function getAllStaticData(authToken:string,userData: boolean, depDa
     }
 }
 
+export async function getHierarchy() {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'https://bitrix24.martinural.ru/MartinAPI/Hieralcy.php',
+      headers: {
+        'Authorization': 'Basic arm:Zxc123'
+      },
+    };
+    const response = await axios.request(config);
+    return response;
+  }
 
 export async function getDataAboutDocs(raw:string){
     let body = {};

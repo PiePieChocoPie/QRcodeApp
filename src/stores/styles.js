@@ -131,16 +131,15 @@ placeholderText: {
 },
 filterContainer: {
   marginTop: 10,
-  padding: 10,
-  backgroundColor: '#ffffff', // белый фон
   borderRadius: 5,
   marginBottom:80
 },
 parameterContainer: {
   marginTop: 10,
   padding: 10,
-  backgroundColor: '#ffffff', // белый фон
   borderRadius: 5,
+
+  
 },
 datePickerContainer: {
   flexDirection: 'row',

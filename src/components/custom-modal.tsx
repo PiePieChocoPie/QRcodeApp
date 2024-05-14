@@ -56,7 +56,7 @@ const CustomModal = ({ visible, onClose, content }) => {
   ).current;
 
   return (
-    <>
+    <View style={{backgroundColor: 'red'}}>
       <ModalBackdrop visible={visible} onPress={onClose} />
       <Modal
         animationType="slide"
@@ -75,7 +75,7 @@ const CustomModal = ({ visible, onClose, content }) => {
           </View>
         </TouchableOpacity>
       </Modal>
-    </>
+    </View>
   );
 };
 
