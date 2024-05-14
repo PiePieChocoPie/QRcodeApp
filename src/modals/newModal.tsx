@@ -5,16 +5,41 @@ import CalendarPicker from 'react-native-calendar-picker';
 import Store from "src/stores/mobx";
 import MultiSelect from "src/components/picker-select"
 import CustomModal from 'src/components/custom-modal';
+import { Button } from 'react-native-paper';
 
 const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStartDate, setSelectedStartDate] = useState(null); 
+  const [selectedEndDate, setSelectedEndDate] = useState(null); 
 const [showCalendarModal, setShowCalendarModal] = useState(false);
-  const handleDateChange = (date) => {
+  const handleSingleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedStartDate(date); 
     setShowCalendarModal(false);
+    console.log(reportName.parameters)
   };
+  const handleMultipleDateChange = (firstDate,lastDate) => {
+    setSelectedDate(firstDate);
+    setSelectedStartDate(firstDate); 
+    setSelectedEndDate(lastDate); 
+    setShowCalendarModal(false);
+    console.log(reportName.parameters)
+  };
+  const handleDateChange = async(date, type) => {
+    console.log(type)
+    setSelectedDate((prevSelectedDate) => {
+      if (type === "END_DATE") {
+        setSelectedEndDate(date);
+      } else {
+        setSelectedStartDate(date);
+        setSelectedEndDate(null); // Сбрасываем конечную дату при выборе новой начальной даты
+      }
+      return date; // Возвращаем новое значение выбранной даты
+    });
+    console.log('1 - '+selectedStartDate)
+    console.log('2 - '+selectedEndDate +`\n`)
+  };
+  
 
   return (
     <CustomModal
@@ -36,31 +61,32 @@ const [showCalendarModal, setShowCalendarModal] = useState(false);
 
               </View>
               {reportName.parameters.map((parameter, index) => (
-              <View key={index} >
+                <View key={index}>
                   <Text>{parameter.view}:</Text>
                   <TouchableOpacity onPress={() => setShowCalendarModal(true)}>
-                  <View style={styles.dateField}>
+                    <View style={styles.dateField}>
                       <Text style={selectedDate ? styles.selectedDateText : styles.placeholderText}>
-                      {selectedDate ? selectedDate.toString() : 'Выберите дату'}
+                        {selectedDate ? selectedDate.toString() : 'Выберите дату'}
                       </Text>
                       <CustomModal
-                      visible={showCalendarModal}
-                      onClose={() => setShowCalendarModal(false)}
-                      content={
-                        showCalendarModal && (
+                        visible={showCalendarModal}
+                        onClose={() => setShowCalendarModal(false)}
+                        content={showCalendarModal && (
+                          <View>
                           <CalendarPicker
-                              onDateChange={handleDateChange}
-                              allowRangeSelection={false}
-                              selectedDayColor="#7300e6"
-                              selectedDayTextColor="#FFFFFF"
-                              selectedStartDate={selectedStartDate}
-                          />
-                          )
-                      }
-                      />
-                  </View>
+                            onDateChange={handleDateChange}
+                            allowRangeSelection={parameter.view == 'Период'}
+                            allowBackwardRangeSelect={parameter.view == 'Период'}
+                            selectedDayColor="#7300e6"
+                            selectedDayTextColor="#FFFFFF"
+                            selectedStartDate={selectedStartDate} 
+                            selectedEndDate={selectedEndDate}/>
+                            <Button onPress={()=>setShowCalendarModal(!showCalendarModal)}>применить</Button>
+                          </View>
+                        )} />
+                    </View>
                   </TouchableOpacity>
-              </View>
+                </View>
               ))}
           </View>
           )
