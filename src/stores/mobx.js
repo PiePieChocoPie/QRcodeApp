@@ -14,6 +14,8 @@ class store {
     @observable userPhoto = null;
     @observable statusWorkDay = null;
     @observable storages = null;
+    @observable mainDate = null;
+    @observable extraDate = null;
 
 
     @action
@@ -63,6 +65,16 @@ class store {
     @action
     setTrafficData(trafficData){
         this.trafficData = trafficData;
+
+    }
+    @action
+    setMainDate(mainDate){
+        this.mainDate = mainDate;
+
+    }
+    @action
+    setExtraDate(extraDate){
+        this.extraDate = extraDate;
 
     }
 }

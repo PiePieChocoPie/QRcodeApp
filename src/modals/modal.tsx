@@ -1,6 +1,6 @@
 import React from 'react';
 import {Modal, View, Text, TouchableOpacity, Dimensions} from 'react-native';
-import { projColors, styles } from "src/stores/styles";
+import { styles } from "src/stores/styles";
 import QRCode from "react-native-qrcode-svg";
 
 const ModalForm = ({ modalVisible, toggleModal, ID}) => {
