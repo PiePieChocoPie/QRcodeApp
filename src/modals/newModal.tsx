@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { styles } from 'src/stores/styles';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { projColors, styles } from 'src/stores/styles';
 import CalendarPicker from 'react-native-calendar-picker';
 import Store from 'src/stores/mobx';
 import MultiSelect from 'src/components/picker-select';
@@ -8,23 +8,54 @@ import ClientSelect from 'src/components/clients-select';
 import CustomModal from 'src/components/custom-modal';
 import { Button } from 'react-native-paper';
 import { getHierarchy } from 'src/http';
+import Toast from 'react-native-root-toast';
+import useLoading from 'src/useLoading';
 
-const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
+const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [isPeriod, setPeriod] = useState(false);
+  const { loading, startLoading, stopLoading } = useLoading();
 
-  const handleSingleDateChange = (date) => {
-    setSelectedDate(date);
-    setSelectedStartDate(date);
-    setShowCalendarModal(false);
-  };
+
+  useEffect(() => {
+    console.log('Selected Start Date:', selectedStartDate);
+    console.log('Selected End Date:', selectedEndDate);
+    startLoading();
+    Store.setMainDate(selectedStartDate);
+    Store.setExtraDate(selectedEndDate);
+    stopLoading();
+  }, [selectedStartDate, selectedEndDate]);
 
   const ReqReport = async () => {
     const response = await getHierarchy();
-    console.log(JSON.stringify(response.data));
+    let parameter = isPeriod?[selectedStartDate, selectedEndDate]:[selectedStartDate];
+    let jsonBody = {
+      name: reportKey,
+      filter:{
+        value: "someValue",
+        name: reportName.filters[0].using,
+      },
+      parameter:{
+        value:parameter
+      }
+    };
+    console.log(jsonBody);
+  };
+
+  const handleSingleDateChange = (date) => {
+    setPeriod(false);
+    console.log("Одиночная дата", date);
+    Toast.show(`Одиночная дата - ${date}`, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.TOP,
+    });
+    setSelectedDate(date);
+    setSelectedStartDate(date);
+    setSelectedEndDate(null);
+    terminateModal();
   };
 
   const handleDateChange = (date, type) => {
@@ -34,22 +65,25 @@ const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
     } else {
       setSelectedStartDate(date);
       setSelectedDate(date);
+      setPeriod(false);
     }
   };
 
   const terminateModal = () => {
     setShowCalendarModal(false);
     Store.setMainDate(selectedStartDate);
-    Store.setExtraDate(selectedEndDate);
-    console.log(selectedStartDate, selectedEndDate);
+    if (isPeriod) {
+      Store.setExtraDate(selectedEndDate);
+    }
+    console.log('terminateModal:', selectedStartDate, selectedEndDate, '\n', "записаны - ", Store.mainDate, Store.extraDate);
   };
 
   const formatDateString = (date) => {
     if (!date) return 'Выберите дату';
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // добавляем ведущий ноль
-    const day = String(date.getDate()).padStart(2, '0'); // добавляем ведущий ноль
-    return `${day}/${month}/${year}`; 
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -73,32 +107,48 @@ const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
                 <TouchableOpacity style={styles.textInput} onPress={() => setShowCalendarModal(true)}>
                   <View style={styles.dateField}>
                     <Text style={selectedDate ? styles.selectedDateText : styles.placeholderText}>
-                      {selectedDate ? parameter.view == 'Период'? `${formatDateString(Store.mainDate)} - ${formatDateString(Store.extraDate)}`:formatDateString(Store.mainDate) : 'Выберите дату'}
+                      {selectedDate ? (parameter.view === 'Период' ? `${formatDateString(Store.mainDate)} - ${formatDateString(Store.extraDate)}` : formatDateString(selectedStartDate)) : 'Выберите дату'}
                     </Text>
                     <CustomModal
                       visible={showCalendarModal}
                       onClose={() => setShowCalendarModal(false)}
                       content={
                         showCalendarModal && (
-                          <View>
-                            <CalendarPicker
-                              onDateChange={parameter.view === 'Период' ? handleDateChange : handleSingleDateChange}
-                              allowRangeSelection={parameter.view === 'Период'}
-                              allowBackwardRangeSelect={parameter.view === 'Период'}
-                              selectedDayColor="#7300e6"
-                              selectedDayTextColor="#FFFFFF"
-                              selectedStartDate={selectedStartDate}
-                              selectedEndDate={selectedEndDate}
-                              
-                              todayBackgroundColor="#f2e6ff"
-                              previousTitle="Предыдущий"
-                              nextTitle="Следующий"
-                              startFromMonday
-                              weekdays={['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']}
-                              months={['янв', 'фев', 'март', 'апр', 'май', 'июнь', 'июль', 'авг', 'сент', 'окт', 'нояб', 'дек']}
-                            />
-                            <Button onPress={terminateModal}>применить</Button>
-                          </View>
+                          ( loading ? (
+                            <View style={styles.containerCentrallity}>
+                                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                            </View>
+                            ) : 
+                            (
+                            parameter.view === 'Период' ? (
+                              <View>
+                                <CalendarPicker
+                                  onDateChange={handleDateChange}
+                                  allowRangeSelection
+                                  allowBackwardRangeSelect
+                                  selectedDayColor="#7300e6"
+                                  selectedDayTextColor="#FFFFFF"
+                                  selectedStartDate={selectedStartDate}
+                                  selectedEndDate={selectedEndDate}
+                                  todayBackgroundColor="#f2e6ff"
+                                  previousTitle="Предыдущий"
+                                  nextTitle="Следующий"
+                                  startFromMonday
+                                  weekdays={['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']}
+                                  months={['янв', 'фев', 'март', 'апр', 'май', 'июнь', 'июль', 'авг', 'сент', 'окт', 'нояб', 'дек']}
+                                />
+                                <Button onPress={terminateModal}>Применить</Button>
+                              </View>
+                            ) : (
+                              <CalendarPicker
+                                onDateChange={handleSingleDateChange}
+                                allowRangeSelection={false}
+                                selectedDayColor="#7300e6"
+                                selectedDayTextColor="#FFFFFF"
+                                selectedStartDate={selectedStartDate}
+                              />
+                            )
+                          ))
                         )
                       }
                     />

@@ -45,6 +45,16 @@ export const json_styles = StyleSheet.create({
 )
 
 export const styles = StyleSheet.create({
+  link: {
+    fontSize: 20,
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
+  line: {
+    height: 1,
+    backgroundColor: 'black',
+    marginVertical: 8,
+  },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
