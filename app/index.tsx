@@ -5,7 +5,7 @@ import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions,
 import { router } from "expo-router";
 //
 import { styles, projColors } from "src/stores/styles";
-import { getAllStaticData, statusDay } from "src/http";
+import { getAllStaticData, statusDay, getStorages } from "src/http";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 
