@@ -12,6 +12,10 @@ const MultiSelect = ({ jsonData, title}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  const selectedItems = items.filter(item => item.selected);
+  const displayedItems = selectedItems.slice(-3);
+  const additionalCount = selectedItems.length - displayedItems.length;
+
   const toggleItem = (index) => {
     const updatedItems = [...items];
     updatedItems[index] = { ...updatedItems[index], selected: !updatedItems[index].selected };
@@ -44,13 +48,16 @@ const MultiSelect = ({ jsonData, title}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.input}>
+     <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.selectedItemsContainer}>
-          {items.filter(item => item.selected).map((item, index) => (
+          {displayedItems.map((item, index) => (
             <Text key={index} style={styles.selectedItem}>{item.name || item.NAME}</Text>
           ))}
+          {additionalCount > 0 && (
+            <Text style={styles.additionalText}>и еще {additionalCount}</Text>
+          )}
+        <Text style={styles.inputText}>{selectedItems.length > 0 ? '' : 'Выберите элементы'}</Text>
         </View>
-        <Text style={styles.inputText}>{items.some(item => item.selected) ? '' : 'Выберите элементы'}</Text>
       </TouchableOpacity>
       <CustomModal
         visible={modalVisible}
@@ -133,6 +140,12 @@ const styles = StyleSheet.create({
   selectedOption: {
     backgroundColor: 'lightblue',
     
+  },
+  additionalText: {
+    backgroundColor: 'lightgray',
+    padding: 5,
+    margin: 2,
+    borderRadius: 5,
   },
   closeButton: {
     marginTop: 10,

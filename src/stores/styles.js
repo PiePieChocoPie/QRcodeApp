@@ -142,14 +142,14 @@ placeholderText: {
 filterContainer: {
   marginTop: 10,
   borderRadius: 5,
-  marginBottom:80
+  marginBottom:80,
+  // flex:1
 },
 parameterContainer: {
   marginTop: 10,
   padding: 10,
   borderRadius: 5,
-
-  
+flex:1  
 },
 datePickerContainer: {
   flexDirection: 'row',
