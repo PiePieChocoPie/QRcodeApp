@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
 import CustomModal from 'src/components/custom-modal';
+
+const ITEMS_PER_PAGE = 20;
 
 const MultiSelect = ({ jsonData, title}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [items, setItems] = useState(jsonData.result || jsonData.body);
 
+
+  const [currentPage, setCurrentPage] = useState(1);
+
   const toggleItem = (index) => {
     const updatedItems = [...items];
     updatedItems[index] = { ...updatedItems[index], selected: !updatedItems[index].selected };
     setItems(updatedItems);
+  };
+  const loadItems = (page = 1) => {
+    const allItems = jsonData.result || jsonData.body;
+    const newItems = allItems.slice(0, page * ITEMS_PER_PAGE);
+    setItems(newItems);
+  };
+  useEffect(() => {
+
+    loadItems();
+  }, []);
+  const loadMoreItems = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    loadItems(nextPage);
+  };
+
+
+  const handleScroll = ({ nativeEvent }) => {
+    if (isCloseToBottom(nativeEvent)) {
+      loadMoreItems();
+    }
+  };
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
   };
 
   return (
@@ -27,7 +56,7 @@ const MultiSelect = ({ jsonData, title}) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         content={
-          <ScrollView style={styles.modalContent}>
+          <ScrollView style={styles.modalContent} onScroll={handleScroll} scrollEventThrottle={16}>
             <Text style={styles.title}>{title}</Text>
             {items.map((item, index) => (
               <TouchableOpacity
