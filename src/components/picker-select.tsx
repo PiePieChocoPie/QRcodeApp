@@ -2,47 +2,45 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
 import CustomModal from 'src/components/custom-modal';
 
-const MultiSelect = ({ storages, title }) => {
-  const [selectedItems, setSelectedItems] = useState([]);
+const MultiSelect = ({ jsonData, title}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const toggleItem = (item) => {
-    const index = selectedItems.indexOf(item);
-    if (index === -1) {
-      setSelectedItems([...selectedItems, item]);
-    } else {
-      const updatedItems = [...selectedItems];
-      updatedItems.splice(index, 1);
-      setSelectedItems(updatedItems);
-    }
+  const [items, setItems] = useState(jsonData.result || jsonData.body);
+
+  const toggleItem = (index) => {
+    const updatedItems = [...items];
+    updatedItems[index] = { ...updatedItems[index], selected: !updatedItems[index].selected };
+    setItems(updatedItems);
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.input}>
         <View style={styles.selectedItemsContainer}>
-          {selectedItems.map((item, index) => (
-            <Text key={index} style={styles.selectedItem}>{item}</Text>
+          {items.filter(item => item.selected).map((item, index) => (
+            <Text key={index} style={styles.selectedItem}>{item.name || item.NAME}</Text>
           ))}
         </View>
-        <Text style={styles.inputText}>{selectedItems.length > 0 ? '' : 'Выберите элементы'}</Text>
+        <Text style={styles.inputText}>{items.some(item => item.selected) ? '' : 'Выберите элементы'}</Text>
       </TouchableOpacity>
       <CustomModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         content={
           <ScrollView style={styles.modalContent}>
-            <Text style={styles.title}> {title}</Text>
-            {storages.map((storage, index) => (
+            <Text style={styles.title}>{title}</Text>
+            {items.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.option, selectedItems.includes(storage) && styles.selectedOption]}
-                onPress={() => toggleItem(storage)}
+                style={[
+                  styles.option,
+                  item.selected && styles.selectedOption
+                ]}
+                onPress={() => toggleItem(index)}
               >
-                <Text>{storage}</Text>
+                <Text>{item.name || item.NAME}</Text>
               </TouchableOpacity>
             ))}
-
           </ScrollView>
         }
       />
@@ -79,6 +77,8 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 2,
     borderRadius: 5,
+
+    flexGrow: 1
   },
   inputText: {
     color: '#333',

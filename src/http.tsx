@@ -16,7 +16,7 @@ export async function getDataByToken(authToken:string){
       };
       
       const response = await axios.request(config);
-      Store.setUserStorage(response.data.UF_USR_STORAGES);
+    //   Store.setUserStorage(response.data.UF_USR_STORAGES);
       Store.setUserData(response.data);
       let config2 = {
         method: 'get',
@@ -28,7 +28,28 @@ export async function getDataByToken(authToken:string){
       Store.setUserPhoto(dataForPhoto.data.result[0].PERSONAL_PHOTO);
       return response;
 }
+export async function getStorages(storageData){
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/rest/414/wr0xw0v1im3i64fp/lists.element.get.json`,
+        withCredentials: false,
+        headers: { 
+            'Content-Type': 'application/json'
+          },
+        data : {
+        "FILTER" : {
+            "=ID": storageData
+        },
+        "IBLOCK_TYPE_ID": "lists",
+        "IBLOCK_ID": "31"
+        }
+    };
+        
+    const response = await axios.request(config)    
+    Store.setUserStorage(response.data)
 
+}
 export async function getDepData(ID:string){
     let data = {    
         "ID": ID,
@@ -106,6 +127,19 @@ export async function statusDay(ID:string){
         
     const response = await axios.request(config)    
     Store.setStatusWorkDay(response.data.result.STATUS);
+    return response;
+}
+export async function getClients(GUID){
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}/MartinAPI/partners.php?GUID=${GUID}`,
+        withCredentials: false
+    };
+        
+    const response = await axios.request(config)    
+    Store.setClients(response.data)
+    // console.log(response.data)
     return response;
 }
 export async function getReports(){

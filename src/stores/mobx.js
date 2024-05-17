@@ -14,11 +14,17 @@ class store {
     @observable userPhoto = null;
     @observable statusWorkDay = null;
     @observable storages = null;
+    @observable clients = null;
 
 
     @action
     setUserData(userData) {
         this.userData = userData;
+    } 
+    
+    @action
+    setClients(clients) {
+        this.clients = clients;
     } 
     @action
     setUserStorage(userData) {

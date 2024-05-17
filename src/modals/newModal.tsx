@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from 'src/stores/styles';
 import CalendarPicker from 'react-native-calendar-picker';
@@ -7,14 +7,23 @@ import MultiSelect from 'src/components/picker-select';
 import ClientSelect from 'src/components/clients-select';
 import CustomModal from 'src/components/custom-modal';
 import { Button } from 'react-native-paper';
-import { getHierarchy } from 'src/http';
+import { getHierarchy, getClients, getStorages } from 'src/http';
+import { useFocusEffect } from 'expo-router';
 
 const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
-
+  useEffect(() => {
+    getClients('ee4874d1-db5d-11e9-8160-e03f4980f4ff');
+    // console.log(Store.clients)
+  }, []);
+  useFocusEffect(() => {
+    getStorages(Store.userData.UF_USR_STORAGES);
+    // console.log(Store.userData.UF_USR_STORAGES)
+    console.log(Store.storages)
+  },);
   const handleSingleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedStartDate(date);
@@ -23,8 +32,8 @@ const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
   };
 
   const ReqReport = async () => {
-    const response = await getHierarchy();
-    console.log(JSON.stringify(response.data));
+    const response = await getClients("ee4874d1-db5d-11e9-8160-e03f4980f4ff");
+    console.log(response.data);
   };
 
   const handleMultipleDateChange = (firstDate, lastDate) => {
@@ -59,12 +68,16 @@ const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
           <View style={{ width: '80%', flex: 1 }}>
             <Text style={styles.modalTitle}>{reportName.name}</Text>
             <View style={styles.filterContainer}>
-              <Text>{reportName.filters[0].view}</Text>
-              <MultiSelect storages={Store.storages} title={'Выберите склады'} />
+            <Text>{reportName.filters[0].view}</Text>
+            {reportName.filters[0].view === "Склады" ? (
+                <MultiSelect jsonData={Store.storages} title={'Выберите склады'}/>
+            ) : (
+                // <ClientSelect/>
+                <MultiSelect jsonData={Store.clients} title={'Выберите клиентов'}/>
+            )}
+
             </View>
-            <View style={styles.filterContainer}>
-              <ClientSelect />
-            </View>
+
             {reportName.parameters.map((parameter, index) => (
               <View key={index}>
                 <Text>{parameter.view}:</Text>
@@ -99,8 +112,13 @@ const ModalForm = ({ modalVisible, toggleModal, reportName }) => {
                     </TouchableOpacity>
 
                   </View>
-
+                    
                 </TouchableOpacity>
+
+
+
+
+
                 <Button onPress={ReqReport}>
                       <Text>Запросить отчет</Text>
                     </Button>
