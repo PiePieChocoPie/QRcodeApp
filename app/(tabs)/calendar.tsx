@@ -6,7 +6,7 @@ import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import Store from "src/stores/mobx";
-
+import CustomModal from "src/components/custom-modal";
 
 export default function Calendar() {
     const { loading, startLoading, stopLoading } = useLoading();
@@ -16,7 +16,9 @@ export default function Calendar() {
     const [fullTime, setFullTime] = useState('');
     const [middleTime, setmiddleTime] = useState('');
     const [daysCount, setDaysCount] = useState(0);
-    const [modalVisible, setModalVisible] = React.useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [dayData, setDayData] = useState('');
+    const [dayTitle, setDayTitle] = useState('')
 
     // Формируем массив объектов для customDatesStyles
     
@@ -110,8 +112,6 @@ export default function Calendar() {
         const newYear = date.getFullYear();
         setYear(newYear);
         const newMonth = date.getMonth()+1;
-        const currentMonth = month;
-        const updatedMonth = currentMonth + (newMonth - currentMonth);
         setMonth(newMonth); 
             console.log(year, month);
             console.log(newYear, newMonth)
@@ -143,7 +143,6 @@ export default function Calendar() {
                 
                 let durationInMinute = selectedDayData.workday_duration_final / 60;
                 let duration = '';
-                console.log(durationInMinute)
                 if(durationInMinute>0){
                 let hours = Math.floor(durationInMinute / 60); // Получаем количество целых часов
                 let minutes = Math.floor(durationInMinute % 60);
@@ -155,11 +154,17 @@ export default function Calendar() {
                 endTime = `${formattedEndTime}\nдлительность: ${duration}`;
             }
             
-            let dayInfo = `${startTime}\n${endTime}`;
-            Alert.alert(formattedDate, dayInfo);
+            let dayInfo = `\n${startTime}\n${endTime}`;
+            // Alert.alert(formattedDate, dayInfo);
+            toggleModal(dayInfo,formattedDate);
         }
     }
     
+    const toggleModal = (dayInfo, dayTitle) => {
+        setDayData(dayInfo);
+        setDayTitle(dayTitle);
+        setModalVisible(!modalVisible);
+    };
     
     return (
         <View style={styles.container}>
@@ -198,6 +203,17 @@ export default function Calendar() {
                     </View>
             )}
             </View>
+            <CustomModal 
+                visible={modalVisible}
+                onClose={toggleModal} 
+                content={
+                    <View>
+                    <Text style={styles.modalTitle}>{dayTitle}</Text>
+                    <Text style={styles.textProfile}>{dayData}</Text>
+                    </View>
+                }
+            />
+
         </View>
     );
 }

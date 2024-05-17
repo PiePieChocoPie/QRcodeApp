@@ -78,9 +78,9 @@ export default function Reader() {
                     setModalText(res.data.result.items[0]);
                 }
                 else{
-                    // Add a Toast on screen.
                     let toast = Toast.show(`ошибка получения документа`, {
                         duration: Toast.durations.LONG,
+                        position:Toast.positions.TOP
                     });
                     
                     setTimeout(function hideToast() {
@@ -95,7 +95,8 @@ export default function Reader() {
         }
         catch(e){
             let toast = Toast.show(`ошибка получения документа - ${e}`, {
-                duration: Toast.durations.LONG,
+                        position:Toast.positions.TOP,
+                        duration: Toast.durations.LONG,
             });
             
             setTimeout(function hideToast() {

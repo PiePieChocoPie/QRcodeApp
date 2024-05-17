@@ -1,17 +1,11 @@
-import { Link, Stack } from 'expo-router';
-import { Text, View, Button, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import React, { useEffect, useState } from "react";
-import { useFocusEffect } from '@react-navigation/native';
-import Store from "src/stores/mobx";
-import LottieView from 'lottie-react-native';
-import anim from 'src/job_anim.json';
-import { json_styles } from "src/stores/styles";
-import { observer } from "mobx-react-lite"
 import { getReports } from "src/http";
 import ModalForm from "src/modals/newModal";
 
 const home = () => {
   const [selectedReport, setSelectedReport] = useState(null);
+  const [reportKey, setReportKey] = useState(null);
   const [reports, setReports] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -20,6 +14,7 @@ const home = () => {
       try {
         const response = await getReports();
         setReports(response.data);
+        console.log(response.data.storage)
       } catch (error) {
         console.error('Error fetching reports:', error);
       }
@@ -28,8 +23,10 @@ const home = () => {
     fetchData();
   }, []);
 
-  const onPressReport = (reportKey) => {
-    const selectedReport = reports[reportKey];
+  const onPressReport = (Key) => {
+    const selectedReport = reports[Key];
+    console.log(Key)
+    setReportKey(Key)
     setSelectedReport(selectedReport);
     toggleModal();
   };
@@ -49,7 +46,7 @@ const home = () => {
           <Text style={styles.tileText}>{reports[key].name}</Text>
         </TouchableOpacity>
       ))}
-      <ModalForm modalVisible={modalVisible} toggleModal={toggleModal} reportName={selectedReport} />
+      <ModalForm modalVisible={modalVisible} toggleModal={toggleModal} reportName={selectedReport} reportKey={reportKey}/>
     </ScrollView>
   );
 };
