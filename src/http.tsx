@@ -358,3 +358,38 @@ export async function getUsersTrafficStatistics(Month:number, Year:number){
         return false;
     }
 }
+
+export async function getUserStoragesID(){
+    try{
+        let data = JSON.stringify({
+            "filter": {
+              "ENTITY_ID": 414
+            }
+          });
+          
+          let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://bitrix24.martinural.ru/rest/527/z75y89aui0coqhoy/disk.storage.getlist',
+            headers: { 
+              'Content-Type': 'application/json', 
+              'Authorization': 'Basic YXJtOlp4YzEyMw==', 
+              'Cookie': 'PHPSESSID=DpbTI7ObOIJTVvKyIHbWdfRqaTZjtoYo'
+            },
+            data : data
+          };
+          
+          axios.request(config)
+          .then((response) => {
+            Store.setUserStorageData(response.data.result);
+            return true;
+          })
+          .catch((error) => {
+            console.log(error);
+            return false;
+          });
+    }
+    catch{
+        return false;
+    }
+} 

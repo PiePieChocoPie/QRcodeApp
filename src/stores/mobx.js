@@ -2,6 +2,7 @@ import { observable, action} from 'mobx';
 
 class store {
     @observable userData = null;
+    @observable userStorageData = null;
     @observable tokenData = null;
     @observable depData = null;
     @observable statusData = null;
@@ -24,6 +25,10 @@ class store {
     @action
     setUserData(userData) {
         this.userData = userData;
+    }  
+    @action
+    setUserStorageData(userStorageData) {
+        this.userStorageData = userStorageData;
     } 
     
     @action

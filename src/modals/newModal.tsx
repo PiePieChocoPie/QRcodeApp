@@ -7,7 +7,7 @@ import MultiSelect from 'src/components/picker-select';
 import ClientSelect from 'src/components/clients-select';
 import CustomModal from 'src/components/custom-modal';
 import { Button } from 'react-native-paper';
-import { getHierarchy, getClients, getStorages } from 'src/http';
+import { getHierarchy, getClients, getStorages, getUserStoragesID } from 'src/http';
 import { useFocusEffect } from 'expo-router';
 
 const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
@@ -22,9 +22,12 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
 
   const ReqReport = async () => {
     const response = await getHierarchy();
+    await getUserStoragesID();
     let parameter = isPeriod?[Store.mainDate, Store.extraDate]:[Store.mainDate];
+    console.log(Store.userStorageData)
     let jsonBody = {
       name: reportKey,
+      storageID: Store.userStorageData[0].ID,
       filter:{
         value: Store.filterItems,
         name: reportName.filters[0].inXml,
