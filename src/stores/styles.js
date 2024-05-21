@@ -50,6 +50,13 @@ export const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
   },
+  searchInput: { // Новый стиль для поля поиска
+    padding: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
   line: {
     height: 1,
     backgroundColor: 'black',

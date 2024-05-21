@@ -47,7 +47,8 @@ export async function getStorages(storageData){
     };
         
     const response = await axios.request(config)    
-    Store.setUserStorage(response.data)
+    // console.log(response.data.result)
+    Store.setUserStorage(response.data.result)
 
 }
 export async function getDepData(ID:string){
@@ -138,7 +139,7 @@ export async function getClients(GUID){
     };
         
     const response = await axios.request(config)    
-    Store.setClients(response.data)
+    Store.setClients(response.data.body)
     // console.log(response.data)
     return response;
 }

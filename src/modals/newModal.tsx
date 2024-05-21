@@ -42,7 +42,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   }, []);
   useFocusEffect(() => {
     getStorages(Store.userData.UF_USR_STORAGES);
-    // console.log(Store.userData.UF_USR_STORAGES)
     console.log(Store.storages)
   },);
  
@@ -51,19 +50,21 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
     <CustomModal
       visible={modalVisible}
       onClose={toggleModal}
+      
       content={
         reportName && (
-          <View style={{ width: '80%', flex: 1 }}>
+          <View style={{ width: '80%', flex: 1,}}>
             <Text style={styles.modalTitle}>{reportName.name}</Text>
             <View style={styles.filterContainer}>
             <Text>{reportName.filters[0].view}</Text>
-            {reportName.filters[0].view === "Склады" ? (
-                <MultiSelect jsonData={Store.storages} title={'Выберите склады'}/>
-            ) : (
-                // <ClientSelect/>
-                <MultiSelect jsonData={Store.clients} title={'Выберите клиентов'}/>
-            )}
+              <View style={{height: '15%'}}>
+              {reportName.filters[0].view === "Склады" ? (
+                  <MultiSelect jsonData={Store.storages} title={'Выберите склады'}/>
+              ) : (
+                  <MultiSelect jsonData={Store.clients} title={'Выберите клиентов'}/>
 
+              )}
+              </View>
             </View>
 
             {reportName.parameters.map((parameter, index) => (

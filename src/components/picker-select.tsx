@@ -1,89 +1,84 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState, useCallback, memo} from 'react';
+import { View, Text, TouchableOpacity, Modal, StyleSheet,  FlatList, TextInput } from 'react-native';
 import CustomModal from 'src/components/custom-modal';
 
 const ITEMS_PER_PAGE = 20;
-
-const MultiSelect = ({ jsonData, title}) => {
+const MultiSelect = ({ jsonData, title }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [items, setItems] = useState(jsonData);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredItems, setFilteredItems] = useState(items);
 
-  const [items, setItems] = useState(jsonData.result || jsonData.body);
+  useEffect(() => {
+    setFilteredItems(
+      items.filter(item => item.NAME.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [searchQuery, items]);
 
+  const toggleItem = (GUID) => {
+    const updatedItems = items.map(item =>
+      item.GUID === GUID ? { ...item, selected: !item.selected } : item
+    );
+    setItems(updatedItems);
+  };
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const renderItem = useCallback(({ item }) => (
+    <MemoizedItem item={item} toggleItem={toggleItem} />
+  ), [toggleItem]);
 
   const selectedItems = items.filter(item => item.selected);
   const displayedItems = selectedItems.slice(-3);
   const additionalCount = selectedItems.length - displayedItems.length;
 
-  const toggleItem = (index) => {
-    const updatedItems = [...items];
-    updatedItems[index] = { ...updatedItems[index], selected: !updatedItems[index].selected };
-    setItems(updatedItems);
-  };
-  const loadItems = (page = 1) => {
-    const allItems = jsonData.result || jsonData.body;
-    const newItems = allItems.slice(0, page * ITEMS_PER_PAGE);
-    setItems(newItems);
-  };
-  useEffect(() => {
-
-    loadItems();
-  }, []);
-  const loadMoreItems = () => {
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    loadItems(nextPage);
-  };
-
-
-  const handleScroll = ({ nativeEvent }) => {
-    if (isCloseToBottom(nativeEvent)) {
-      loadMoreItems();
-    }
-  };
-  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-  };
-
   return (
     <View style={styles.container}>
-     <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.selectedItemsContainer}>
-          {displayedItems.map((item, index) => (
-            <Text key={index} style={styles.selectedItem}>{item.name || item.NAME}</Text>
+          {displayedItems.map((item) => (
+            <Text key={item.GUID} style={styles.selectedItem}>{item.NAME}</Text>
           ))}
           {additionalCount > 0 && (
             <Text style={styles.additionalText}>и еще {additionalCount}</Text>
           )}
-        <Text style={styles.inputText}>{selectedItems.length > 0 ? '' : 'Выберите элементы'}</Text>
+          <Text style={styles.inputText}>{selectedItems.length > 0 ? '' : 'Выберите элементы'}</Text>
         </View>
       </TouchableOpacity>
       <CustomModal
         visible={modalVisible}
+        
         onClose={() => setModalVisible(false)}
         content={
-          <ScrollView style={styles.modalContent} onScroll={handleScroll} scrollEventThrottle={16}>
+          <View>
             <Text style={styles.title}>{title}</Text>
-            {items.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.option,
-                  item.selected && styles.selectedOption
-                ]}
-                onPress={() => toggleItem(index)}
-              >
-                <Text>{item.name || item.NAME}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Поиск..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            <FlatList
+              data={filteredItems}
+              renderItem={renderItem}
+              keyExtractor={item => item.GUID}
+              style={styles.modalContent}
+            />
+          </View>
         }
       />
     </View>
   );
 };
 
+const Item = ({ item, toggleItem }) => (
+  <TouchableOpacity
+    style={[styles.option, item.selected && styles.selectedOption]}
+    onPress={() => toggleItem(item.GUID)}
+  >
+    <Text>{item.NAME}</Text>
+  </TouchableOpacity>
+);
+
+const MemoizedItem = memo(Item);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -93,6 +88,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center', 
+},
+searchInput: { 
+  padding: 10,
+  borderColor: '#ccc',
+  borderWidth: 1,
+  borderRadius: 5,
+  marginBottom: 10,
 },
   input: {
     padding: 10,
@@ -105,7 +107,6 @@ const styles = StyleSheet.create({
   selectedItemsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    
   },
 
   selectedItem: {
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
   inputText: {
     color: '#333',
     
+    
   },
   modalBackground: {
     flex: 1,
@@ -129,16 +131,19 @@ const styles = StyleSheet.create({
   modalContent: {
     borderRadius: 10,
     padding: 20,
-    width: '80%'
+    minWidth: '80%',
+    maxWidth: '80%',
   },
   option: {
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     marginBottom: 5,
+    width:'100%'
   },
   selectedOption: {
     backgroundColor: 'lightblue',
+    width:'100%'
     
   },
   additionalText: {
