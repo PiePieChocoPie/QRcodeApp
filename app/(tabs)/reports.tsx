@@ -14,7 +14,7 @@ const home = () => {
       try {
         const response = await getReports();
         setReports(response.data);
-        console.log(response.data.storage)
+        // console.log(response.data.storage)
       } catch (error) {
         console.error('Error fetching reports:', error);
       }
@@ -25,7 +25,7 @@ const home = () => {
 
   const onPressReport = (Key) => {
     const selectedReport = reports[Key];
-    console.log(Key)
+    // console.log(Key)
     setReportKey(Key)
     setSelectedReport(selectedReport);
     toggleModal();

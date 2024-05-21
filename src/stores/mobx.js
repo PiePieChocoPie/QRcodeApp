@@ -15,8 +15,10 @@ class store {
     @observable statusWorkDay = null;
     @observable storages = null;
     @observable clients = null;
+    @observable guidClients = null;
     @observable mainDate = null;
     @observable extraDate = null;
+    @observable filterItems = [];
 
 
     @action
@@ -27,6 +29,7 @@ class store {
     @action
     setClients(clients) {
         this.clients = clients;
+        this.guidClients
     } 
     @action
     setUserStorage(userData) {
@@ -76,11 +79,13 @@ class store {
     @action
     setMainDate(mainDate){
         this.mainDate = mainDate;
-
     }
     @action
     setExtraDate(extraDate){
         this.extraDate = extraDate;
+    }
+    setFilterItems(filterItems){
+        this.filterItems = filterItems;
 
     }
 }

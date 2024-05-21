@@ -26,7 +26,7 @@ const authorize =() =>{
                      .then(async (res) => {
                         if(res.status){
                             router.push({pathname:"/(tabs)/profile"});
-                            console.log("store = "+ Store.userData.ID)
+                            // console.log("store = "+ Store.userData.ID)
                             statusDay(Store.userData.ID);
                         }  
                         else Alert.alert("Ошибка авторизации", res.curError);
