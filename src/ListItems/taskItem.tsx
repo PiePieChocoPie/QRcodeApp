@@ -23,7 +23,7 @@ const TaskItem = ({ item }) => {
 
     const toggleMore = () => {
         setModalVisible(!modalVisible);
-        console.log(item);
+        // console.log(item);
     };
 
     const renderDescription = (description) => {
@@ -33,8 +33,8 @@ const TaskItem = ({ item }) => {
         let match;
 
         while ((match = urlRegex.exec(description)) !== null) {
-            console.log(match);
-            console.log(match[1]);
+            // console.log(match);
+            // console.log(match[1]);
             const beforeText = description.substring(lastIndex, match.index);
             if (beforeText) {
                 parts.push(<Text key={`text-${lastIndex}`}>{beforeText}</Text>);

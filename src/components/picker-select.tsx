@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, memo} from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet,  FlatList, TextInput } from 'react-native';
 import CustomModal from 'src/components/custom-modal';
+import Store from 'src/stores/mobx';
 
 const ITEMS_PER_PAGE = 20;
 const MultiSelect = ({ jsonData, title }) => {
@@ -30,6 +31,31 @@ const MultiSelect = ({ jsonData, title }) => {
   const displayedItems = selectedItems.slice(-3);
   const additionalCount = selectedItems.length - displayedItems.length;
 
+  const extractGuids = (data) => {
+    if (Array.isArray(data)) {
+      return data
+        .filter(item => item.selected)
+        .map(item => {
+          console.log(item)
+          if (item.GUID) {
+            return item.GUID;
+          } else if (item.PROPERTY_108) {
+            const propertyValues = Object.values(item.PROPERTY_108);
+            return propertyValues.length > 0 ? propertyValues[0] : undefined;
+          }
+          return undefined;
+        })
+        .filter(guid => guid !== undefined);
+    }
+    return [];
+  };
+
+  const handleCloseModal = () => {
+    const guids = extractGuids(items);
+    Store.setFilterItems(guids);
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -45,8 +71,7 @@ const MultiSelect = ({ jsonData, title }) => {
       </TouchableOpacity>
       <CustomModal
         visible={modalVisible}
-        
-        onClose={() => setModalVisible(false)}
+        onClose={() => handleCloseModal()}
         content={
           <View>
             <Text style={styles.title}>{title}</Text>

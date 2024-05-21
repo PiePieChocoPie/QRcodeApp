@@ -22,14 +22,15 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
 
   const ReqReport = async () => {
     const response = await getHierarchy();
-    let parameter = isPeriod?[selectedStartDate, selectedEndDate]:[selectedStartDate];
+    let parameter = isPeriod?[Store.mainDate, Store.extraDate]:[Store.mainDate];
     let jsonBody = {
       name: reportKey,
       filter:{
-        value: "someValue",
-        name: reportName.filters[0].using,
+        value: Store.filterItems,
+        name: reportName.filters[0].inXml,
       },
       parameter:{
+        name:reportName.parameters[0].inXml,
         value:parameter
       }
     };
@@ -41,8 +42,17 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
     // console.log(Store.clients)
   }, []);
   useFocusEffect(() => {
-    getStorages(Store.userData.UF_USR_STORAGES);
-    console.log(Store.storages)
+    if(reportName)
+      {
+        setPeriod(reportName.parameters[0].view=="Период")
+        // console.log("[hfybkbof =",Object.values(Store.storages.result[0]['PROPERTY_108'])[0])
+        // console.log("[hfybkbof =",Store.clients.body||Store.clients.result);
+        // console.log("[hfybkbof ==",Store.clients)
+      }
+      console.log("period ---- ",isPeriod)
+      getStorages(Store.userData.UF_USR_STORAGES);
+    // console.log(Store.userData.UF_USR_STORAGES)
+    // console.log(Store.storages)
   },);
  
 

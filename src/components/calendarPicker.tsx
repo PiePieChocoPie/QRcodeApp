@@ -18,8 +18,8 @@ const CalendarPickerModal = ({parameter}) => {
 
 
     useEffect(() => {
-        console.log('Selected Start Date:', selectedStartDate);
-        console.log('Selected End Date:', selectedEndDate);
+        // console.log('Selected Start Date:', selectedStartDate);
+        // console.log('Selected End Date:', selectedEndDate);
         if (selectedStartDate) {
             Store.setMainDate(selectedStartDate);
             if (selectedEndDate) {
@@ -30,7 +30,7 @@ const CalendarPickerModal = ({parameter}) => {
 
       const handleSingleDateChange = (date) => {
         setPeriod(false);
-        console.log("Одиночная дата", date);
+        // console.log("Одиночная дата", date);
         Toast.show(`Одиночная дата - ${date}`, {
           duration: Toast.durations.LONG,
           position: Toast.positions.TOP,
@@ -65,7 +65,7 @@ const CalendarPickerModal = ({parameter}) => {
         if (isPeriod) {
           Store.setExtraDate(selectedEndDate);
         }
-        console.log('terminateModal:', selectedStartDate, selectedEndDate, '\n', "записаны - ", Store.mainDate, Store.extraDate);
+        // console.log('terminateModal:', selectedStartDate, selectedEndDate, '\n', "записаны - ", Store.mainDate, Store.extraDate);
       };
     
 

@@ -31,7 +31,7 @@ function profile() {
     const startDay = async () => {
         try {
             const response = await openDay(Store.userData.ID);
-            console.log(response);
+            // console.log(response);
         } catch (error) {
             console.error('Ошибка:', error);
         }
