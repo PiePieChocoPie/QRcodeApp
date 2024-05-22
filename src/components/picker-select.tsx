@@ -62,7 +62,7 @@ const MultiSelect = ({ jsonData, title }) => {
         <View style={styles.selectedItemsContainer}>
           {displayedItems.map((item) => (
             <Text key={item.GUID} style={styles.selectedItem}>{item.NAME}</Text>
-          ))}
+        ))}
           {additionalCount > 0 && (
             <Text style={styles.additionalText}>и еще {additionalCount}</Text>
           )}

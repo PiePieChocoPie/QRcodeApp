@@ -23,7 +23,8 @@ const TaskItem = ({ item }) => {
 
     const toggleMore = () => {
         setModalVisible(!modalVisible);
-        // console.log(item);
+        if(modalVisible)
+        console.log(item);
     };
 
     const renderDescription = (description) => {
@@ -68,7 +69,9 @@ const TaskItem = ({ item }) => {
     };
 
     return (
+        <TouchableOpacity onPress={toggleMore}>
         <View key={item.id} style={styles.taskView}>
+            
             <Text style={{fontSize: 16, textAlign: "center"}}>{item.title}</Text>
             <View style={styles.taskInternalView}>
                 <View style={styles.internalTextRowView}>
@@ -87,10 +90,8 @@ const TaskItem = ({ item }) => {
                         <Text style={styles.text}>не установлен</Text>
                     )}
                 </View>
-                <TouchableOpacity style={styles.moreButton} onPress={toggleMore}>
-                    <Icon3 name={'more-horizontal'} size={30}/>
-                </TouchableOpacity>
             </View>
+
             {detailVisible && (
                 <View>
                    
@@ -124,6 +125,8 @@ const TaskItem = ({ item }) => {
                 }
             />
         </View>
+        </TouchableOpacity>
+
     );
 };
 
