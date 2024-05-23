@@ -186,7 +186,11 @@ export async function getAllStaticData(authToken: string, userData: boolean, dep
         .then(async () => {
           await getUserAttorney()
             .then(res => {
-              console.log(res);
+                if(res){
+                    curError="Необходимо сдать доверенность!";
+                    status=false;
+                }
+                console.log(res);
             })
             .catch(err => console.log(err));
         })

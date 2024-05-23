@@ -11,8 +11,8 @@ export function checkRecords(item: any, trafficData: any[], nextTrafficData: any
     console.log("itemDate: ", itemDate);
 
     if (isNaN(itemDate.getTime())) {
-        console.error("Invalid date found: ", itemDate);
-        return false;  // Возврат false, если дата недействительна
+        console.error("неверный формат даты доверенности: ", itemDate);
+        return true;  // Возврат true, если дата недействительна
     }
 
     const dateSet = new Set([formatDate(itemDate)]);
@@ -22,19 +22,19 @@ export function checkRecords(item: any, trafficData: any[], nextTrafficData: any
     for (let i = 0; i < trafficData.length; i++) {
         if (counter > 0) counter++;
 
-        // Преобразование trafficData[i].day_title в Date, если это необходимо
+        // Преобразование trafficData[i].day_title в Date
         const trafficDate = new Date(trafficData[i].day_title);
         if (isNaN(trafficDate.getTime())) {
-            console.error("Invalid traffic date found: ", trafficData[i].day_title);
+            // console.log(": ", trafficData[i].day_title);
             continue;  // Пропустить недействительные даты
         }
 
         if (itemDate.getTime() < trafficDate.getTime()) counter++;
     }
 
-    if (counter < 2)
+    if (counter < 3)
         counter += nextTrafficData.length;
     console.log(counter)
 
-    return counter > 1;
+    return counter > 2;
 }
