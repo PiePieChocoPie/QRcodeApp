@@ -70,27 +70,16 @@ const TaskItem = ({ item }) => {
 
     return (
         <TouchableOpacity onPress={toggleMore}>
-        <View key={item.id} style={styles.taskView}>
+        <View key={item.id} style={styles.listElementContainer}>
             
-            <Text style={{fontSize: 16, textAlign: "center"}}>{item.title}</Text>
-            <View style={styles.taskInternalView}>
-                <View style={styles.internalTextRowView}>
-                    <Text>постановщик: </Text>
-                    <Text style={{fontSize: 16}}>{item.creator.name}</Text>
-                </View>
-                <View style={styles.internalTextRowView}>
-                    <Text>дата постановки: </Text>
-                    <Text style={styles.text}>{depDate}</Text>
-                </View>
-                <View style={styles.internalTextRowView}>
-                    <Text>дедлайн: </Text>
-                    {item.deadline ? (
-                        <Text style={styles.text}>{depDLDate}</Text>
-                    ) : (
-                        <Text style={styles.text}>не установлен</Text>
-                    )}
-                </View>
-            </View>
+            <Text style={styles.Title}>{item.title}</Text>            
+            <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
+            <Text style={styles.Text}>дата постановки: {depDate}</Text>
+            {item.deadline ? (
+                <Text style={[styles.Text,{color:'#DE283B'}]}>дедлайн: {depDLDate}</Text>
+            ) : (
+                <Text style={styles.Text}>дедлайн: не установлен</Text>
+            )}
 
             {detailVisible && (
                 <View>
@@ -101,25 +90,23 @@ const TaskItem = ({ item }) => {
                 visible={modalVisible}
                 onClose={toggleMore} 
                 content={
-                    <View>
+                    <View style={styles.containerCentrallityFromUpper}>
                     <Text style={styles.modalTitle}>{item.title}</Text>
-                    <Text style={styles.textProfile}>постановщик:</Text>
-                    <Text style={styles.textProfile}>{item.creator.name}</Text>
-                    <View style={styles.line} />
-                    <Text style={styles.textProfile}>дата постановки: </Text>
-                    <Text style={styles.textProfile}>{depDate}</Text>
-                    <View style={styles.line} />
-                    <Text style={styles.textProfile}>дедлайн: </Text>
+                    <Text style={styles.Text}></Text>
+                    <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
+                    <Text style={styles.Text}></Text>
+                    <Text style={styles.Text}>дата постановки: {depDate}</Text>
+                    <Text style={styles.Text}></Text>
                     {item.deadline ? (
-                        <Text style={styles.textProfile}>{depDLDate}</Text>
+                        <Text style={[styles.Text,{color:'#DE283B'}]}>дедлайн: {depDLDate}</Text>
                     ) : (
-                        <Text style={styles.textProfile}>не установлен</Text>
+                        <Text style={styles.Text}>дедлайн: не установлен</Text>
                     )}
-                    <View style={styles.line} />
+                    <Text style={styles.Text}></Text>
                     {item.description ? (
-                       <Text style={styles.descriptionText}>{renderDescription(item.description)}</Text>
+                       <Text style={styles.Text}>{renderDescription(item.description)}</Text>
                     ) : (
-                        <Text style={styles.textProfile}>Дополнительная информация отсутствует</Text>
+                        <Text style={styles.Text}>Дополнительная информация отсутствует</Text>
                     )}
                     </View>
                 }

@@ -71,7 +71,7 @@ function profile() {
 
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,{marginTop:'10%'}]}>
         {loading ?(
             <View style={styles.containerCentrallity}>
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
@@ -89,14 +89,27 @@ function profile() {
                             )}
                         </View>
                     </View>
-                    <Text style={styles.textProfile}>{userData}</Text>
+                    <Text style={[styles.Text,{textAlign:"center"}]}>{userData}</Text>
                     <TouchableOpacity style={styles.opacities} onPress={handleLogout}>
                         <Icon name="user-times" size={40} color={projColors.currentVerse.font} />
-                        <Text style={styles.text}>выход</Text>
+                        <Text style={styles.Text}>выход</Text>
                     </TouchableOpacity>
-                    <Button onPress={startDay}>Начать рабочий день</Button>
-                    <Button onPress={toggleModal}>Просмотр QR-кода</Button>
-                    <Button onPress={updateStatus}>Обновить данные</Button>
+                    <Button onPress={startDay}>
+                        <Text style={styles.Text}>
+                            Начать рабочий день
+                        </Text>                        
+                    </Button>
+                    <Button onPress={toggleModal}>
+                        <Text style={styles.Text}>
+                            Просмотр QR-кода
+                        </Text>                        
+
+                    </Button>
+                    <Button onPress={updateStatus}>
+                        <Text style={styles.Text}>
+                            Обновить данные
+                        </Text>                        
+                    </Button>
                 </View>
                 
             )}

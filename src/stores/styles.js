@@ -3,24 +3,27 @@ import { StyleSheet, Dimensions } from 'react-native';
 export class projColors{
 
     static lightVerse = {
-        main: "#eee",
-        second: "#fff",
-        extra: "#ddd",
+        main: "#EBEBEB",
+        extrasecond: "#F7F8F9",
+        extra: "#535D69",
         accent: "#d1ded3",
-        font: "#111",
-        fontAccent: "#111",
-        border: "#aaa"
+        font: '#8391A1',
+        fontAccent: "#535D69",
+        border: "#E8ECF4",
+        listElementBackground:'#F7F8F9'
     };
 
 
     static darkVerse = {
-        main: "#777",
-        second: "#444",
-        extra: "#8b8a8a",
-        accent: "#575f58",
-        font: "#aaa",
-        fontAccent: "#fff",
-        border: "#aaa"
+        main: "#292929",
+        extrasecond: "#F7F8F9",
+        second: "#292929",
+        extra: "#535D69",
+        accent: "#F7F8F9",
+        font: "#8391A1",
+        fontAccent: "#8FA0B5",
+        border: "#E8ECF4",
+        listElementBackground:'#E8ECF4'
     };
 
     static currentVerse = projColors.lightVerse
@@ -56,11 +59,6 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
-  },
-  line: {
-    height: 1,
-    backgroundColor: 'black',
-    marginVertical: 8,
   },
   modalTitle: {
     fontSize: 20,
@@ -236,7 +234,7 @@ textInput: {
     alignItems: "center",
   },
   horizontalBorders: {
-
+    flex:1,
     flexDirection: 'row'
   },
   infoButtonContainer: {
@@ -245,12 +243,6 @@ textInput: {
     flexDirection: 'row',
     justifyContent: "center",
     gap: 150,
-  },
-  text: {
-    color: projColors.currentVerse.font,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center"
   },
   textProfile: {
     color: projColors.currentVerse.font,
@@ -381,7 +373,26 @@ textInput: {
   },
   containerCentrallityFromUpper:{
     flex: 1,
-    alignItems: "center",
-    justifyContent: 'flex-start',
+    width:'80%'
+  },
+  listElementContainer:{
+    backgroundColor:projColors.currentVerse.extrasecond,
+    borderColor:projColors.currentVerse.border,
+    borderWidth:1,
+    borderRadius:10,
+    margin:10,
+    gap:5,
+    padding:23,
+    elevation: 2,
+  },
+  Title:{
+    fontFamily: 'Montserrat-Bold',
+    fontSize:16,
+    color: projColors.currentVerse.fontAccent
+  },
+  Text:{
+    fontFamily: 'Montserrat',
+    fontSize:16,
+    color: projColors.currentVerse.fontAccent
   },
 });

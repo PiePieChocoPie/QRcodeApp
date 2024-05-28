@@ -1,9 +1,22 @@
-export function formatDate(date: Date): string {
+export function formatDate(dateString: any): string {
+    if (!dateString) {
+        console.warn('Invalid dateString:', dateString);
+        return ''; // Проверка на null или undefined
+    }
+
+    const date = new Date(dateString); // Преобразование строки в объект Date
+    if (isNaN(date.getTime())) {
+        console.warn('Invalid date:', dateString);
+        return ''; // Проверка на допустимость даты
+    }
+
     const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Месяцы с 0 до 11
     const year = date.getFullYear();
+
     return `${day}.${month}.${year}`;
 }
+
 
 export function checkRecords(item: any, trafficData: any[], nextTrafficData: any[]): boolean {
     // Преобразование item в Date, если это необходимо

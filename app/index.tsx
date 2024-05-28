@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {encode as base64encode} from 'base-64';
-import {Button, StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Alert} from "react-native";
+import {Button, Text, TextInput, View, TouchableOpacity, Alert} from "react-native";
 import { router } from "expo-router";
 //
 import { styles, projColors } from "src/stores/styles";
@@ -62,13 +62,13 @@ const authorize =() =>{
     return (
         <View style={styles.authContainer}>
             <View style={styles.fieldsContainer}>
-                <TextInput style={styles.input}
+                <TextInput style={[styles.input,{fontFamily:'Montserrat'}]}
                            value={login}
                            placeholder='Логин'
                            onChangeText={loginHandler}
                            keyboardType={"ascii-capable"}
                 />
-                <TextInput style={styles.input}
+                <TextInput style={[styles.input,{fontFamily:'Montserrat'}]}
                            value={password}
                            placeholder='Пароль'
                            secureTextEntry={showPassword}
@@ -83,9 +83,10 @@ const authorize =() =>{
                         color="gray"
                     />
                 </TouchableOpacity>
-
-                {<Button onPress={buttonHandler} color={'brown'} title='Войти' disabled={loading}/>}
-                {isInvalidLogin && <Text>Неверные данные</Text>}
+                <TouchableOpacity onPress={buttonHandler} disabled={loading} style={{borderWidth:1, borderColor:projColors.currentVerse.border}}>
+                    <Text style={styles.Title}>войти</Text>
+                </TouchableOpacity>
+                {isInvalidLogin && <Text style={styles.Text}>Неверные данные</Text>}
             </View>
         </View>
     );

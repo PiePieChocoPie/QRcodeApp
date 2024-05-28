@@ -184,7 +184,7 @@ export async function getAllStaticData(authToken: string, userData: boolean, dep
     if (userData) {
       await getDataByToken(authToken)
         .then(async () => {
-          await getUserAttorney()
+          await getUserAttorney(true)
             .then(res => {
                 if(res){
                     curError="Необходимо сдать доверенность!";
@@ -250,25 +250,49 @@ export async function getHierarchy(): Promise<any> {
 }
 
 export async function getDataAboutDocs(raw: string): Promise<any> {
-  let body: any;
-  let url = '';
+    return new Promise((resolve, reject) => {
+        let data: any;
+        let config: any;
+        console.log(raw)
+        if (raw.includes('133$')) {
+            data = JSON.stringify({
+                "entityTypeId": "133",
+                "filter": {
+                    "=ufCrm6Guid": raw
+                }
+            });
+        } else if (raw.includes('168$')) {
+            data = JSON.stringify({
+                "entityTypeId": "168",
+                "filter": {
+                    "=ufCrm5ReleaceGuid": raw
+                }
+            });
+        }
 
-  if (raw.includes('$')) {
-    body = {
-      "entityTypeId": "133",
-      "filter": { "=ufCrm6Guid": raw }
-    };
-  } else {
-    body = {
-      "entityTypeId": "168",
-      "filter": { "=ufCrm5ReleaceGuid": raw }
-    };
-  }
-
-  url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.list`;
-  const response = await axios.post(url, body);
-  return response;
+        config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: false,
+            data: data
+        };
+        console.log(data)
+        axios.request(config)
+            .then((response) => {
+                // console.log(false, JSON.stringify(response.data));
+                resolve(response); // Вернуть данные при успешном выполнении запроса
+            })
+            .catch((error) => {
+                // console.log(123, error);
+                reject(error); // Вернуть ошибку при возникновении ошибки
+            });
+    });
 }
+
 
 export function getUserCurUpds(ID: string): Promise<any> {
   const body = {
@@ -290,6 +314,7 @@ export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: stri
       "movedBy": userID
     }
   };
+  console.log(body)
   const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
   return await axios.post(url, body);
 }
@@ -355,7 +380,7 @@ export async function getUserStoragesID(): Promise<boolean> {
   }
 }
 
-export async function getUserAttorney(): Promise<boolean> {
+export async function getUserAttorney(onAuthorize:boolean): Promise<boolean> {
     try {
       let data = JSON.stringify({
         "entityTypeId": "166",
@@ -365,48 +390,51 @@ export async function getUserAttorney(): Promise<boolean> {
           "=stageId": "dt166_16:UC_NU0MRZ",
         },
         "select": [
-          "id",
-          "ufCrm10ProxyResponsible",
-          "lastActivityTime",
-          "title",
-          "stageId",
-          "ufCrm10ProxyDate"
-        ]
-      });
+            "ufCrm10ProxyResponsibleText",
+            "ufCrm10ProxyNumber",
+            "ufCrm10ProxySum",
+            "ufCrm10ProxyValidityEnd",
+            "ufCrm10ProxyDate"
+          ]
+        });
+    
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: false,
+            data: data
+        };
   
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
-        headers: { 'Content-Type': 'application/json' },
-        data: data
-      };
-  
-      const response = await axios.request(config);
-      if (response.data.total > 0) {
-        const items = response.data.result.items;
-  
-        const earliestItem = items.reduce((earliest, item) => {
-          const itemDate = new Date(item.ufCrm10ProxyDate);
-          if (!earliest || itemDate < new Date(earliest.ufCrm10ProxyDate)) {
-            return item;
-          }
-          return earliest;
-        }, null);
-  
-        if (earliestItem) {
-          const attorneyDate = new Date(earliestItem.ufCrm10ProxyDate);
-          const attorneyMonth = attorneyDate.getMonth() + 1;
-          const attorneyYear = attorneyDate.getFullYear();
-  
-          const trafficData = await getUsersTrafficStatistics(attorneyMonth, attorneyYear);
-          const nextTrafficData = await getUsersTrafficStatistics(attorneyMonth==12?1:attorneyMonth+1, attorneyMonth==12?attorneyYear+1:attorneyYear);
-          console.log('Итем - ', earliestItem, '\n Трафик - ', Store.trafficData);
-          const result = checkRecords(earliestItem.ufCrm10ProxyDate, trafficData,  nextTrafficData);
-          console.log('блокируе - ', result ? 'True' : 'False');
-          return result;
+        const response = await axios.request(config);
+        Store.setAttorneys(response.data.result.items);
+        console.log('attprneys = ',Store.attorneys)
+        if (onAuthorize&&response.data.total > 0) 
+        {
+            const items = response.data.result.items;
+            console.log(items)
+            const earliestItem = items.reduce((earliest, item) => {
+            const itemDate = new Date(item.ufCrm10ProxyDate);
+            if (!earliest || itemDate < new Date(earliest.ufCrm10ProxyDate)) {
+                return item;
+            }
+            return earliest;
+            }, null);
+    
+            if (earliestItem) {
+            const attorneyDate = new Date(earliestItem.ufCrm10ProxyDate);
+            const attorneyMonth = attorneyDate.getMonth() + 1;
+            const attorneyYear = attorneyDate.getFullYear();
+    
+            const trafficData = await getUsersTrafficStatistics(attorneyMonth, attorneyYear);
+            const nextTrafficData = await getUsersTrafficStatistics(attorneyMonth==12?1:attorneyMonth+1, attorneyMonth==12?attorneyYear+1:attorneyYear);
+            console.log('Итем - ', earliestItem, '\n Трафик - ', Store.trafficData);
+            const result = checkRecords(earliestItem.ufCrm10ProxyDate, trafficData,  nextTrafficData);
+            console.log('блокируе - ', result ? 'True' : 'False');
+            return result;
+            }
         }
-      }
     } catch (error) {
       console.log(error);
       return false;
@@ -433,3 +461,39 @@ export async function getReportsTest(jsonBody: any): Promise<string> {
     return error.toString();
   }
 }
+
+export async function getAttorneys(): Promise<any>{
+    let data = JSON.stringify({
+        "entityTypeId": "166",
+        "id": "91",
+        "filter": {
+          "ufCrm10ProxyResponsible": Store.userData.ID,
+          "=stageId": "dt166_16:UC_NU0MRZ"
+        },
+        "select": [
+          "ufCrm10ProxyResponsibleText",
+          "ufCrm10ProxyNumber",
+          "ufCrm10ProxySum",
+          "ufCrm10ProxyValidityEnd",
+          "ufCrm10ProxyDate"
+        ]
+      });
+      
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      
+      axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+} 

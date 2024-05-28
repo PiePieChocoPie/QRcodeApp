@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import React, { useEffect, useState } from "react";
 import { getReports } from "src/http";
 import ModalForm from "src/modals/newModal";
+import { styles } from 'src/stores/styles';
 
 const home = () => {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -36,14 +37,14 @@ const home = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[localstyles.container,{marginTop:'10%'}]}>
       {Object.keys(reports).map((key) => (
         <TouchableOpacity
           key={key}
-          style={[styles.tile, styles.shadow]}
+          style={[localstyles.tile, localstyles.shadow]}
           onPress={() => onPressReport(key)}
         >
-          <Text style={styles.tileText}>{reports[key].name}</Text>
+          <Text style={styles.Text}>{reports[key].name}</Text>
         </TouchableOpacity>
       ))}
       <ModalForm modalVisible={modalVisible} toggleModal={toggleModal} reportName={selectedReport} reportKey={reportKey}/>
@@ -51,7 +52,7 @@ const home = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const localstyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
