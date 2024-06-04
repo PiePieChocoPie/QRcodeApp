@@ -78,6 +78,7 @@ const CalendarPickerModal = ({parameter}) => {
             <CustomModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
+                marginTOP={0.24}
                 content={
                     <View>
                         <CalendarPicker

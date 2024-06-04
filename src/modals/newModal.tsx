@@ -11,17 +11,12 @@ import { getHierarchy, getClients, getStorages, getUserStoragesID, getReportsTes
 import { useFocusEffect } from 'expo-router';
 
 const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
-  const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [isPeriod, setPeriod] = useState(false);
 
 
 
-
   const ReqReport = async () => {
-    const response = await getHierarchy();
+    // const response = await getHierarchy();
     await getUserStoragesID();
     let parameter = isPeriod?[Store.mainDate.toISOString(), Store.extraDate.toISOString()]:[Store.mainDate.toISOString()];
     console.log(Store.userStorageData)
@@ -64,7 +59,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
     <CustomModal
       visible={modalVisible}
       onClose={toggleModal}
-      
+      marginTOP={0.2}
       content={
         reportName && (
           <View style={{ width: '80%', flex: 1,}}>
@@ -94,7 +89,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
             <Button onPress={ReqReport}>
               <Text>Запросить отчет</Text>
             </Button>
-
           </View>
         )
       }

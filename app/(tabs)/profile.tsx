@@ -116,6 +116,7 @@ function profile() {
             <CustomModal 
                 visible={modalVisible}
                 onClose={toggleModal} 
+                marginTOP={0.2}
                 content={
                     <QRCode value={Store.userData.ID} size={Dimensions.get('window').width - 60}/>
                 }

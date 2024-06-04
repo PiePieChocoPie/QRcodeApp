@@ -194,6 +194,7 @@ export default function Calendar() {
             <CustomModal
                 visible={modalVisible}
                 onClose={toggleModal}
+                marginTOP={0.2}
                 content={
                     <View>
                         <Text style={[styles.Title, { textAlign: "center" }]}>{dayTitle}</Text>

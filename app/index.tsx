@@ -85,6 +85,7 @@ const authorize = () => {
     }
 
     return (
+<<<<<<< HEAD
         <View style={styles.Registration}>
             <View style={styles.frameParent}>
                 <Text style={styles.welcomeText}>
@@ -99,6 +100,29 @@ const authorize = () => {
                         placeholder='Введите логин'
                         onChangeText={loginHandler}
                         keyboardType={"ascii-capable"}
+=======
+        <View style={styles.authContainer}>
+            <View style={styles.fieldsContainer}>
+                <TextInput style={styles.input}
+                           value={login}
+                           placeholder='Логин'
+                           onChangeText={loginHandler}
+                           keyboardType={"ascii-capable"}
+                />
+                <TextInput style={styles.input}
+                           value={password}
+                           placeholder='Пароль'
+                           secureTextEntry={showPassword}
+                           onChangeText={passwordHandler}
+                />
+                <TouchableOpacity
+                    onPress={togglePasswordVisibility}
+                >
+                    <Ionicons
+                        name={showPassword ? 'eye-off' : 'eye'}
+                        size={24}
+                        color="gray"
+>>>>>>> modalTransform
                     />
                     <View style={styles.passwordContainer}>
                         <TextInput

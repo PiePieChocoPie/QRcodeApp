@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Linking} from 'react-native';
 import Icon3 from 'react-native-vector-icons/Feather';
 import { styles } from "src/stores/styles";
 import CustomModal from "src/components/custom-modal";
+import { formatDate } from "src/func";
 
 const TaskItem = ({ item }) => {
     const [detailVisible, setDetailVisible] = React.useState(false);
@@ -74,9 +75,9 @@ const TaskItem = ({ item }) => {
             
             <Text style={styles.Title}>{item.title}</Text>            
             <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
-            <Text style={styles.Text}>дата постановки: {depDate}</Text>
+            <Text style={styles.Text}>дата постановки: {item.createdDate}</Text>
             {item.deadline ? (
-                <Text style={[styles.Text,{color:'#DE283B'}]}>дедлайн: {depDLDate}</Text>
+                <Text style={[styles.Text,{color:'#DE283B'}]}>дедлайн: {item.deadline}</Text>
             ) : (
                 <Text style={styles.Text}>дедлайн: не установлен</Text>
             )}
@@ -89,6 +90,7 @@ const TaskItem = ({ item }) => {
             <CustomModal 
                 visible={modalVisible}
                 onClose={toggleMore} 
+                marginTOP={0.2}
                 content={
                     <View style={styles.containerCentrallityFromUpper}>
                     <Text style={styles.modalTitle}>{item.title}</Text>

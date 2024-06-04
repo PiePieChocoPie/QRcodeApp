@@ -18,6 +18,7 @@ const ClientSelect = () => {
         <CustomModal
         visible={expanded}
         onClose={() => setExpanded(false)}
+        marginTOP={0.6}
         content={
           <View>
             <Text>123123</Text>

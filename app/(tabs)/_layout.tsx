@@ -4,14 +4,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Ionicons";
 import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
-import { json_styles } from "src/stores/styles";
 import LottieView from 'lottie-react-native';
-import anim from 'src/job_anim.json';
 import React, { useEffect, useRef } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 
 const TabsLayout = () => {
-  const animationRef = useRef<LottieView>(null);
+  // const animationRef = useRef<LottieView>(null);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -30,7 +28,6 @@ const TabsLayout = () => {
         },
         headerTitleStyle: {
           color: projColors.currentVerse.fontAccent,
-          fontFamily: 'Montserrat-Bold', 
           fontSize: 18,
         },
         tabBarActiveTintColor: projColors.currentVerse.fontAccent,
@@ -65,14 +62,6 @@ const TabsLayout = () => {
           headerTitle: 'Профиль',
           headerShown:false,
           tabBarShowLabel:false,
-          headerRight: () => (
-            <LottieView
-              ref={animationRef}
-              source={anim}
-              style={json_styles.header_right_activity}
-              loop
-            />
-          ),
           tabBarIcon: ({ color, size }) => (
             <Icon name="user" size={size} color={color} />
           ),
@@ -84,14 +73,6 @@ const TabsLayout = () => {
           headerTitle: 'Календарь',
           headerShown:false,
           tabBarShowLabel:false,
-          headerRight: () => (
-            <LottieView
-              source={anim}
-              style={{ width: "100%", height: "100%" }}
-              autoPlay
-              loop
-            />
-          ),
           tabBarIcon: ({ color, size }) => (
             <Icon name="calendar" size={size} color={color} />
           ),
