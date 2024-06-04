@@ -386,12 +386,10 @@ textInput: {
     elevation: 2,
   },
   Title:{
-    fontFamily: 'Montserrat-Bold',
     fontSize:16,
     color: projColors.currentVerse.fontAccent
   },
   Text:{
-    fontFamily: 'Montserrat',
     fontSize:16,
     color: projColors.currentVerse.fontAccent
   },

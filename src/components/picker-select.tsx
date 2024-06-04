@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, memo} from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet,  FlatList, TextInput } from 'react-native';
+import React, { useEffect, useState, useCallback, memo } from 'react';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, TextInput } from 'react-native';
 import CustomModal from 'src/components/custom-modal';
 import Store from 'src/stores/mobx';
 
@@ -16,9 +16,9 @@ const MultiSelect = ({ jsonData, title }) => {
     );
   }, [searchQuery, items]);
 
-  const toggleItem = (GUID) => {
+  const toggleItem = (key) => {
     const updatedItems = items.map(item =>
-      item.GUID === GUID ? { ...item, selected: !item.selected } : item
+      item.GUID === key || item.guid === key ? { ...item, selected: !item.selected } : item
     );
     setItems(updatedItems);
   };
@@ -36,9 +36,8 @@ const MultiSelect = ({ jsonData, title }) => {
       return data
         .filter(item => item.selected)
         .map(item => {
-          console.log(item)
-          if (item.GUID) {
-            return item.GUID;
+          if (item.GUID || item.guid) {
+            return item.GUID || item.guid;
           } else if (item.PROPERTY_108) {
             const propertyValues = Object.values(item.PROPERTY_108);
             return propertyValues.length > 0 ? propertyValues[0] : undefined;
@@ -61,8 +60,8 @@ const MultiSelect = ({ jsonData, title }) => {
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.selectedItemsContainer}>
           {displayedItems.map((item) => (
-            <Text key={item.GUID} style={styles.selectedItem}>{item.NAME}</Text>
-        ))}
+            <Text key={item.GUID || item.guid} style={styles.selectedItem}>{item.NAME}</Text>
+          ))}
           {additionalCount > 0 && (
             <Text style={styles.additionalText}>и еще {additionalCount}</Text>
           )}
@@ -72,6 +71,7 @@ const MultiSelect = ({ jsonData, title }) => {
       <CustomModal
         visible={modalVisible}
         onClose={() => handleCloseModal()}
+        marginTOP={0.24}
         content={
           <View>
             <Text style={styles.title}>{title}</Text>
@@ -84,7 +84,7 @@ const MultiSelect = ({ jsonData, title }) => {
             <FlatList
               data={filteredItems}
               renderItem={renderItem}
-              keyExtractor={item => item.GUID}
+              keyExtractor={item => item.GUID || item.guid}
               style={styles.modalContent}
             />
           </View>
@@ -97,13 +97,14 @@ const MultiSelect = ({ jsonData, title }) => {
 const Item = ({ item, toggleItem }) => (
   <TouchableOpacity
     style={[styles.option, item.selected && styles.selectedOption]}
-    onPress={() => toggleItem(item.GUID)}
+    onPress={() => toggleItem(item.GUID || item.guid)}
   >
     <Text>{item.NAME}</Text>
   </TouchableOpacity>
 );
 
 const MemoizedItem = memo(Item);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -113,14 +114,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center', 
-},
-searchInput: { 
-  padding: 10,
-  borderColor: '#ccc',
-  borderWidth: 1,
-  borderRadius: 5,
-  marginBottom: 10,
-},
+  },
+  searchInput: { 
+    padding: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
   input: {
     padding: 10,
     marginBottom: 10,
@@ -133,25 +134,20 @@ searchInput: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-
   selectedItem: {
     backgroundColor: 'lightblue',
     padding: 5,
     margin: 2,
     borderRadius: 5,
-
     flexGrow: 1
   },
   inputText: {
     color: '#333',
-    
-    
   },
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   modalContent: {
     borderRadius: 10,
@@ -164,12 +160,11 @@ searchInput: {
     borderWidth: 1,
     borderColor: '#ccc',
     marginBottom: 5,
-    width:'100%'
+    width: '100%',
   },
   selectedOption: {
     backgroundColor: 'lightblue',
-    width:'100%'
-    
+    width: '100%',
   },
   additionalText: {
     backgroundColor: 'lightgray',

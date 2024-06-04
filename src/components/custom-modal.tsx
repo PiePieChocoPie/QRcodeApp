@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TouchableOpacity, Dimensions, PanResponder } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Modal, View, Text, TouchableOpacity, Dimensions, PanResponder,Button } from 'react-native';
 import { styles } from "src/stores/styles";
 const ModalBackdrop = ({ visible, onPress }) => {
   return (
@@ -18,16 +18,20 @@ const ModalBackdrop = ({ visible, onPress }) => {
   );
 };
 
-const CustomModal = ({ visible, onClose, content }) => {
+const CustomModal = ({ visible, onClose, content, marginTOP }) => {
   const [modalYPosition, setModalYPosition] = useState(0);
   const [modalHeight, setModalHeight] = useState(0);
   const screenHeight = Dimensions.get('window').height;
   const minModalHeight = screenHeight * 0.3;
+  const [modalPos, setModalPos] = useState(0);
+  const [modifyPOS, setModifyPOS] = useState(0.2);
 
   useEffect(() => {
     if (!visible) {
       setModalYPosition(0);
       setModalHeight(0);
+    } else {
+      resize();
     }
   }, [visible]);
 
@@ -35,9 +39,14 @@ const CustomModal = ({ visible, onClose, content }) => {
     if (modalYPosition > minModalHeight) {
       onClose();
     }
+    setModalPos(modalYPosition + screenHeight * modifyPOS);
   }, [modalYPosition]);
 
-  const panResponder = React.useRef(
+  useEffect(() => {
+    setModalPos(modalYPosition + screenHeight * modifyPOS);
+  }, [modifyPOS]);
+
+  const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (_, gestureState) => {
@@ -55,8 +64,12 @@ const CustomModal = ({ visible, onClose, content }) => {
     })
   ).current;
 
+  const resize = () => {
+    setModifyPOS(marginTOP);
+  };
+
   return (
-    <View style={{backgroundColor: 'red'}}>
+    <View style={{ backgroundColor: 'red' }}>
       <ModalBackdrop visible={visible} onPress={onClose} />
       <Modal
         animationType="slide"
@@ -69,15 +82,17 @@ const CustomModal = ({ visible, onClose, content }) => {
           onPress={onClose}
           style={{ flex: 1 }}
         >
-          <View style={[styles.modalContainer, { marginTop: modalYPosition + screenHeight * 0.2, height: modalHeight }]} {...panResponder.panHandlers}>
-            <View style={{ height: '0.5%', width: '15%', backgroundColor: 'black', left: '0%', marginTop:"3%", marginBottom:"3%"}} />
+          <View style={[styles.modalContainer, { marginTop: modalPos, height: modalHeight }]} {...panResponder.panHandlers}>
+            <View style={{ height: '0.5%', width: '15%', backgroundColor: 'black', left: '0%', marginTop: "3%", marginBottom: "3%" }} />
             {content}
+            <TouchableOpacity onPress={resize}>
+              <Text>Resize</Text>
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
     </View>
   );
 };
-
 
 export default CustomModal;

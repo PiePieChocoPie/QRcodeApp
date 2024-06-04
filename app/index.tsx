@@ -62,13 +62,13 @@ const authorize =() =>{
     return (
         <View style={styles.authContainer}>
             <View style={styles.fieldsContainer}>
-                <TextInput style={[styles.input,{fontFamily:'Montserrat'}]}
+                <TextInput style={styles.input}
                            value={login}
                            placeholder='Логин'
                            onChangeText={loginHandler}
                            keyboardType={"ascii-capable"}
                 />
-                <TextInput style={[styles.input,{fontFamily:'Montserrat'}]}
+                <TextInput style={styles.input}
                            value={password}
                            placeholder='Пароль'
                            secureTextEntry={showPassword}
