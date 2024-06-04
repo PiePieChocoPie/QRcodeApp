@@ -68,9 +68,9 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
       content={
         reportName && (
           <View style={{ width: '80%', flex: 1,}}>
-            <Text style={styles.modalTitle}>{reportName.name}</Text>
+            <Text style={styles.Title}>{reportName.name}</Text>
             <View style={styles.filterContainer}>
-            <Text>{reportName.filters[0].view}</Text>
+            <Text style={styles.Text}>{reportName.filters[0].view}</Text>
               <View style={{height: '15%'}}>
               {reportName.filters[0].view === "Склады" ? (
                   <MultiSelect jsonData={Store.storages} title={'Выберите склады'}/>
@@ -83,7 +83,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
 
             {reportName.parameters.map((parameter, index) => (
               <View key={index}>
-                <Text>{parameter.view}:</Text>
+                <Text style={styles.Text}>{parameter.view}:</Text>
 
                   <CalendarPickerModal parameter={parameter.view}/>
 
@@ -92,7 +92,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
             ))}
 
             <Button onPress={ReqReport}>
-              <Text>Запросить отчет</Text>
+              <Text style={[styles.Title]}>Запросить отчет</Text>
             </Button>
 
           </View>

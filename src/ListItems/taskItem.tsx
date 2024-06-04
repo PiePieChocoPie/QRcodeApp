@@ -41,7 +41,11 @@ const TaskItem = ({ item }) => {
                 parts.push(<Text key={`text-${lastIndex}`}>{beforeText}</Text>);
             }
             parts.push(
-                <Text key={`link-${match.index}`} style={styles.link} onPress={() => {openURL(match[1]); console.log(match[1])}}>
+                <Text key={`link-${match.index}`} style={[styles.Text,{
+                    fontSize: 20,
+                    color: 'blue',
+                    textDecorationLine: 'underline',
+                  }]} onPress={() => {openURL(match[1]); console.log(match[1])}}>
                     {match[1]}
                 </Text>
             );
@@ -91,7 +95,7 @@ const TaskItem = ({ item }) => {
                 onClose={toggleMore} 
                 content={
                     <View style={styles.containerCentrallityFromUpper}>
-                    <Text style={styles.modalTitle}>{item.title}</Text>
+                    <Text style={styles.modalTitle}>{item.Title}</Text>
                     <Text style={styles.Text}></Text>
                     <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
                     <Text style={styles.Text}></Text>

@@ -119,15 +119,6 @@ closeButton: {
   backgroundColor: '#888',
   borderRadius: 5,
 },
-closeButtonText: {
-  color: '#FFF',
-  fontWeight: 'bold',
-},
-selectDateText: {
-  fontSize: 20,
-  fontWeight: 'bold',
-  marginBottom: 20,
-},
 dateField: {
   alignItems: 'center',
   // borderWidth: 1, 
@@ -135,14 +126,6 @@ dateField: {
   // borderRadius: 5,
   paddingHorizontal: 10,
   paddingVertical: 8, 
-},
-selectedDateText: {
-  color: '#000', 
-  fontSize: 16, 
-},
-placeholderText: {
-  color: '#888', 
-  fontSize: 16, 
 },
 filterContainer: {
   marginTop: 10,
@@ -243,33 +226,6 @@ textInput: {
     flexDirection: 'row',
     justifyContent: "center",
     gap: 150,
-  },
-  textProfile: {
-    color: projColors.currentVerse.font,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    fontSize:18
-  },
-  noValueText: {
-    color: projColors.currentVerse.font,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    fontSize: 20
-  },
-  internalTextRowView: {
-    color: projColors.currentVerse.font,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    textAlign: "center"
-  },
-  descriptionText: {
-    color: projColors.currentVerse.font,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center"
   },
   opacities: {
     alignItems: "center",

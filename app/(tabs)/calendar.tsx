@@ -185,7 +185,7 @@ export default function Calendar() {
                             </View>
                         ) : (
                             <View style={styles.containerCentrallity}>
-                                <Text style={styles.internalTextRowView}>Записи о времени отсутствуют</Text>
+                                <Text style={styles.Text}>Записи о времени отсутствуют</Text>
                             </View>
                         )}
                     </View>
