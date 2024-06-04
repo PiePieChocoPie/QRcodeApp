@@ -86,30 +86,29 @@ const authorize = () => {
 
     return (
         <View style={styles.Registration}>
-            <View style={[styles.frameParent, styles.frameParentLayout]}>
-                <View style={styles.frameGroup}>
-                    <TouchableOpacity onPress={buttonHandler} disabled={loading} style={styles.button}>
-                        <Text style={[styles.text, styles.textPosition]}>Войти</Text>
-                    </TouchableOpacity>
-                    <View style={[styles.enterYourEmailInput, styles.martinToolsPosition]}>
-                        <View style={[styles.enterYourEmailWrapper, styles.enterPosition]}>
-                            <TextInput
-                                style={[styles.input, styles.centeredText]}
-                                value={login}
-                                placeholder='Введите логин'
-                                onChangeText={loginHandler}
-                                keyboardType={"ascii-capable"}
-                            />
-                        </View>
-                        <View style={[styles.enterYourEmailInput1, styles.enterPosition]}>
-                            <TextInput
-                                style={[styles.input, styles.centeredText]}
-                                value={password}
-                                placeholder='Введите пароль'
-                                secureTextEntry={showPassword}
-                                onChangeText={passwordHandler}
-                            />
-                            <TouchableOpacity
+            <View style={styles.frameParent}>
+                <Text style={styles.welcomeText}>
+                    <Text style={styles.welcomeTextRegular}>Приветствую вас в</Text>
+                    <Text> </Text>
+                    <Text style={styles.welcomeTextBold}>Martin Tools!</Text>
+                </Text>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        value={login}
+                        placeholder='Введите логин'
+                        onChangeText={loginHandler}
+                        keyboardType={"ascii-capable"}
+                    />
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={styles.input}
+                            value={password}
+                            placeholder='Введите пароль'
+                            secureTextEntry={showPassword}
+                            onChangeText={passwordHandler}
+                        />
+                        <TouchableOpacity
                             onPress={togglePasswordVisibility}
                             style={styles.eyeIcon}
                         >
@@ -119,15 +118,12 @@ const authorize = () => {
                                 color="gray"
                             />
                         </TouchableOpacity>
-                        </View>
                     </View>
                 </View>
+                <TouchableOpacity onPress={buttonHandler} disabled={loading} style={styles.button}>
+                    <Text style={styles.buttonText}>Войти</Text>
+                </TouchableOpacity>
                 {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
-                <Text style={[styles.martinTools, styles.martinToolsFlexBox]}>
-                    <Text style={styles.text1}>Приветсвую вас в</Text>
-                    <Text style={styles.blankLine}> </Text>
-                    <Text style={styles.martinTools1}>Martin Tools!</Text>
-                </Text>
             </View>
         </View>
     );
@@ -136,16 +132,16 @@ const authorize = () => {
 const loadingStyles = StyleSheet.create({
     LoadingChild: {
         position: "absolute",
-        top: 337,
-        left: 108,
-        width: 177,
-        height: 177,
+        top: '39%',
+        left: '30%',
+        width: '40%',
+        height: '20%',
     },
     Loading: {
         backgroundColor: "#de283b",
         flex: 1,
         width: "100%",
-        height: 852,
+        height: "100%",
         overflow: "hidden",
         justifyContent: 'center',
         alignItems: 'center',
@@ -153,147 +149,75 @@ const loadingStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-    frameParentLayout: {
-        width: 345,
-        position: "absolute",
-    },
-    textPosition: {
-        left: "50%",
-        top: "50%",
-    },
-    martinToolsPosition: {
-        top: 0,
-        left: 0,
-    },
-    enterPosition: {
-        backgroundColor: "#f7f8f9",
-        height: 65,
-        borderRadius: 10,
-        left: "50%",
-        top: "50%",
-        marginLeft: -172.5,
-        width: 345,
-        position: "absolute",
-    },
-    martinToolsFlexBox: {
-        textAlign: "left",
-        position: "absolute",
-    },
-    text: {
-        marginTop: -11.5,
-        marginLeft: -27.5,
-        fontSize: 20,
-        fontWeight: "700",
-        color: "#fff",
-        textAlign: "center",
-        position: "absolute",
-        left: "50%",
-        top: "50%",
-    },
-    wrapper: {
-        marginTop: 57.5,
-        backgroundColor: "#de283b",
-        height: 65,
-        borderRadius: 10,
-        marginLeft: -172.5,
-        left: "50%",
-        top: "50%",
-        width: 345,
-        position: "absolute",
-        overflow: "hidden",
-    },
-    enterYourEmail: {
-        marginTop: -9.6,
-        marginLeft: -153.7,
-        fontSize: 16,
-        lineHeight: 20,
-        fontWeight: "500",
-        color: "#8391a1",
-        left: "50%",
-        top: "50%",
-    },
-    enterYourEmailWrapper: {
-        marginTop: -72.5,
-    },
-    enterYourEmailInput1: {
-        marginTop: 7.5,
-    },
-    enterYourEmailInput: {
-        height: 145,
-        width: 345,
-        position: "absolute",
-    },
-    frameGroup: {
-        top: 115,
-        height: 245,
-        left: 0,
-        width: 345,
-        position: "absolute",
-    },
-    text1: {
-        color: "#191919",
-    },
-    blankLine: {
-        color: "#000",
-    },
-    martinTools1: {
-        color: "#de283b",
-    },
-    martinTools: {
-        fontSize: 32,
-        lineHeight: 40,
-        fontWeight: "600",
-        top: 0,
-        left: 0,
-    },
     frameParent: {
-        top: 48,
-        left: 24,
-        height: 360,
+        width: '90%',
+        alignSelf: 'center',
+        marginTop: '20%', // Отступ сверху для размещения в верхней части экрана
+        justifyContent: 'flex-start', // Выравнивание по верхнему краю
     },
-    Registration: {
-        backgroundColor: "#ebebeb",
-        flex: 1,
-        width: "100%",
-        height: 852,
-        overflow: "hidden",
+    inputContainer: {
+        width: '100%',
+        marginTop: '10%',
     },
-    input: {
-        fontSize: 20,
-        lineHeight: 20,
-        fontWeight: "500",
-        color: "#8391a1",
-
-    },
-    centeredText: {
-        height: '100%',
-        justifyContent: 'center', // Center text vertically
-
-        paddingHorizontal: 10,
-    },
-    eyeIcon: {
-        position: "absolute",
-        right: 20,
-        top: "50%",
-        marginTop: -12,
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: '5%',
     },
     button: {
-        marginTop: 180,
         backgroundColor: "#de283b",
         height: 50,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
+        marginTop: '5%',
     },
     buttonText: {
         color: "#fff",
         fontSize: 20,
         fontWeight: "700",
     },
+    input: {
+        backgroundColor: "#f7f8f9",
+        height: 50,
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        fontSize: 16,
+        width: '100%',
+    },
+    eyeIcon: {
+        position: "absolute",
+        right: 15,
+        top: '50%',
+        transform: [{ translateY: -12 }],
+    },
     errorText: {
         color: "#de283b",
         marginTop: 10,
         textAlign: "center",
+    },
+    welcomeText: {
+        fontSize: 32,
+        lineHeight: 42,
+        fontWeight: "600",
+        textAlign: "center",
+        marginTop: '5%',
+        textAlign: 'left',
+    },
+    welcomeTextRegular: {
+        color: "#191919",
+    },
+    welcomeTextBold: {
+        color: "#de283b",
+    },
+    Registration: {
+        backgroundColor: "#ebebeb",
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        justifyContent: 'flex-start', // Выравнивание по верхнему краю
     },
 });
 
