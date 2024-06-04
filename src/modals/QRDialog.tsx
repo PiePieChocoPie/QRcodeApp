@@ -21,7 +21,7 @@ const QRDialog = ({ visible, onClose }) => {
                     <QRCode value={qrValue} size={Dimensions.get('window').width - 60}/>
                         <TouchableOpacity   style={styles.opacities}  onPress={onClose}>
                             <Icons name="cancel" size={40} color={projColors.currentVerse.font}/>
-                            <Text style={styles.text}>отмена</Text>
+                            <Text style={styles.Text}>отмена</Text>
                         </TouchableOpacity>
                 </View>
             </View>
