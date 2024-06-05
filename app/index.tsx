@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         textAlign: "center",
         marginTop: '5%',
-        // textAlign: 'left',
+        textAlign: 'left',
     },
     welcomeTextRegular: {
         color: "#191919",
