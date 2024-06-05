@@ -79,6 +79,23 @@ export const styles = StyleSheet.create({
 modalContentContainer:{
   flex:1,
 },
+container2: {
+  padding: 10,
+},
+selectedItemsContainer: {
+  marginTop: 10,
+  padding: 10,
+  backgroundColor: '#e0e0e0', // светлый фон для выбранных элементов
+  borderRadius: 5,
+},
+selectedItemsTitle: {
+  fontWeight: 'bold',
+  marginBottom: 5,
+},
+selectedItem: {
+  fontSize: 14,
+  color: '#333', // темный цвет для текста выбранных элементов
+},
 dateButton: {
   marginTop: 20,
   padding: 10,
@@ -130,7 +147,6 @@ dateField: {
 filterContainer: {
   marginTop: 10,
   borderRadius: 5,
-  marginBottom:80,
   // flex:1
 },
 parameterContainer: {
