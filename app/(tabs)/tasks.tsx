@@ -19,7 +19,6 @@ const Tasks = () => {
     const [selectedList, setSelectedList] = useState<string>('Tasks');
     const [expander, setExpander] = useState<boolean>(false);
     const [filterIndex, setFilterIndex] = useState<string>("0");
-    const [filteredList, setFilteredList] = useState<any>(null);
 
     const data = [
         { id: '0', status: 'все', colors:[projColors.currentVerse.border, projColors.currentVerse.fontAccent]},
@@ -59,7 +58,7 @@ const Tasks = () => {
         const endOfNextWeek = new Date(today.setDate(startOfNextWeek.getDate() + 6)); // Конец следующей недели
         switch(filterIndex){
             case '1':
-                const isOverdue = (itemDate) => new Date(itemDate) < new Date();
+                const isOverdue = (itemDate) => itemDate!=undefined && new Date(itemDate) < new Date();
                 const overdueItems = Store.taskData.filter(item => isOverdue(item.deadline));
                 return overdueItems;
             case '2':
@@ -109,7 +108,12 @@ const Tasks = () => {
     
 
     return (
-        <View style={[styles.container,{marginTop:'10%'}]}>
+        loading ? (
+            <View style={styles.containerCentrallity}>
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            </View>
+        ) : (
+        <View style={[styles.container,{marginTop:'10%'}]}>            
             <View>
                 {
                 expander&&
@@ -136,7 +140,6 @@ const Tasks = () => {
                             renderItem={({item})=>
                                 <TouchableOpacity onPress={()=>{
                                                                 setFilterIndex(item.id);
-                                                                setFilteredList(filterTaskList);
                                                                 }}>
                                     <View style={[styles.listElementContainer,{alignItems:"center",backgroundColor:item.colors[0], borderWidth:0, padding:15, margin:7}]}>
                                         <Text style={[styles.Title,{color:item.colors[1]}]}>{item.status}</Text>
@@ -172,22 +175,20 @@ const Tasks = () => {
                                 />
                             }
                         >
-                            {loading ? (
-                                <View style={styles.containerCentrallity}>
-                                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-                                </View>
-                            ) : (
+                            
                                 <View style={{flex:1}}>
-                                {selectedList=='Tasks'&&filteredList.map(item => <TaskItem key={item.id} item={item} />)}
+                                {selectedList=='Tasks'&&filterTaskList().map(item => <TaskItem key={item.id} item={item} />)}
                                 {selectedList=='Attorney'&&Store.attorneys.map(item => <AttorneysItem key={item.ufCrm10ProxyNumber} item={item}/>)}
                                 </View>
-                            )}
+                            
                         </ScrollView>
                     ) : (
                         <Text style={styles.Text}>Задачи не установлены</Text>
                     )}
                 </View>
+                
         </View>
+        )
     );
 };
 export default Tasks;
