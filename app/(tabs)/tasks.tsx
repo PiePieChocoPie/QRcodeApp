@@ -52,26 +52,39 @@ const Tasks = () => {
     );
 
     const filterTaskList=()=>{
-        switch(filterIndex)
-        {
-            case '0':
-                setFilteredList(Store.taskData);
+        const today = new Date(); // Текущая дата
+        const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Начало текущей недели (Понедельник)
+        const endOfWeek = new Date(today.setDate(startOfWeek.getDate() + 6)); // Конец текущей недели (Воскресенье)
+        const startOfNextWeek = new Date(today.setDate(endOfWeek.getDate() + 1)); // Начало следующей недели
+        const endOfNextWeek = new Date(today.setDate(startOfNextWeek.getDate() + 6)); // Конец следующей недели
+        switch(filterIndex){
             case '1':
-                setFilteredList;
+                const isOverdue = (itemDate) => new Date(itemDate) < new Date();
+                const overdueItems = Store.taskData.filter(item => isOverdue(item.deadline));
+                return overdueItems;
             case '2':
-                setFilteredList;
+                const isToday = (itemDate) => new Date(itemDate).toDateString() === new Date().toDateString();
+                const todayItems = Store.taskData.filter(item => isToday(item.deadline));
+                return todayItems;
             case '3':
-                setFilteredList;
+                const isThisWeek = (itemDate) => new Date(itemDate) >= startOfWeek && new Date(itemDate) <= endOfWeek;
+                const thisWeekItems = Store.taskData.filter(item => isThisWeek(item.deadline));
+                return thisWeekItems;
             case '4':
-                setFilteredList;
-            case '5':                        
-                setFilteredList;
+                const isNextWeek = (itemDate) => new Date(itemDate) >= startOfNextWeek && new Date(itemDate) <= endOfNextWeek;
+                const nextWeekItems = Store.taskData.filter(item => isNextWeek(item.deadline));
+                return nextWeekItems;
+            case '5':
+                const isOutOfDeadline = (itemDate) => !itemDate;
+                const outOfDeadline = Store.taskData.filter(item => isOutOfDeadline(item.deadline));
+                return outOfDeadline;
             case '6':
-                setFilteredList;
+                const isOutOfNextWeek = (itemDate) => new Date(itemDate) > endOfNextWeek;
+                const afterNextWeek = Store.taskData.filter(item => isOutOfNextWeek(item.deadline));
+                return afterNextWeek;
             default:
-                return;
+                return Store.taskData;
         }
-
     }
 
     const [refreshing, setRefreshing] = React.useState(false);
@@ -121,7 +134,10 @@ const Tasks = () => {
                             keyExtractor={item=>item.id}
                             horizontal
                             renderItem={({item})=>
-                                <TouchableOpacity onPress={()=>{setFilterIndex(item.id)}}>
+                                <TouchableOpacity onPress={()=>{
+                                                                setFilterIndex(item.id);
+                                                                setFilteredList(filterTaskList);
+                                                                }}>
                                     <View style={[styles.listElementContainer,{alignItems:"center",backgroundColor:item.colors[0], borderWidth:0, padding:15, margin:7}]}>
                                         <Text style={[styles.Title,{color:item.colors[1]}]}>{item.status}</Text>
                                     </View>
@@ -162,7 +178,7 @@ const Tasks = () => {
                                 </View>
                             ) : (
                                 <View style={{flex:1}}>
-                                {selectedList=='Tasks'&&Store.taskData.map(item => <TaskItem key={item.id} item={item} />)}
+                                {selectedList=='Tasks'&&filteredList.map(item => <TaskItem key={item.id} item={item} />)}
                                 {selectedList=='Attorney'&&Store.attorneys.map(item => <AttorneysItem key={item.ufCrm10ProxyNumber} item={item}/>)}
                                 </View>
                             )}
