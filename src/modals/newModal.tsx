@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button } from 'react-native';
 import { projColors, styles } from 'src/stores/styles';
 import CalendarPickerModal from 'src/components/calendarPicker';
 import Store from 'src/stores/mobx';
 import MultiSelect from 'src/components/picker-select';
 import ClientSelect from 'src/components/clients-select';
 import CustomModal from 'src/components/custom-modal';
-import { Button } from 'react-native-paper';
 import { getHierarchy, getClients, getStorages, getUserStoragesID, getReportsTest } from 'src/http';
 import { useFocusEffect } from 'expo-router';
 
 const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   const [isPeriod, setPeriod] = useState(false);
+  const [selectedItem, setSelectedItems] = useState([]);
+  const [isMultiSelectVisible, setMultiSelectVisible] = useState(false);
 
 
+  const handleOpenMultiSelect = () => {
+    setMultiSelectVisible(true);
+  };
+
+  const handleCloseMultiSelect = () => {
+    setMultiSelectVisible(false);
+  };
+
+
+  const handleSelectionChange = (selectedItems) => {
+    setSelectedItems(selectedItems);
+    console.log('Выбранные элементы:', selectedItem);
+  };
 
   const ReqReport = async () => {
     // const response = await getHierarchy();
@@ -67,11 +81,27 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
             <View style={styles.filterContainer}>
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
               <View style={{height: '15%'}}>
-              {reportName.filters[0].view === "Склады" ? (
-                  <MultiSelect jsonData={Store.storages} title={'Выберите склады'}/>
+              {/* {reportName.filters[0].view === "Склады" ? (
+                  <MultiSelect jsonData={Store.storages} title={'Выберите склады'} onSelectionChange={handleSelectionChange} />
               ) : (
-                  <MultiSelect jsonData={Store.clients} title={'Выберите клиентов'}/>
+                  <MultiSelect jsonData={Store.clients} title={'Выберите клиентов'} onSelectionChange={handleSelectionChange}/>
 
+              )} */}
+                  <Button title="Выбрать склады" onPress={handleOpenMultiSelect} />
+                <MultiSelect 
+                  jsonData={Store.storages} 
+                  title="Выберите склады" 
+                  visible={isMultiSelectVisible}
+                  onSelectionChange={handleSelectionChange} 
+                  onClose={handleCloseMultiSelect} 
+                />
+                {selectedItem.length > 0 && (
+                <View>
+                  <Text>Выбранные элементы:</Text>
+                  {selectedItem.map(item => (
+                    <Text key={item.GUID || item.ID}>{item.NAME}</Text>
+                  ))}
+                </View>
               )}
               </View>
             </View>
@@ -86,9 +116,9 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
               </View>
             ))}
 
-            <Button onPress={ReqReport}>
+            {/* <Button onPress={ReqReport}>
               <Text style={[styles.Title]}>Запросить отчет</Text>
-            </Button>
+            </Button> */}
           </View>
         )
       }

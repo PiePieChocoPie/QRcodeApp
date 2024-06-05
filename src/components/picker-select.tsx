@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, TextInput } 
 import CustomModal from 'src/components/custom-modal';
 import Store from 'src/stores/mobx';
 
-const ITEMS_PER_PAGE = 20;
-const MultiSelect = ({ jsonData, title }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+
+const MultiSelect = ({ jsonData, title, visible, onClose, onSelectionChange }) => {
+  // const [modalVisible, setModalVisible] = useState(visible);
   const [items, setItems] = useState(jsonData);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState(items);
@@ -18,7 +18,7 @@ const MultiSelect = ({ jsonData, title }) => {
 
   const toggleItem = (key) => {
     const updatedItems = items.map(item =>
-      item.GUID === key || item.guid === key ? { ...item, selected: !item.selected } : item
+      item.GUID === key || item.ID === key ? { ...item, selected: !item.selected } : item
     );
     setItems(updatedItems);
   };
@@ -36,8 +36,8 @@ const MultiSelect = ({ jsonData, title }) => {
       return data
         .filter(item => item.selected)
         .map(item => {
-          if (item.GUID || item.guid) {
-            return item.GUID || item.guid;
+          if (item.GUID || item.ID) {
+            return item.GUID || item.ID;
           } else if (item.PROPERTY_108) {
             const propertyValues = Object.values(item.PROPERTY_108);
             return propertyValues.length > 0 ? propertyValues[0] : undefined;
@@ -52,25 +52,17 @@ const MultiSelect = ({ jsonData, title }) => {
   const handleCloseModal = () => {
     const guids = extractGuids(items);
     Store.setFilterItems(guids);
-    setModalVisible(false);
+    onClose()
+    if (typeof onSelectionChange === 'function') {
+      onSelectionChange(selectedItems);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <View style={styles.selectedItemsContainer}>
-          {displayedItems.map((item) => (
-            <Text key={item.GUID || item.guid} style={styles.selectedItem}>{item.NAME}</Text>
-          ))}
-          {additionalCount > 0 && (
-            <Text style={styles.additionalText}>и еще {additionalCount}</Text>
-          )}
-          <Text style={styles.inputText}>{selectedItems.length > 0 ? '' : 'Выберите элементы'}</Text>
-        </View>
-      </TouchableOpacity>
       <CustomModal
-        visible={modalVisible}
-        onClose={() => handleCloseModal()}
+        visible={visible}
+        onClose={handleCloseModal}
         marginTOP={0.24}
         content={
           <View>
@@ -84,7 +76,7 @@ const MultiSelect = ({ jsonData, title }) => {
             <FlatList
               data={filteredItems}
               renderItem={renderItem}
-              keyExtractor={item => item.GUID || item.guid}
+              keyExtractor={item => item.GUID || item.ID}
               style={styles.modalContent}
             />
           </View>
@@ -97,7 +89,7 @@ const MultiSelect = ({ jsonData, title }) => {
 const Item = ({ item, toggleItem }) => (
   <TouchableOpacity
     style={[styles.option, item.selected && styles.selectedOption]}
-    onPress={() => toggleItem(item.GUID || item.guid)}
+    onPress={() => toggleItem(item.GUID || item.ID)}
   >
     <Text>{item.NAME}</Text>
   </TouchableOpacity>
