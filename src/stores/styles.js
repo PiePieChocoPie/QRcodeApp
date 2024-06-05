@@ -349,4 +349,19 @@ textInput: {
     fontSize:16,
     color: projColors.currentVerse.fontAccent
   },
+  expanderContainer: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    zIndex: 1,
+    backgroundColor: projColors.currentVerse.main,
+  },
+  expanderContent: {
+    backgroundColor: projColors.currentVerse.main,
+    padding: 10,
+  },
+  containerContent: {
+    flex: 1,
+    marginTop: '15%', 
+  },
 });
