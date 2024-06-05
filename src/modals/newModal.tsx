@@ -14,8 +14,9 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   const [selectedItem, setSelectedItems] = useState([]);
   const [isMultiSelectVisible, setMultiSelectVisible] = useState(false);
 
-
   const handleOpenMultiSelect = () => {
+
+
     setMultiSelectVisible(true);
   };
 
@@ -26,7 +27,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
 
   const handleSelectionChange = (selectedItems) => {
     setSelectedItems(selectedItems);
-    console.log('Выбранные элементы:', selectedItem);
+    // console.log('Выбранные элементы:', selectedItem);
   };
 
   const ReqReport = async () => {
@@ -80,27 +81,36 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
             <Text style={styles.Title}>{reportName.name}</Text>
             <View style={styles.filterContainer}>
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
-              <View style={{height: '15%'}}>
-              {/* {reportName.filters[0].view === "Склады" ? (
-                  <MultiSelect jsonData={Store.storages} title={'Выберите склады'} onSelectionChange={handleSelectionChange} />
-              ) : (
-                  <MultiSelect jsonData={Store.clients} title={'Выберите клиентов'} onSelectionChange={handleSelectionChange}/>
-
-              )} */}
-                  <Button title="Выбрать склады" onPress={handleOpenMultiSelect} />
-                <MultiSelect 
+              <View style={styles.container2}>
+                <Button title="Выбрать" onPress={handleOpenMultiSelect} />
+                {reportName.filters[0].view === "Склады" ? (
+                  <MultiSelect 
                   jsonData={Store.storages} 
-                  title="Выберите склады" 
+                  title="Выборка реквизитов" 
                   visible={isMultiSelectVisible}
                   onSelectionChange={handleSelectionChange} 
                   onClose={handleCloseMultiSelect} 
                 />
+                ) : (
+                  <MultiSelect 
+                  jsonData={Store.clients} 
+                  title="Выборка реквизитов" 
+                  visible={isMultiSelectVisible}
+                  onSelectionChange={handleSelectionChange} 
+                  onClose={handleCloseMultiSelect} 
+                />
+
+                )} 
+
                 {selectedItem.length > 0 && (
-                <View>
-                  <Text>Выбранные элементы:</Text>
-                  {selectedItem.map(item => (
-                    <Text key={item.GUID || item.ID}>{item.NAME}</Text>
-                  ))}
+                  <View style={styles.selectedItemsContainer}>
+                    <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
+                    {selectedItem.map(item => (
+                      <Text key={item.GUID || item.ID} style={styles.selectedItem}>
+                        {item.NAME}
+                      </Text>
+                ))}
+
                 </View>
               )}
               </View>
