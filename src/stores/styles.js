@@ -366,10 +366,10 @@ textInput: {
     color: projColors.currentVerse.fontAccent
   },
   expanderContainer: {
-    position: 'absolute',
+    // position: 'absolute',
     top: 0,
     width: '100%',
-    zIndex: 1,
+    // zIndex: 1,
     backgroundColor: projColors.currentVerse.main,
   },
   expanderContent: {
@@ -378,6 +378,6 @@ textInput: {
   },
   containerContent: {
     flex: 1,
-    marginTop: '15%', 
+    // marginTop: '15%', 
   },
 });

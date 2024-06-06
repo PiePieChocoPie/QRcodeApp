@@ -89,7 +89,7 @@ const Tasks = () => {
         onRefresh();
     };
 
-    return (
+return (
         loading ? (
             <View style={styles.containerCentrallity}>
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
@@ -129,7 +129,8 @@ const Tasks = () => {
                                             </View>
                                         </TouchableOpacity>
                                     }
-                                    showsHorizontalScrollIndicator={false}
+
+showsHorizontalScrollIndicator={false}
                                 />
                             )}
                         </View>
