@@ -1,4 +1,3 @@
-import { statusDay } from "src/http";
 import { Tabs } from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Ionicons";
@@ -7,6 +6,7 @@ import Store from "src/stores/mobx";
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useRef } from "react";
 import { useFocusEffect } from '@react-navigation/native';
+import { statusDay } from "src/requests/timeManagement";
 
 const TabsLayout = () => {
   // const animationRef = useRef<LottieView>(null);

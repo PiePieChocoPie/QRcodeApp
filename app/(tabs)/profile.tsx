@@ -6,11 +6,12 @@ import { router, Link} from "expo-router";
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect} from '@react-navigation/native';
-import { getAllStaticData, openDay, statusDay } from "src/http";
 import useLoading from "src/useLoading";
 import { Button } from "react-native-paper";
 import CustomModal from "src/components/custom-modal";
 import QRCode from "react-native-qrcode-svg";
+import { openDay, statusDay } from "src/requests/timeManagement";
+import { getAllStaticData } from "src/requests/userData";
 function profile() {
     const [userData, setUserdata] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);

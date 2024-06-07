@@ -6,8 +6,9 @@ import Store from 'src/stores/mobx';
 import MultiSelect from 'src/components/picker-select';
 import ClientSelect from 'src/components/clients-select';
 import CustomModal from 'src/components/custom-modal';
-import { getHierarchy, getClients, getStorages, getUserStoragesID, getReportsTest } from 'src/http';
 import { useFocusEffect } from 'expo-router';
+import { getClients, getStorages, getUserStoragesID } from 'src/requests/storages';
+import { getReportsTest } from 'src/requests/docs';
 
 const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   const [isPeriod, setPeriod] = useState(false);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { getHierarchy } from 'src/http';
 import CustomModal from 'src/components/custom-modal';
 const ClientSelect = () => {
   const [expanded, setExpanded] = useState(false);

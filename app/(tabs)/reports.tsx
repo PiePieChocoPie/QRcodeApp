@@ -1,8 +1,8 @@
 import { Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import React, { useEffect, useState } from "react";
-import { getReports } from "src/http";
 import ModalForm from "src/modals/newModal";
 import { styles } from 'src/stores/styles';
+import { getReports } from 'src/requests/timeManagement';
 
 const home = () => {
   const [selectedReport, setSelectedReport] = useState(null);

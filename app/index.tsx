@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import { encode as base64encode } from 'base-64';
 import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { router } from "expo-router";
-import { getAllStaticData, statusDay } from "src/http";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 import { Image } from "expo-image";
 import * as Animatable from 'react-native-animatable';
+import { getAllStaticData } from "src/requests/userData";
+import { statusDay } from "src/requests/timeManagement";
 
 const LoadingScreen = () => {
     return (
@@ -203,7 +204,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         textAlign: "center",
         marginTop: '5%',
-        textAlign: 'left',
     },
     welcomeTextRegular: {
         color: "#191919",

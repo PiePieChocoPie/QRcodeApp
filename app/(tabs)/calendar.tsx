@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, Alert, ActivityIndicator, Text } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
-import { getUsersTrafficStatistics } from "src/http";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import Store from "src/stores/mobx";
 import CustomModal from "src/components/custom-modal";
+import { getUsersTrafficStatistics } from "src/requests/timeManagement";
 
 export default function Calendar() {
     const { loading, startLoading, stopLoading } = useLoading();

@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { View, Text, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
-import { getAllStaticData, getUserAttorney } from "src/http";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import TaskItem from "src/ListItems/taskItem";
 import AttorneysItem from "src/ListItems/attorneysItem";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Svg, { Path } from 'react-native-svg';
+import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 
 const Tasks = () => {
     const { loading, startLoading, stopLoading } = useLoading();

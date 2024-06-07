@@ -3,7 +3,6 @@ import { Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-na
 import { CameraView, useCameraPermissions } from "expo-camera";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
-import { getAllStaticData, getDataAboutDocs } from "src/http";
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import { useFocusEffect } from "expo-router";
@@ -11,6 +10,8 @@ import useLoading from "src/useLoading";
 import Toast from 'react-native-root-toast';
 import LottieView from 'lottie-react-native';
 import anim2 from 'src/anim2.json';
+import { getAllStaticData } from "src/requests/userData";
+import { getDataAboutDocs } from "src/requests/docs";
 
 const Reader: React.FC = () => {
     const [scanned, setScanned] = useState<boolean>(false);
@@ -65,6 +66,7 @@ const Reader: React.FC = () => {
                 console.log(item)
                 if (item.entityTypeId == "168") setDocNumber(1);
                 else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") setDocNumber(2);
+                else if (item.entityTypeId == "166" && item.stageId != "DT166_16:SUCCESS" && item.stageId != "DT166_16:FAIL") setDocNumber(3);
                 else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент");
                 setModalVisibleState(true);
                 Store.setUpdData(item);

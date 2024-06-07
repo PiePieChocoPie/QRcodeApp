@@ -72,7 +72,7 @@ const CalendarPickerModal = ({parameter}) => {
     return (
         <TouchableOpacity style={styles.textInput} onPress={() => setModalVisible(true)}>
             <View style={styles.dateField}>
-            <Text style={selectedDate ? styles.selectedDateText : styles.placeholderText}>
+            <Text style={selectedDate ? styles.Text : styles.Title}>
                 {selectedDate ? (parameter === 'Период' ? `${formatDateString(Store.mainDate)} - ${formatDateString(Store.extraDate)}` : formatDateString(selectedStartDate)) : 'Выберите дату'}
             </Text>
             <CustomModal

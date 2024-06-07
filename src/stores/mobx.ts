@@ -21,6 +21,7 @@ class Store {
   extraDate: any = null;
   filterItems: any = null;
   attorneys: any = null;
+  attorneyStatusesData: any = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -68,6 +69,10 @@ class Store {
 
   setUpdStatusesData(updData: any) {
     this.setProperty('updStatusesData', updData);
+  }
+
+  setAttorneyStatusesData(attorneyData: any) {
+    this.setProperty('attorneyStatusesData', attorneyData);
   }
 
   setItineraryStatusesData(updData: any) {
