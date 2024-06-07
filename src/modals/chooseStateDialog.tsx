@@ -16,7 +16,6 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
 
     const getNextStatus = () => {
         if (!docData) {
-            console.log("docData is undefined");
             return { error: 'Изменение статуса документа невозможно' };
         }
         if (!docData.stageId) {

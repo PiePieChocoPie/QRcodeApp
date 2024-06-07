@@ -21,55 +21,65 @@ export async function getTasksData(ID: string): Promise<any> {
     return response;
   }
   
+
   export async function getDataAboutDocs(raw: string): Promise<any> {
-    try {
-        let entityTypeId: string | null = null;
+      try {
+          let entityTypeId: string | null = null;
   
-        switch (true) {
-            case raw.startsWith('133$'):
-                entityTypeId = "133";
-                break;
-            case raw.startsWith('168$'):
-                entityTypeId = "168";
-                break;
-            case raw.startsWith('166$'):
-                entityTypeId = "166";
-                break;
-            default:
-                throw new Error("Invalid raw string format");
-        }
+          switch (true) {
+              case raw.startsWith('133$'):
+                  entityTypeId = "133";
+                  break;
+              case raw.startsWith('168$'):
+                  entityTypeId = "168";
+                  break;
+              case raw.startsWith('166$'):
+                  entityTypeId = "166";
+                  break;
+              default:
+                  throw new Error("Invalid raw string format");
+          }
   
-        if (!entityTypeId) {
-            throw new Error("Invalid entity type ID");
-        }
+          if (!entityTypeId) {
+              throw new Error("Invalid entity type ID");
+          }
   
-        const data = JSON.stringify({
-            "entityTypeId": entityTypeId,
-            "filter": {
-                [entityTypeId === "133" ? "=ufCrm6Guid" : entityTypeId === "168" ? "=ufCrm5ReleaceGuid" : "ufCrm10ProxyGuid"]: raw
-            }
-        });
+          const data = JSON.stringify({
+              "entityTypeId": entityTypeId,
+              "filter": {
+                  [entityTypeId === "133" ? "=ufCrm6Guid" : entityTypeId === "168" ? "=ufCrm5ReleaceGuid" : "=ufCrm10ProxyGuid"]: raw
+              }
+          });
   
-        const config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: false,
-            data: data
-        };
+          const config = {
+              method: 'post',
+              maxBodyLength: Infinity,
+              url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              withCredentials: false,
+              data: data
+          };
   
-        console.log(data);
+          console.log("Request data:", data);
   
-        const response = await axios.request(config);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error;
-    }
+          const response = await axios.request(config);
+          console.log("Response data:", response.data); // Лог ответа
+  
+          if (response.data && response.data.result && response.data.result.items) {
+              console.log("First item:", response.data.result.items[0]);
+          } else {
+              console.error('Invalid response structure:', response.data);
+          }
+  
+          return response.data;
+      } catch (error) {
+          console.error('Error fetching data:', error);
+          throw error;
+      }
   }
+  
   
   export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string): Promise<any> {
     const body = {

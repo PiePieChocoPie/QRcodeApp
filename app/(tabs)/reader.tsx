@@ -60,18 +60,25 @@ const Reader: React.FC = () => {
         try {
             setScanned(true);
             const res = await getDataAboutDocs(data); // Ожидание завершения запроса
-            // console.log(res.data.result.items[0]!=null);
-            if (res.data.result.items[0]) {
-                const item = res.data.result.items[0];
-                console.log(item)
-                if (item.entityTypeId == "168") setDocNumber(1);
-                else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") setDocNumber(2);
-                else if (item.entityTypeId == "166" && item.stageId != "DT166_16:SUCCESS" && item.stageId != "DT166_16:FAIL") setDocNumber(3);
-                else return Alert.alert("Неверный тип или этап документа", "Невозможно обработать дoкумент");
+            console.log("Scanned response:", res); // Лог ответа
+    
+            if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
+                const item = res.result.items[0];
+                console.log(item);
+                if (item.entityTypeId == "168") {
+                    setDocNumber(1);
+                } else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") {
+                    setDocNumber(2);
+                } else if (item.entityTypeId == "166" && item.stageId != "DT166_16:SUCCESS" && item.stageId != "DT166_16:FAIL") {
+                    setDocNumber(3);
+                } else {
+                    return Alert.alert("Неверный тип или этап документа", "Невозможно обработать документ");
+                }
                 setModalVisibleState(true);
                 Store.setUpdData(item);
                 setModalText(item);
             } else {
+                console.error('No items found or invalid response structure:', res);
                 let toast = Toast.show(`Ошибка: документ не найден`, {
                     duration: Toast.durations.LONG,
                     position: Toast.positions.TOP
@@ -91,6 +98,7 @@ const Reader: React.FC = () => {
             }, 500);
         }
     };
+    
     
 
     const toggleModalState = () => {
