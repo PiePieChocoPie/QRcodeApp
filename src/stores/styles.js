@@ -80,7 +80,33 @@ modalContentContainer:{
   flex:1,
 },
 container2: {
+  padding: 20,
+},
+itemContainer2: {
+  marginVertical: 5,
+  paddingLeft: 10,
+  borderLeftWidth: 2,
+  borderColor: '#ccc',
+},
+itemTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+itemValue: {
+  fontSize: 14,
+  paddingLeft: 20,
+},
+dataContainer: {
+  marginTop: 20,
   padding: 10,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 5,
+},
+dataTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginBottom: 10,
 },
 selectedItemsContainer: {
   marginTop: 10,

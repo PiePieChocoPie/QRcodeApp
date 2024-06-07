@@ -61,7 +61,7 @@ export async function getStorages(storageData: any): Promise<void> {
     };
   
     const response = await axios.request(config);
-    Store.setClients(response.data.body);
+    // Store.setClients(response.data.body);
     return response;
   }
   
