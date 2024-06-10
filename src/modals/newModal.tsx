@@ -10,18 +10,10 @@ import App from 'src/components/hieralcy';
 import { useFocusEffect } from 'expo-router';
 import { getClients, getStorages, getUserStoragesID } from 'src/requests/storages';
 import { getReportsTest } from 'src/requests/docs';
+import {getHierarchy} from 'src/requests/hierarchy'
 
 
-const data = {
-  "РМ00001": {
-      "СУП00001": {
-          "ТП00001": "ee4874d1-db5d-11e9-8160-e03f4980f4ff",
-          "ТП00019": "854c627a-e49c-11ee-8117-ac1f6b727abf",
-          "ТП00020": "a0a4e9f0-e49c-11ee-8117-ac1f6b727abf",
-          "ТП00094": "107b1237-e769-11ee-8117-ac1f6b727abf"
-      },
-  },
-};
+
 
 const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePressGuid }) => {
   const handleToggleExpand = (key) => {
@@ -83,9 +75,15 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   const [expandedItems, setExpandedItems] = useState([]);
   const [selectedGuidData, setSelectedGuidData] = useState([]);
 
-  const handleOpenMultiSelect = () => {
-    setMultiSelectVisible(true);
-  };
+  const [Ierarhy, setIerarhy] = useState(null);
+
+  useEffect(() => {
+    const getLocalHierarchy = async()=>{
+      const hierarchy = await getHierarchy();
+      setIerarhy(hierarchy);
+    }
+    getLocalHierarchy();
+  }, []);
 
   const handleCloseMultiSelect = () => {
     setMultiSelectVisible(false);
@@ -96,19 +94,20 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
     setSelectedItems(selectedItems);
   };
 
-  useFocusEffect(() => {
-    if(reportName)
-      {
-        setPeriod(reportName.parameters[0].view=="Период")
-      }
-      console.log("period ---- ",isPeriod)
-      getStorages(Store.userData.UF_USR_STORAGES);
-  },);
+  // useFocusEffect(() => {
+  //   if(reportName)
+  //     {
+  //       setPeriod(reportName.parameters[0].view=="Период")
+  //     }
+  //     console.log("period ---- ",isPeriod)
+  //     getStorages(Store.userData.UF_USR_STORAGES);
+  // },);
  
   const handlePressGuid = async (guid) => {
     console.log(guid);
     try {
         const response = await getClients(guid);  
+        console.log(response.data.body)
         setSelectedGuidData(response.data.body); 
         setMultiSelectVisible(true);
     } catch (error) {
@@ -134,35 +133,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
 
               </View>
             ))}
-            <Text style={styles.Text}>{reportName.filters[0].view}</Text>
-              <View style={styles.container2}>
-
-              <FlatList
-                data={Object.entries(data)}
-                renderItem={({ item }) => {
-                    const isExpanded = expandedItems.includes(item[0]);
-                    return (
-                        <View style={styles.itemContainer2}>
-                            <TouchableOpacity onPress={() => setExpandedItems([item[0]])}>
-                                <Text style={styles.itemTitle}>
-                                    {isExpanded ? '▼ ' : '► '}
-                                    {item[0]}
-                                </Text>
-                            </TouchableOpacity>
-                            {isExpanded && (
-                                <RecursiveItem 
-                                    item={item[1]} 
-                                    expandedItems={expandedItems} 
-                                    setExpandedItems={setExpandedItems} 
-                                    path={[item[0]]} 
-                                    handlePressGuid={handlePressGuid}
-                                />
-                            )}
-                        </View>
-                    );
-                }}
-                keyExtractor={item => item[0]}
-            />
                 {selectedItem.length > 0 && (
                   <View style={styles.selectedItemsContainer}>
                     <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
@@ -174,6 +144,37 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
 
                 </View>
               )}
+            <Text style={styles.Text}>{reportName.filters[0].view}</Text>
+              <View style={styles.container2}>
+              { Ierarhy &&
+                <FlatList
+                  data={Object.entries(Ierarhy.Дирекция)}
+                  renderItem={({ item }) => {
+                      const isExpanded = expandedItems.includes(item[0]);
+                      return (
+                          <View style={styles.itemContainer2}>
+                              <TouchableOpacity onPress={() => setExpandedItems([item[0]])}>
+                                  <Text style={styles.itemTitle}>
+                                      {isExpanded ? '▼ ' : '► '}
+                                      {item[0]}
+                                  </Text>
+                              </TouchableOpacity>
+                              {isExpanded && (
+                                  <RecursiveItem 
+                                      item={item[1]} 
+                                      expandedItems={expandedItems} 
+                                      setExpandedItems={setExpandedItems} 
+                                      path={[item[0]]} 
+                                      handlePressGuid={handlePressGuid}
+                                  />
+                              )}
+                          </View>
+                      );
+                  }}
+                  keyExtractor={item => item[0]}
+              />
+              }
+
 
               </View>
             </View>

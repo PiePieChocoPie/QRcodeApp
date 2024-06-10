@@ -26,9 +26,10 @@ export async function getDepData(ID: string): Promise<any> {
       maxBodyLength: Infinity,
       url: 'https://bitrix24.martinural.ru/MartinAPI/Hieralcy.php',
       headers: { 'Authorization': 'Basic arm:Zxc123' },
+      withCredentials: false
     };
   
     const response = await axios.request(config);
-    return response;
+    return response.data;
   }
   
