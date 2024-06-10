@@ -110,7 +110,9 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     }
 
     const acceptAxios = async () => {
+        startLoading();
         try {
+
             if (docData.entityTypeId == "168") {
                 await updHandling();
             } else if (docData.entityTypeId == "133") {
@@ -123,6 +125,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         } catch (e) {
             alert(e);
         }
+        stopLoading();
         onClose();
     };
     const attorneyHandling = async () => {
@@ -185,7 +188,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         </View>
                     </View>
                 </View>
-            )} marginTOP={undefined}        />
+            )} marginTOP={0.2}        />
     );
 };
 
