@@ -1,10 +1,11 @@
-import { Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity, StyleSheet, FlatList, View } from 'react-native';
 import ModalForm from "src/modals/newModal";
 import { styles } from 'src/stores/styles';
 import { getReports } from 'src/requests/timeManagement';
+import * as Icons from '../../assets/icons';  // Импорт всех иконок
 
-const home = () => {
+const Home = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [reportKey, setReportKey] = useState(null);
   const [reports, setReports] = useState([]);
@@ -15,7 +16,7 @@ const home = () => {
       try {
         const response = await getReports();
         setReports(response.data);
-        // console.log(response.data.storage)
+        console.log('Fetched reports:', response.data);
       } catch (error) {
         console.error('Error fetching reports:', error);
       }
@@ -24,10 +25,9 @@ const home = () => {
     fetchData();
   }, []);
 
-  const onPressReport = (Key) => {
-    const selectedReport = reports[Key];
-    // console.log(Key)
-    setReportKey(Key)
+  const onPressReport = (key) => {
+    const selectedReport = reports[key];
+    setReportKey(key);
     setSelectedReport(selectedReport);
     toggleModal();
   };
@@ -36,44 +36,43 @@ const home = () => {
     setModalVisible(!modalVisible);
   };
 
+  const renderItem = ({ item, index }) => {
+    const key = Object.keys(reports)[index];
+    const Icon = Icons[key];  // Получение соответствующей иконки
+    if (!Icon) {
+      console.warn(`Icon for key "${key}" not found`);
+      return null;
+    }
+    return (
+      <TouchableOpacity
+        key={key}
+        style={[styles.listElementContainer, { width: "45%", alignContent:"center", alignItems:"center"}]}
+        onPress={() => onPressReport(key)}
+      >
+        <Icon width={50} height={50} />
+        <Text style={[styles.Text,{textAlign:"center"}]}>{item.name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <ScrollView contentContainerStyle={[localstyles.container,{marginTop:'10%'}]}>
-      {Object.keys(reports).map((key) => (
-        <TouchableOpacity
-          key={key}
-          style={[localstyles.tile, localstyles.shadow]}
-          onPress={() => onPressReport(key)}
-        >
-          <Text style={styles.Text}>{reports[key].name}</Text>
-        </TouchableOpacity>
-      ))}
-      <ModalForm modalVisible={modalVisible} toggleModal={toggleModal} reportName={selectedReport} reportKey={reportKey}/>
-    </ScrollView>
+    <View style={[styles.container, { marginTop: '10%' }]}>
+      <FlatList
+        data={Object.values(reports)}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        numColumns={2}  // для отображения в две колонки
+      />
+      <ModalForm
+        modalVisible={modalVisible}
+        toggleModal={toggleModal}
+        reportName={selectedReport}
+        reportKey={reportKey}
+      />
+    </View>
   );
 };
 
-const localstyles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    padding: 10,
-  },
-  tile: {
-    width: '45%',
-    height: 150,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  tileText: {
-    fontSize: 16,
-  },
-  shadow: {
-    elevation: 5,
-  },
-});
 
-export default home;
+
+export default Home;
