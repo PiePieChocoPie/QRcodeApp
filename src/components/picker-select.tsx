@@ -64,9 +64,9 @@ const MultiSelect = ({ jsonData, title, visible, onClose, onSelectionChange }) =
         visible={visible}
         onClose={handleCloseModal}
         marginTOP={0.24}
+        title={title}
         content={
           <View>
-            <Text style={styles.title}>{title}</Text>
             <TextInput
               style={styles.searchInput}
               placeholder="Поиск..."
@@ -144,8 +144,6 @@ const styles = StyleSheet.create({
   modalContent: {
     borderRadius: 10,
     padding: 20,
-    minWidth: '80%',
-    maxWidth: '80%',
   },
   option: {
     padding: 10,

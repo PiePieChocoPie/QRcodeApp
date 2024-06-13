@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, StyleSheet, FlatList, View } from 'react-native
 import ModalForm from "src/modals/newModal";
 import { styles } from 'src/stores/styles';
 import { getReports } from 'src/requests/timeManagement';
-import * as Icons from '../../assets/icons';  // Импорт всех иконок
+import * as Icons from '../../assets/icons'; 
 
 const Home = () => {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -38,7 +38,7 @@ const Home = () => {
 
   const renderItem = ({ item, index }) => {
     const key = Object.keys(reports)[index];
-    const Icon = Icons[key];  // Получение соответствующей иконки
+    const Icon = Icons[key];  
     if (!Icon) {
       console.warn(`Icon for key "${key}" not found`);
       return null;
@@ -61,7 +61,7 @@ const Home = () => {
         data={Object.values(reports)}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
-        numColumns={2}  // для отображения в две колонки
+        numColumns={2}  
       />
       <ModalForm
         modalVisible={modalVisible}

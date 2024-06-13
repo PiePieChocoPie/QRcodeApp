@@ -70,11 +70,28 @@ export const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
     flex: 1,
-    alignItems: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20 ,
     
 
+},
+selectedItemContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: 8,
+  borderBottomWidth: 1,
+  borderColor: '#ddd'
+},
+deleteButton: {
+  backgroundColor: 'red',
+  paddingVertical: 4,
+  paddingHorizontal: 8,
+  borderRadius: 4,
+},
+deleteButtonText: {
+  color: 'white',
+  fontSize: 12,
 },
 modalContentContainer:{
   flex:1,
@@ -111,7 +128,7 @@ dataTitle: {
 selectedItemsContainer: {
   marginTop: 10,
   padding: 10,
-  backgroundColor: '#e0e0e0', // светлый фон для выбранных элементов
+  backgroundColor: '#e0e0e0', 
   borderRadius: 5,
 },
 selectedItemsTitle: {
@@ -173,7 +190,8 @@ dateField: {
 filterContainer: {
   marginTop: 10,
   borderRadius: 5,
-  // flex:1
+  
+  flex:1
 },
 parameterContainer: {
   marginTop: 10,
