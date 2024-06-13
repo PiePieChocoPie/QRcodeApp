@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity, FlatList, StyleSheet, Dimensions, Animated } from 'react-native';
 import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import TaskItem from "src/ListItems/taskItem";
 import AttorneysItem from "src/ListItems/attorneysItem";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Icons from '../../assets/navbar_icons';  // Импорт всех иконок из указанного пути
 import Svg, { Path } from 'react-native-svg';
 import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 
@@ -19,6 +19,7 @@ const Tasks = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     const scrollY = useRef(new Animated.Value(0)).current;
+    const rotation = useRef(new Animated.Value(0)).current;
 
     const data = [
         { id: '0', status: 'все', colors: [projColors.currentVerse.border, projColors.currentVerse.fontAccent] },
@@ -100,6 +101,20 @@ const Tasks = () => {
         extrapolate: 'clamp',
     });
 
+    const rotateIcon = () => {
+        Animated.timing(rotation, {
+            toValue: expander ? 1 : 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+        setExpander(!expander);
+    };
+
+    const iconRotation = rotation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '180deg'],
+    });
+
     return (
         loading ? (
             <View style={styles.containerCentrallity}>
@@ -120,8 +135,10 @@ const Tasks = () => {
                 >
                     <Animated.View style={{ transform: [{ translateY: headerTranslateY }], opacity: headerOpacity }}>
                         <View style={[styles.expanderContainer, { backgroundColor: "transparent" }]}>
-                            <TouchableOpacity onPress={() => setExpander(!expander)} style={{ alignItems: 'center' }}>
-                                <Icon name={expander ? "chevron-up" : "chevron-down"} size={40} color={projColors.currentVerse.fontAccent} />
+                            <TouchableOpacity onPress={rotateIcon} style={{ alignItems: 'center' }}>
+                                <Animated.View style={{ transform: [{ rotate: iconRotation }] }}>
+                                    <Icons.arrow width={40} height={40} color={projColors.currentVerse.fontAccent} />
+                                </Animated.View>
                                 {selectedList === "Tasks" && <Text style={styles.Title}>{data[filterIndex].status}</Text>}
                             </TouchableOpacity>
                             {expander && (
