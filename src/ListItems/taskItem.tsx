@@ -92,10 +92,10 @@ const TaskItem = ({ item }) => {
             <CustomModal 
                 visible={modalVisible}
                 onClose={toggleMore} 
+                title={item.Title}
                 marginTOP={0.2}
                 content={
                     <View style={styles.containerCentrallityFromUpper}>
-                    <Text style={styles.modalTitle}>{item.Title}</Text>
                     <Text style={styles.Text}></Text>
                     <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
                     <Text style={styles.Text}></Text>

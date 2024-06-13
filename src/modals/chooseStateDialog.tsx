@@ -103,6 +103,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         <CustomModal
             visible={visible}
             onClose={onClose}
+            title={docData.title}
             content={loading ? (
                 <View style={styles.containerCentrallity}>
                     <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
@@ -110,7 +111,6 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             ) : (
                 <View style={styles.containerCentrallityFromUpper}>
                     <Text style={[styles.Text, { textAlign: "center" }]}>Обновление статуса документа</Text>
-                    <Text style={[styles.Title, { textAlign: "center" }]}>{docData.title}</Text>
                     {isDisabled ? (
                         <Text style={[styles.Title, { color: '#DE283B', textAlign: "center" }]}>недоступно</Text>
                     ) : (
