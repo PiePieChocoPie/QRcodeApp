@@ -60,16 +60,16 @@ const Reader: React.FC = () => {
         try {
             setScanned(true);
             const res = await getDataAboutDocs(data); // Ожидание завершения запроса
-            console.log("Scanned response:", res); // Лог ответа
+            // console.log("Scanned response:", res); // Лог ответа
     
             if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
                 const item = res.result.items[0];
-                console.log(item);
+                 console.log(item.entityTypeId, item.stageId);
                 if (item.entityTypeId == "168") {
                     setDocNumber(1);
                 } else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") {
                     setDocNumber(2);
-                } else if (item.entityTypeId == "166" && item.stageId != "DT166_16:SUCCESS" && item.stageId != "DT166_16:FAIL") {
+                } else if (item.entityTypeId == "166" && item.stageId == "DT166_16:UC_NU0MRZ") {
                     setDocNumber(3);
                 } else {
                     return Alert.alert("Неверный тип или этап документа", "Невозможно обработать документ");

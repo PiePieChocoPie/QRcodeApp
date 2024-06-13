@@ -28,35 +28,33 @@ const TaskItem = ({ item }) => {
         console.log(item);
     };
 
-    const renderDescription = (description) => {
-        const urlRegex = /\[URL=([^\]]+)\]([^\[]+)\[\/URL\]/g;
-        const parts = [];
-        let lastIndex = 0;
-        let match;
+    const renderDescription = (description:string) => {
+        const parts = description
+        // let match;
 
-        while ((match = urlRegex.exec(description)) !== null) {
-            // console.log(match);
-            // console.log(match[1]);
-            const beforeText = description.substring(lastIndex, match.index);
-            if (beforeText) {
-                parts.push(<Text key={`text-${lastIndex}`}>{beforeText}</Text>);
-            }
-            parts.push(
-                <Text key={`link-${match.index}`} style={[styles.Text,{
-                    fontSize: 20,
-                    color: 'blue',
-                    textDecorationLine: 'underline',
-                  }]} onPress={() => {openURL(match[1]); console.log(match[1])}}>
-                    {match[1]}
-                </Text>
-            );
-            lastIndex = match.index + match[0].length;
-        }
+        // while (description.includes("[")) {
+        //     // console.log(match);
+        //     // console.log(match[1]);
+        //     const beforeText = description.substring(lastIndex, match.index);
+        //     if (beforeText) {
+        //         parts.push(<Text key={`text-${lastIndex}`}>{beforeText}</Text>);
+        //     }
+        //     parts.push(
+        //         <Text key={`link-${match.index}`} style={[styles.Text,{
+        //             fontSize: 20,
+        //             color: 'blue',
+        //             textDecorationLine: 'underline',
+        //           }]} onPress={() => {openURL(match[1]); console.log(match[1])}}>
+        //             {match[1]}
+        //         </Text>
+        //     );
+        //     lastIndex = match.index + match[0].length;
+        // }
 
-        const afterText = description.substring(lastIndex);
-        if (afterText) {
-            parts.push(<Text key={`text-${lastIndex}`}>{afterText}</Text>);
-        }
+        // const afterText = description.substring(lastIndex);
+        // if (afterText) {
+        //     parts.push(<Text key={`text-${lastIndex}`}>{afterText}</Text>);
+        // }
 
         return parts;
     };

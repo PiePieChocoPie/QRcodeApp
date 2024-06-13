@@ -85,7 +85,7 @@ const App = (onSelectionChange) => {
     };
 
     const handlePressGuid = async (guid) => {
-        console.log(guid);
+        // console.log(guid);
         try {
             const response = await getClients(guid);  
             setSelectedGuidData(response.data.body); 

@@ -21,7 +21,7 @@ export function formatDate(dateString: any): string {
 export function checkRecords(item: any, trafficData: any[], nextTrafficData: any[]): boolean {
     // Преобразование item в Date, если это необходимо
     const itemDate = new Date(item);
-    console.log("itemDate: ", itemDate);
+    // console.log("itemDate: ", itemDate);
 
     if (isNaN(itemDate.getTime())) {
         console.error("неверный формат даты доверенности: ", itemDate);
@@ -29,7 +29,7 @@ export function checkRecords(item: any, trafficData: any[], nextTrafficData: any
     }
 
     const dateSet = new Set([formatDate(itemDate)]);
-    console.log("раннее выданная доверенность: ", dateSet);
+    // console.log("раннее выданная доверенность: ", dateSet);
 
     let counter = 0;
     for (let i = 0; i < trafficData.length; i++) {

@@ -25,51 +25,40 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
 
         const curStatus = docData.stageId;
         const newSt = { error: 'Изменение статуса документа невозможно' };
-        console.log("docNumber:", docNumber);
-        console.log("curStatus:", curStatus);
-        console.log("updStatuses:", updStatuses);
-        console.log("itineraryStatuses:", itineraryStatuses);
 
-        if (docNumber == 1) {
+        if (docNumber === 1) {
             for (let i = 0; i < updStatuses.length; i++) {
-                if (updStatuses[i].STATUS_ID == curStatus && i != updStatuses.length - 2) {
-                    console.log(i, docData.ufCrm5Driver)
+                if (updStatuses[i].STATUS_ID === curStatus && i !== updStatuses.length - 2) {
                     return updStatuses[i + 1];
                 }
             }
-        } else if (docNumber == 2) {
+        } else if (docNumber === 2) {
             for (let i = 0; i < itineraryStatuses.length; i++) {
-                if (itineraryStatuses[i].STATUS_ID == curStatus && i != itineraryStatuses.length - 2) {
+                if (itineraryStatuses[i].STATUS_ID === curStatus && i !== itineraryStatuses.length - 2) {
                     return itineraryStatuses[i + 1];
                 }
             }
-        } else if (docNumber == 3) {
-            for (let i = 0; i < attorneyStatuses.length; i++) {
-                if (attorneyStatuses[i].STATUS_ID == curStatus && i != attorneyStatuses.length - 2) {
-                    return attorneyStatuses[i + 1];
-                }
+        } else if (docNumber === 3) {
+                let i = attorneyStatuses.length;
+                return attorneyStatuses[i - 2];
             }
-        }
 
-        console.log(newSt.error);
         return newSt;
-    }
+    };
 
-    const itineraryHandling = async () => {
+    const handleStatusUpdate = async (updateFunc, successMessage) => {
         try {
-            let setableStatus;
+            startLoading();
+            const setableStatus = getNextStatus();
             let alertMes = '';
-            if ((docData.stageId === itineraryStatuses[0].STATUS_ID || docData.stageId === itineraryStatuses[1].STATUS_ID) && Store.userData.ID === docData.ufCrm6Driver) {
-                setableStatus = getNextStatus();
-                if (setableStatus.error) {
-                    alertMes = setableStatus.error;
-                } else {
-                    await updItineraryStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID);
-                    alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
-                }
+
+            if (setableStatus.error) {
+                alertMes = setableStatus.error;
             } else {
-                alertMes = "На данном этапе взаимодействие с документом невозможно";
+                await updateFunc(docData.id, setableStatus.STATUS_ID, Store.userData.ID);
+                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
             }
+
             let toast = Toast.show(alertMes, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.TOP,
@@ -77,46 +66,23 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             setTimeout(() => { Toast.hide(toast); }, 15000);
         } catch (e) {
             alert(e);
+        } finally {
+            stopLoading();
+            onClose();
         }
-    }
+    };
 
-    const updHandling = async () => {
-        let setableStatus;
-        let alertMes = '';
-        if (docData.stageId == updStatuses[0].STATUS_ID || docData.stageId == updStatuses[1].STATUS_ID) {
-            setableStatus = getNextStatus();
-            if (setableStatus.error) {
-                alertMes = setableStatus.error;
-            } else {
-                await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID);
-                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
-            }
-        } else if ((docData.stageId == updStatuses[3].STATUS_ID || docData.stageId == updStatuses[4].STATUS_ID) && Store.userData.ID == docData.ufCrm5Driver) {
-                setableStatus = getNextStatus();
-                if (setableStatus.error) {
-                    alertMes = setableStatus.error;
-                } else {
-                    await updUpdStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID);
-                    alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
-                }
-            } else {
-            alertMes = "На данном этапе взаимодействие с документом невозможно";
-        }
-        let toast = Toast.show(alertMes, {
-            duration: Toast.durations.LONG,
-            position: Toast.positions.TOP,
-        });
-        setTimeout(() => { Toast.hide(toast); }, 15000);
-    }
+    const itineraryHandling = () => handleStatusUpdate(updItineraryStatus, "статус маршрутного листа обновлен");
+    const updHandling = () => handleStatusUpdate(updUpdStatus, "Upd статус обновлен");
+    const attorneyHandling = () => handleStatusUpdate(updAttorneyStatus, "статус доверенности обновлен");
 
     const acceptAxios = async () => {
-        startLoading();
         try {
-
+            startLoading();
             if (docData.entityTypeId == "168") {
                 await updHandling();
             } else if (docData.entityTypeId == "133") {
-                await itineraryHandling(); 
+                await itineraryHandling();
             } else if (docData.entityTypeId == "166") {
                 await attorneyHandling();
             } else {
@@ -124,30 +90,11 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             }
         } catch (e) {
             alert(e);
+        } finally {
+            stopLoading();
+            onClose();
         }
-        stopLoading();
-        onClose();
     };
-    const attorneyHandling = async () => {
-        let setableStatus;
-        let alertMes = '';
-        if (docData.stageId != attorneyStatuses[4].STATUS_ID || docData.stageId != attorneyStatuses[5].STATUS_ID) {
-            setableStatus = getNextStatus();
-            if (setableStatus.error) {
-                alertMes = setableStatus.error;
-            } else {
-                await updAttorneyStatus(docData.id, setableStatus.STATUS_ID, Store.userData.ID);
-                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
-            }
-        } else {
-            alertMes = "На данном этапе взаимодействие с документом невозможно";
-        }
-        let toast = Toast.show(alertMes, {
-            duration: Toast.durations.LONG,
-            position: Toast.positions.TOP,
-        });
-        setTimeout(() => { Toast.hide(toast); }, 15000);
-    }
 
     const nextStatus = getNextStatus();
     const isDisabled = !!nextStatus.error; // Преобразование в булевое значение
@@ -188,7 +135,9 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         </View>
                     </View>
                 </View>
-            )} marginTOP={0.2}        />
+            )}
+            marginTOP={0.2}
+        />
     );
 };
 
