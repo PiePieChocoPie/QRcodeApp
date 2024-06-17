@@ -28,8 +28,8 @@ const LoadingScreen = () => {
 
 const authorize = () => {
     const [loadingScreen, setLoadingScreen] = useState(true);
-    const [login, setLogin] = useState('arm');
-    const [password, setPassword] = useState('Zxc123');
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
     const [isInvalidLogin, setIsInvalidLogin] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
     const { loading, startLoading, stopLoading } = useLoading();
