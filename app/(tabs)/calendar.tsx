@@ -36,22 +36,22 @@ export default function Calendar() {
             startLoading();
             const res = await getUsersTrafficStatistics(month, year);
             if (res) {
-                console.log(Store.trafficData);
+                // console.log(Store.trafficData);
                 let days = 0;
                 let fullTimeCounter = 0;
                 const customStyles = Store.trafficData.map(day => {
                     let dayStatus = 0;
                     const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
-                    console.log('начало дня - ', startTime);
+                    // console.log('начало дня - ', startTime);
                     dayStatus = startTime < 9 * 60 + 15 ? 0 : 1;
                     if (day.workday_complete) {
                         const endTime = new Date(day.workday_date_finish).getHours() * 60 + new Date(day.workday_date_finish).getMinutes();
-                        console.log('конец дня - ', endTime);
+                        // console.log('конец дня - ', endTime);
                         dayStatus = endTime < 17 * 60 + 45 ? dayStatus + 1 : dayStatus;
                         fullTimeCounter = fullTimeCounter + endTime - startTime;
                         days++;
                     }
-                    console.log(day.day_title, dayStatus);
+                    // console.log(day.day_title, dayStatus);
                     let color = '';
                     switch (dayStatus) {
                         case 0:
@@ -74,7 +74,7 @@ export default function Calendar() {
                     };
                 });
                 let hours = Math.floor(fullTimeCounter / 60); // Получаем количество целых часов
-                console.log(fullTimeCounter);
+                // console.log(fullTimeCounter);
                 let minutes = fullTimeCounter % 60;
                 const middleMin = fullTimeCounter / days;
                 setDaysCount(days);
@@ -96,13 +96,13 @@ export default function Calendar() {
 
     const handleMonthChange = async (date) => {
         startLoading();
-        console.log('Новый выбранный месяц:', date);
+        // console.log('Новый выбранный месяц:', date);
         const newYear = date.getFullYear();
         setYear(newYear);
         const newMonth = date.getMonth() + 1;
         setMonth(newMonth);
-        console.log(year, month);
-        console.log(newYear, newMonth);
+        // console.log(year, month);
+        // console.log(newYear, newMonth);
         try {
             await fetchData(newYear, newMonth);
         } catch (err) {
@@ -149,8 +149,8 @@ export default function Calendar() {
     };
 
     return (
-        <View style={[styles.container,{marginTop:'10%'}]}>
-            <View>
+        <View style={styles.container}>
+            <View style={{marginTop:"7%"}}>
                 <CalendarPicker
                     previousTitle="Предыдущий"
                     nextTitle="Следующий"
@@ -195,9 +195,9 @@ export default function Calendar() {
                 visible={modalVisible}
                 onClose={toggleModal}
                 marginTOP={0.2}
+                title={dayTitle}
                 content={
                     <View>
-                        <Text style={[styles.Title, { textAlign: "center" }]}>{dayTitle}</Text>
                         <Text style={[styles.Text, { textAlign: "center" }]}>{dayData}</Text>
                     </View>
                 }

@@ -72,7 +72,7 @@ function profile() {
 
 
     return (
-        <View style={[styles.container,{marginTop:'10%'}]}>
+        <View style={styles.container}>
         {loading ?(
             <View style={styles.containerCentrallity}>
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
@@ -81,7 +81,7 @@ function profile() {
              : 
             (
                 <View>
-                    <View style={styles.overlayWithUser}>
+                    <View style={[styles.overlayWithUser,{margin:"7%"}]}>
                         <View style={styles.avatarContainer}>
                             {photoUrl ? (
                                 <Image source={{ uri: photoUrl }} style={styles.avatar} />
@@ -118,6 +118,7 @@ function profile() {
                 visible={modalVisible}
                 onClose={toggleModal} 
                 marginTOP={0.2}
+                title={"QR - Code"}
                 content={
                     <QRCode value={Store.userData.ID} size={Dimensions.get('window').width - 60}/>
                 }

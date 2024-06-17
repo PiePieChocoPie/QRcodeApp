@@ -121,7 +121,7 @@ const Tasks = () => {
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
             </View>
         ) : (
-            <View style={[styles.container, { marginTop: '10%' }]}>
+            <View style={styles.container}>
                 <Animated.ScrollView
                     refreshControl={<RefreshControl
                         refreshing={refreshing}
@@ -133,7 +133,7 @@ const Tasks = () => {
                         { useNativeDriver: true }
                     )}
                 >
-                    <Animated.View style={{ transform: [{ translateY: headerTranslateY }], opacity: headerOpacity }}>
+                    <Animated.View style={{ transform: [{ translateY: headerTranslateY }], marginTop:"7%", opacity: headerOpacity }}>
                         <View style={[styles.expanderContainer, { backgroundColor: "transparent" }]}>
                             <TouchableOpacity onPress={rotateIcon} style={{ alignItems: 'center' }}>
                                 <Animated.View style={{ transform: [{ rotate: iconRotation }] }}>

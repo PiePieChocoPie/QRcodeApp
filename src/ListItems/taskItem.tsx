@@ -24,8 +24,8 @@ const TaskItem = ({ item }) => {
 
     const toggleMore = () => {
         setModalVisible(!modalVisible);
-        if(modalVisible)
-        console.log(item);
+        // if(modalVisible)
+        // console.log(item);
     };
 
     const renderDescription = (description:string) => {
@@ -61,7 +61,7 @@ const TaskItem = ({ item }) => {
 
     const openURL = (url) => {
         if (url) {
-            console.log(url)
+            // console.log(url)
             Linking.openURL(url).catch((err) => {
                 console.error("Failed to open URL:", err);
               //  Alert.alert("Ошибка", "Не удалось открыть ссылку. Попробуйте еще раз.");

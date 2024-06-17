@@ -17,6 +17,7 @@ export async function getDataByToken(authToken: string): Promise<any> {
   };
 
   const response = await axios.request(config);
+  console.log(response.data.WORK_POSITION);
   Store.setUserData(response.data);
   
   let config2 = {
@@ -61,11 +62,11 @@ export async function getUserAttorney(onAuthorize:boolean): Promise<boolean> {
   
         const response = await axios.request(config);
         Store.setAttorneys(response.data.result.items);
-        console.log('attprneys = ',Store.attorneys)
+        // console.log('attprneys = ',Store.attorneys)
         if (onAuthorize&&response.data.total > 0) 
         {
             const items = response.data.result.items;
-            console.log(items)
+            // console.log(items)
             const earliestItem = items.reduce((earliest, item) => {
             const itemDate = new Date(item.ufCrm10ProxyDate);
             if (!earliest || itemDate < new Date(earliest.ufCrm10ProxyDate)) {
@@ -81,9 +82,9 @@ export async function getUserAttorney(onAuthorize:boolean): Promise<boolean> {
     
             const trafficData = await getUsersTrafficStatistics(attorneyMonth, attorneyYear);
             const nextTrafficData = await getUsersTrafficStatistics(attorneyMonth==12?1:attorneyMonth+1, attorneyMonth==12?attorneyYear+1:attorneyYear);
-            console.log('Итем - ', earliestItem, '\n Трафик - ', Store.trafficData);
+            // console.log('Итем - ', earliestItem, '\n Трафик - ', Store.trafficData);
             const result = checkRecords(earliestItem.ufCrm10ProxyDate, trafficData,  nextTrafficData);
-            console.log('блокируе - ', result ? 'True' : 'False');
+            console.log( result ? 'несданные доверенности' : 'задолженности не обнаружены');
             return result;
             }
         }

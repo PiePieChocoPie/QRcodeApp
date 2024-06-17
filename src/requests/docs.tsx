@@ -68,7 +68,7 @@ export async function getTasksData(ID: string): Promise<any> {
           console.log("Response data:", response.data); // Лог ответа
   
           if (response.data && response.data.result && response.data.result.items) {
-              console.log("First item:", response.data.result.items[0]);
+              // console.log("First item:", response.data.result.items[0]);
           } else {
               console.error('Invalid response structure:', response.data);
           }
@@ -92,7 +92,7 @@ export async function getTasksData(ID: string): Promise<any> {
         "movedBy": userID
       }
     };
-    console.log(body)
+    // console.log(body)
     const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
     return await axios.post(url, body);
   }
@@ -108,7 +108,7 @@ export async function getTasksData(ID: string): Promise<any> {
         "movedBy": userID
       }
     };
-    console.log(body)
+    // console.log(body)
     const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
     return await axios.post(url, body);
   }
@@ -216,7 +216,7 @@ export async function getTasksData(ID: string): Promise<any> {
       
       axios.request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        // console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -235,7 +235,7 @@ export async function getReportsTest(jsonBody: any): Promise<string> {
       };
   
       let response = await axios.request(config);
-      console.log(JSON.stringify(response.data));
+      // console.log(JSON.stringify(response.data));
       return response.data;
     } catch (error) {
       console.error(error);

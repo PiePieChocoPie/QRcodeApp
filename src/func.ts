@@ -47,7 +47,7 @@ export function checkRecords(item: any, trafficData: any[], nextTrafficData: any
 
     if (counter < 3)
         counter += nextTrafficData.length;
-    console.log(counter)
+    // console.log(counter)
 
     return counter > 2;
 }

@@ -16,7 +16,7 @@ const Home = () => {
       try {
         const response = await getReports();
         setReports(response.data);
-        console.log('Fetched reports:', response.data);
+        // console.log('Fetched reports:', response.data);
       } catch (error) {
         console.error('Error fetching reports:', error);
       }
@@ -56,8 +56,9 @@ const Home = () => {
   };
 
   return (
-    <View style={[styles.container, { marginTop: '10%' }]}>
+    <View style={styles.container}>
       <FlatList
+        style={{marginTop:"7%"}}
         data={Object.values(reports)}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}

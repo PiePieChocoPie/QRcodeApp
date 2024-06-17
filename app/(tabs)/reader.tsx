@@ -64,7 +64,7 @@ const Reader: React.FC = () => {
     
             if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
                 const item = res.result.items[0];
-                 console.log(item.entityTypeId, item.stageId);
+                 // console.log(item.entityTypeId, item.stageId);
                 if (item.entityTypeId == "168") {
                     setDocNumber(1);
                 } else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") {
