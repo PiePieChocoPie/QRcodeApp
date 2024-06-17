@@ -83,12 +83,15 @@ const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
             style={{ height: '10%', width: '100%', backgroundColor: 'white',borderRadius: 15, justifyContent: 'center' }}
             {...panResponder.panHandlers}
           >
-            <Text style={styles.modalTitle}> {title}</Text>
+            <Text style={styles.modalTitle}>
+              {title}            
+            </Text>
             <View style={{ height: '0.5%', width: '15%', marginTop: "3%", marginBottom: "3%" }} />
           </View>
-          <View style={{ flex: 1}}>
-
-            {content}
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              {content}
+            </View>
           </View>
         </View>
       </Modal>
