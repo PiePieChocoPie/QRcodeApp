@@ -10,7 +10,8 @@ export class projColors{
         font: '#8391A1',
         fontAccent: "#535D69",
         border: "#E8ECF4",
-        listElementBackground:'#F7F8F9'
+        listElementBackground:'#F7F8F9',
+        redro: '#DE283B'
     };
 
 
@@ -72,8 +73,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20 ,
-    
-
 },
 selectedItemContainer: {
   flexDirection: 'row',
@@ -125,6 +124,7 @@ dataTitle: {
   fontWeight: 'bold',
   marginBottom: 10,
 },
+
 selectedItemsContainer: {
   marginTop: 10,
   padding: 10,
@@ -132,8 +132,10 @@ selectedItemsContainer: {
   borderRadius: 5,
 },
 selectedItemsTitle: {
+  fontSize: 16,
   fontWeight: 'bold',
-  marginBottom: 5,
+  color: '#333',
+  textAlign: 'center',
 },
 selectedItem: {
   fontSize: 14,
@@ -425,3 +427,4 @@ textInput: {
     // marginTop: '15%', 
   },
 });
+

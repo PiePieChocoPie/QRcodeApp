@@ -9,6 +9,7 @@ import { Image } from "expo-image";
 import * as Animatable from 'react-native-animatable';
 import { getAllStaticData } from "src/requests/userData";
 import { statusDay } from "src/requests/timeManagement";
+import * as Icons from '../assets';
 
 const LoadingScreen = () => {
     return (
@@ -17,11 +18,7 @@ const LoadingScreen = () => {
             iterationCount="infinite" 
             style={loadingStyles.Loading}
         >
-            <Image
-                style={loadingStyles.LoadingChild}
-                contentFit="cover"
-                source={require("../assets/Loading.png")}
-            />
+            <Icons.loading width="55%" height="55%"/>
         </Animatable.View>
     );
 };
