@@ -73,8 +73,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20 ,
-    
-
 },
 selectedItemContainer: {
   flexDirection: 'row',
@@ -126,6 +124,7 @@ dataTitle: {
   fontWeight: 'bold',
   marginBottom: 10,
 },
+
 selectedItemsContainer: {
   marginTop: 10,
   padding: 10,
@@ -133,8 +132,10 @@ selectedItemsContainer: {
   borderRadius: 5,
 },
 selectedItemsTitle: {
+  fontSize: 16,
   fontWeight: 'bold',
-  marginBottom: 5,
+  color: '#333',
+  textAlign: 'center',
 },
 selectedItem: {
   fontSize: 14,
@@ -426,3 +427,4 @@ textInput: {
     // marginTop: '15%', 
   },
 });
+

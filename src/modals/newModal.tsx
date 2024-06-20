@@ -135,7 +135,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
                 <CalendarPickerModal parameter={parameter.view} />
               </View>
             ))}
-            {selectedItem.length > 0 && (
+            {selectedItem.length > 0 ? (
               <View style={styles.selectedItemsContainer}>
                 <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
                 {selectedItem.map(item => (
@@ -147,6 +147,8 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
                   </View>
                 ))}
               </View>
+            ) : (
+              <Text style={styles.selectedItemsTitle}>Выберите склады</Text>
             )}
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
             <View style={styles.container2}>
@@ -195,3 +197,4 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   );
 };
 export default ModalForm;
+
