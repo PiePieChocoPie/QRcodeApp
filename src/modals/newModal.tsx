@@ -76,11 +76,15 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
   useEffect(() => {
     const getLocalHierarchy = async () => {
       const hierarchy = await getHierarchy();
+      console.log(hierarchy)
       setIerarhy(hierarchy);
     };
     getLocalHierarchy();
   }, []);
 
+  const curUserHierarchy = async ()=>{
+
+  }
   const handleCloseMultiSelect = () => {
     setMultiSelectVisible(false);
   };

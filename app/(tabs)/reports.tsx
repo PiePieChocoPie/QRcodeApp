@@ -15,6 +15,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await getReports();
+        console.log(response.data)
         setReports(response.data);
         // console.log('Fetched reports:', response.data);
       } catch (error) {

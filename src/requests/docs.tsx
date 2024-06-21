@@ -81,7 +81,7 @@ export async function getTasksData(ID: string): Promise<any> {
   }
   
   
-  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string): Promise<any> {
+  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:string): Promise<any> {
     const body = {
       "entityTypeId": "168",
       "id": IDUpd,
@@ -89,7 +89,8 @@ export async function getTasksData(ID: string): Promise<any> {
         "stageId": IDStatus,
         "updatedBy": userID,
         "assignedById": userID,
-        "movedBy": userID
+        "movedBy": userID,
+        "ufCrm5AcceptComment": commentValue
       }
     };
     // console.log(body)

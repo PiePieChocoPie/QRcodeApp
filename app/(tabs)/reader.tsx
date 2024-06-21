@@ -115,7 +115,7 @@ const Reader: React.FC = () => {
             ) : (
                 <View style={styles.overlay}>
                     {!scanned ? (
-                        <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={handleBarCodeScanned} mute>
+                        <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned?undefined:handleBarCodeScanned} mute>
                             <View style={styles.overlay} />
                             <View style={styles.horizontalBorders}>
                                 <View style={styles.overlay} />

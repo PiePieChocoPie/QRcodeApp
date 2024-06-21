@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput} from 'react-native';
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
@@ -13,6 +13,8 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [itineraryStatuses] = useState(Store.itineraryStatusesData);
     const [attorneyStatuses] = useState(Store.attorneyStatusesData);
     const { loading, startLoading, stopLoading } = useLoading();
+    const [updWithComment, setUpdWithComment] = useState(docNumber==1&&docData.stageId=="DT168_9:UC_YAHBD0");
+    const [comment, setComment] = useState(null);
 
     const getNextStatus = () => {
         if (!docData) {
@@ -55,7 +57,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             if (setableStatus.error) {
                 alertMes = setableStatus.error;
             } else {
-                await updateFunc(docData.id, setableStatus.STATUS_ID, Store.userData.ID);
+                await updateFunc(docData.id, setableStatus.STATUS_ID, Store.userData.ID, comment);
                 alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
             }
 
@@ -96,6 +98,10 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         }
     };
 
+    const commentHandler = (value) => {
+        setComment(value);
+    };
+
     const nextStatus = getNextStatus();
     const isDisabled = !!nextStatus.error; // Преобразование в булевое значение
 
@@ -121,6 +127,18 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                     )}
                     <View style={styles.RBView}></View>
                     <View style={styles.containerCentrallityFromUpper}>
+                        {
+                            updWithComment&&
+                            <View style={{width: '100%', marginTop: '10%',}}>
+                                <TextInput
+                                    style={styles.input}
+                                    value={comment}
+                                    placeholder='Введите логин'
+                                    onChangeText={commentHandler}
+                                    keyboardType={"ascii-capable"}
+                                />
+                            </View>
+                        }
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
                                 <TouchableOpacity onPress={acceptAxios} disabled={isDisabled}>

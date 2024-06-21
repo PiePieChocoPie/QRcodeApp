@@ -2,20 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal, View, Text, TouchableOpacity, Dimensions, PanResponder, Button } from 'react-native';
 import { styles } from "src/stores/styles";
 
-const ModalBackdrop = ({ visible, onPress }) => {
+const ModalBackdrop = ({ visible, onPress, content}) => {
   return (
-    <Modal
-      animationType="fade" 
-      transparent={true}
-      visible={visible}
-      onRequestClose={onPress}
-    >
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={onPress}
-        style={styles.backdrop}
-      />
-    </Modal>
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={visible}
+          onRequestClose={onPress}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={onPress}
+          style={[styles.backdrop]}
+        >
+          {content}
+        </TouchableOpacity>
+      </Modal>
   );
 };
 
@@ -76,8 +77,9 @@ const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
           transparent={true}
           visible={visible}
           onRequestClose={onClose}
+          style={{flex:1}}
         >
-        <ModalBackdrop visible={visible} onPress={onClose} />
+        <ModalBackdrop visible={visible} onPress={onClose} content={
         <View style={[styles.modalContainer, { marginTop: modalPos, height: modalHeight}]}>
           <View
             style={{ height: '10%', width: '100%', backgroundColor: 'white',borderRadius: 15, justifyContent: 'center' }}
@@ -90,6 +92,7 @@ const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
               {content}
           </View>
         </View>
+        }/>
       </Modal>
     </View>
   );
@@ -103,7 +106,7 @@ export default CustomModal;
 // const ModalBackdrop = ({ visible, onPress }) => {
 //   return (
 //     <Modal
-//       animationType="fade" 
+//       animationType="fade"
 //       transparent={true}
 //       visible={visible}
 //       onRequestClose={onPress}

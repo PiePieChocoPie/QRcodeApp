@@ -17,7 +17,8 @@ export async function getDataByToken(authToken: string): Promise<any> {
   };
 
   const response = await axios.request(config);
-  console.log(response.data.WORK_POSITION);
+    // console.log(response.data.WORK_POSITION);
+    console.log(response.data);
   Store.setUserData(response.data);
   
   let config2 = {
@@ -84,7 +85,7 @@ export async function getUserAttorney(onAuthorize:boolean): Promise<boolean> {
             const nextTrafficData = await getUsersTrafficStatistics(attorneyMonth==12?1:attorneyMonth+1, attorneyMonth==12?attorneyYear+1:attorneyYear);
             // console.log('Итем - ', earliestItem, '\n Трафик - ', Store.trafficData);
             const result = checkRecords(earliestItem.ufCrm10ProxyDate, trafficData,  nextTrafficData);
-            console.log( result ? 'несданные доверенности' : 'задолженности не обнаружены');
+            console.log( result ? 'обнаружены несданные доверенности' : 'задолженности не обнаружены');
             return result;
             }
         }
@@ -109,7 +110,7 @@ export async function getAllStaticData(authToken: string, userData: boolean, dep
                       curError="Необходимо сдать доверенность!";
                       status=false;
                   }
-                  console.log(res);
+                  // console.log(res);
               })
               .catch(err => console.log(err));
           })
