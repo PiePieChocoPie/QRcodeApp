@@ -13,10 +13,11 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [itineraryStatuses] = useState(Store.itineraryStatusesData);
     const [attorneyStatuses] = useState(Store.attorneyStatusesData);
     const { loading, startLoading, stopLoading } = useLoading();
-    const [updWithComment, setUpdWithComment] = useState(docNumber==1&&docData.stageId=="DT168_9:UC_YAHBD0");
+    const [updWithComment, setUpdWithComment] = useState(false);
     const [comment, setComment] = useState(null);
 
     const getNextStatus = () => {
+        // setUpdWithComment(docNumber==1&&docData.stageId=="DT168_9:UC_A3G3QR");
         if (!docData) {
             return { error: 'Изменение статуса документа невозможно' };
         }
@@ -48,17 +49,17 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         return newSt;
     };
 
-    const handleStatusUpdate = async (updateFunc, successMessage) => {
+    const handleStatusUpdate = async (updateFunc:any) => {
         try {
             startLoading();
-            const setableStatus = getNextStatus();
+            const assignableStatus = getNextStatus();
             let alertMes = '';
 
-            if (setableStatus.error) {
-                alertMes = setableStatus.error;
+            if (assignableStatus.error) {
+                alertMes = assignableStatus.error;
             } else {
-                await updateFunc(docData.id, setableStatus.STATUS_ID, Store.userData.ID, comment);
-                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${setableStatus.NAME}`;
+                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, comment);
+                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}`;
             }
 
             let toast = Toast.show(alertMes, {
@@ -74,12 +75,13 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         }
     };
 
-    const itineraryHandling = () => handleStatusUpdate(updItineraryStatus, "статус маршрутного листа обновлен");
-    const updHandling = () => handleStatusUpdate(updUpdStatus, "Upd статус обновлен");
-    const attorneyHandling = () => handleStatusUpdate(updAttorneyStatus, "статус доверенности обновлен");
+    const itineraryHandling = () => handleStatusUpdate(updItineraryStatus);
+    const updHandling = () => handleStatusUpdate(updUpdStatus);
+    const attorneyHandling = () => handleStatusUpdate(updAttorneyStatus);
 
     const acceptAxios = async () => {
         try {
+            setComment('');
             startLoading();
             if (docData.entityTypeId == "168") {
                 await updHandling();
@@ -125,20 +127,16 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                             <Text style={[styles.Title, { textAlign: "center" }]}>{nextStatus.NAME}</Text>
                         </View>
                     )}
-                    <View style={styles.RBView}></View>
-                    <View style={styles.containerCentrallityFromUpper}>
-                        {
-                            updWithComment&&
-                            <View style={{width: '100%', marginTop: '10%',}}>
-                                <TextInput
-                                    style={styles.input}
-                                    value={comment}
-                                    placeholder='Введите логин'
-                                    onChangeText={commentHandler}
-                                    keyboardType={"ascii-capable"}
-                                />
-                            </View>
-                        }
+                    <View style={styles.RBView}>{
+                        docNumber==1&&docData.stageId=="DT168_9:UC_A3G3QR"&&
+                            <TextInput
+                                style={styles.input}
+                                value={comment}
+                                placeholder='Комментарий'
+                                onChangeText={commentHandler}
+                                keyboardType={"ascii-capable"}
+                            />
+                    }
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
                                 <TouchableOpacity onPress={acceptAxios} disabled={isDisabled}>
@@ -152,6 +150,8 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                             </View>
                         </View>
                     </View>
+
+
                 </View>
             )}
             marginTOP={0.2}

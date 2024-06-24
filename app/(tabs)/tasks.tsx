@@ -92,7 +92,7 @@ const Tasks = () => {
                 <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
             </View>
         ) : (
-            <View style={[styles.container, { marginTop: '10%' }]}>
+            <View style={styles.container}>
                 <ScrollView
                     ref={scrollViewRef}
                     refreshControl={<RefreshControl
@@ -101,7 +101,7 @@ const Tasks = () => {
                         colors={[projColors.currentVerse.accent]}
                     />}
                 >
-                    <View style={[styles.expanderContainer, { backgroundColor: "transparent" }]}>
+                    <View style={[styles.expanderContainer, { backgroundColor: "transparent" ,marginTop: '10%' }]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <TouchableOpacity onPress={() => focusChange('Tasks')} style={[styles.listElementContainer, { width: '40%', alignItems: "center", flex: 1 }, selectedList == 'Tasks' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
                                 <Svg width="17" height="20" viewBox="0 0 17 20" fill="none">

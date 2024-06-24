@@ -76,7 +76,7 @@ const Reader: React.FC = () => {
                 }
                 setModalVisibleState(true);
                 Store.setUpdData(item);
-                setModalText(item);
+                await setModalText(item);
             } else {
                 console.error('No items found or invalid response structure:', res);
                 let toast = Toast.show(`Ошибка: документ не найден`, {
