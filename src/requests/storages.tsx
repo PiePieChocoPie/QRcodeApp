@@ -1,6 +1,6 @@
 import axios from "axios";
 import Store from "src/stores/mobx";
-
+//склады
 export async function getStorages(storageData: any): Promise<void> {
     let config = {
       method: 'post',
@@ -22,7 +22,7 @@ export async function getStorages(storageData: any): Promise<void> {
     const response = await axios.request(config);
     Store.setUserStorage(response.data.result);
   }
-  
+  //хранилища данных
   export async function getUserStoragesID(): Promise<boolean> {
     try {
       let data = JSON.stringify({ "filter": { "ENTITY_ID": 414 } });

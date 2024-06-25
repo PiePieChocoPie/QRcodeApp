@@ -76,6 +76,7 @@ const CalendarPickerModal = ({parameter}) => {
                 {selectedDate ? (parameter === 'Период' ? `${formatDateString(Store.mainDate)} - ${formatDateString(Store.extraDate)}` : formatDateString(selectedStartDate)) : 'Выберите дату'}
             </Text>
             <CustomModal
+                title="Календарь"
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 marginTOP={0.24}

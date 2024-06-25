@@ -34,6 +34,7 @@ const Home = () => {
   };
 
   const toggleModal = () => {
+    
     setModalVisible(!modalVisible);
   };
 
@@ -70,6 +71,7 @@ const Home = () => {
         toggleModal={toggleModal}
         reportName={selectedReport}
         reportKey={reportKey}
+        reports={reports}
       />
     </View>
   );

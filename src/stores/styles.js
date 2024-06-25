@@ -384,6 +384,20 @@ textInput: {
     justifyContent: "center",
     textAlign: "center"
   },
+  button: {
+    backgroundColor: "#de283b",
+    height: 50,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: '5%',
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+  },
   containerCentrallity:{
     flex: 1,
     alignItems: "center",

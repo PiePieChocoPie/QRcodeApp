@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, FlatList } from 'react-native';
 import { styles } from 'src/stores/styles';
 import CalendarPickerModal from 'src/components/calendarPicker';
-import Store from 'src/stores/mobx';
+import storeInstance from 'src/stores/mobx';
 import MultiSelect from 'src/components/picker-select';
 import CustomModal from 'src/components/custom-modal';
 import App from 'src/components/hieralcy';
 import { getClients, getStorages, getUserStoragesID } from 'src/requests/storages';
 import { getReportsTest } from 'src/requests/docs';
 import {getHierarchy} from 'src/requests/hierarchy'
-
-
+import { useFocusEffect } from '@react-navigation/native';
 
 const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePressGuid }) => {
   const handleToggleExpand = (key) => {
@@ -66,25 +65,56 @@ const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePres
 };
 
 // Основной компонент формы
-const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
+const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }) => {
   const [selectedItem, setSelectedItems] = useState([]);
   const [isMultiSelectVisible, setMultiSelectVisible] = useState(false);
   const [expandedItems, setExpandedItems] = useState([]);
   const [selectedGuidData, setSelectedGuidData] = useState([]);
-  const [Ierarhy, setIerarhy] = useState(null);
+  const [hierarchy, setHierarchy] = useState(null);
 
-  useEffect(() => {
-    const getLocalHierarchy = async () => {
-      const hierarchy = await getHierarchy();
-      console.log(hierarchy)
-      setIerarhy(hierarchy);
-    };
-    getLocalHierarchy();
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     const getLocalHierarchy = async () => {
+  //       const hierarchy = await getHierarchy();
+  //       console.log(hierarchy)
+  //       setHierarchy(hierarchy);
+  //     };
+  //     const getUserStorages= async () =>{
+  //       await getUserStoragesID()
+  //     }
+  //     getLocalHierarchy();
+  //     getUserStorages();
+  //   }
+  //   catch (err) {
+  //     console.log((err))
+  //   }
+  // }, []);
+
+  useFocusEffect(
+      React.useCallback(() => {
+        try {
+          const getLocalHierarchy = async () => {
+            const hierarchy = await getHierarchy();
+            console.log(hierarchy)
+            setHierarchy(hierarchy);
+          };
+          const getUserStorages= async () =>{
+            await getUserStoragesID()
+          }
+          getLocalHierarchy();
+          getUserStorages();
+           buttonHandler()
+        }
+        catch (err) {
+          console.log((err))
+        }
+      }, [])
+  );
 
   const curUserHierarchy = async ()=>{
 
   }
+
   const handleCloseMultiSelect = () => {
     setMultiSelectVisible(false);
   };
@@ -120,6 +150,36 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
     });
   };
 
+  const buttonHandler = () => {
+    let dateArray = [storeInstance.mainDate, storeInstance.extraDate && storeInstance.extraDate];//массив дат
+    let filterArray = [];//инициализация массива ГУИД
+
+    console.log("список репортов - ",JSON.stringify(reports), "\n","текущий репорт - ", JSON.stringify(reportName),"\n", "ключ репорта - ", JSON.stringify(reportKey));
+
+    for (let i = 0; i < selectedItem.length; i++) {
+      filterArray.push(selectedItem[i].GUID);
+    }
+    const jsonBody = {
+      "filter": {
+         "name": reportName.filters[0].inXml,
+        "value": filterArray
+      },
+      "name": reportKey, // И
+      "parameter": {
+        "name": reportName.parameters[0].inXml,
+        "value": dateArray
+      },
+      "storageID": storeInstance.userStorageData[0].ID
+    };
+
+    // getReportsTest()
+    console.log(JSON.stringify(jsonBody));
+  };
+
+// Пример вызова функции buttonHandler
+  buttonHandler();
+
+
   if (!reportName) {
     return null; 
   }
@@ -131,68 +191,74 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reportKey }) => {
       marginTOP={0.2}
       title={reportName.name}
       content={
-        <View style={{ width: '100%', flex: 1 }}>
+        <View style={{width: '100%', flex: 1}}>
           <View style={styles.filterContainer}>
             {reportName.parameters.map((parameter, index) => (
-              <View key={index}>
-                <Text style={{ fontSize: 16 }}>{parameter.view}:</Text>
-                <CalendarPickerModal parameter={parameter.view} />
-              </View>
+                <View key={index}>
+                  <Text style={{fontSize: 16}}>{parameter.view}:</Text>
+                  <CalendarPickerModal parameter={parameter.view}/>
+                </View>
             ))}
             {selectedItem.length > 0 && (
-              <View style={styles.selectedItemsContainer}>
-                <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
-                {selectedItem.map(item => (
-                  <View key={item.GUID || item.ID} style={styles.selectedItemContainer}>
-                    <Text style={styles.selectedItem}>{item.NAME}</Text>
-                    <TouchableOpacity onPress={() => handleRemoveItem(item.GUID)} style={styles.deleteButton}>
-                      <Text style={styles.deleteButtonText}>Удалить</Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
+                <View style={styles.selectedItemsContainer}>
+                  <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
+                  {selectedItem.map(item => (
+                      <View key={item.GUID || item.ID} style={styles.selectedItemContainer}>
+                        <Text style={styles.selectedItem}>{item.NAME}</Text>
+                        <TouchableOpacity onPress={() => handleRemoveItem(item.GUID)} style={styles.deleteButton}>
+                          <Text style={styles.deleteButtonText}>Удалить</Text>
+                        </TouchableOpacity>
+                      </View>
+                  ))}
+                </View>
             )}
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
             <View style={styles.container2}>
-              {Ierarhy && (
-                <FlatList
-                  data={Object.entries(Ierarhy.Дирекция)}
-                  renderItem={({ item }) => {
-                    const isExpanded = expandedItems.includes(item[0]);
-                    return (
-                      <View style={styles.itemContainer2}>
-                        <TouchableOpacity onPress={() => setExpandedItems([item[0]])}>
-                          <Text style={styles.itemTitle}>
-                            {isExpanded ? '▼ ' : '► '}
-                            {item[0]}
-                          </Text>
-                        </TouchableOpacity>
-                        {isExpanded && (
-                          <RecursiveItem 
-                            item={item[1]} 
-                            expandedItems={expandedItems} 
-                            setExpandedItems={setExpandedItems} 
-                            path={[item[0]]} 
-                            handlePressGuid={handlePressGuid}
-                          />
-                        )}
-                      </View>
-                    );
-                  }}
-                  keyExtractor={item => item[0]}
-                />
+              {hierarchy && (
+                  <FlatList
+                      data={Object.entries(hierarchy.Дирекция)}
+                      renderItem={({item}) => {
+                        const isExpanded = expandedItems.includes(item[0]);
+                        return (
+                            <View style={styles.itemContainer2}>
+                              <TouchableOpacity onPress={() => setExpandedItems([item[0]])}>
+                                <Text style={styles.itemTitle}>
+                                  {isExpanded ? '▼ ' : '► '}
+                                  {item[0]}
+                                </Text>
+                              </TouchableOpacity>
+                              {isExpanded && (
+                                  <RecursiveItem
+                                      item={item[1]}
+                                      expandedItems={expandedItems}
+                                      setExpandedItems={setExpandedItems}
+                                      path={[item[0]]}
+                                      handlePressGuid={handlePressGuid}
+                                  />
+                              )}
+                            </View>
+                        );
+                      }}
+                      keyExtractor={item => item[0]}
+                  />
               )}
             </View>
           </View>
           {selectedGuidData.length > 0 && (
-            <MultiSelect
-              jsonData={selectedGuidData}
-              title="Выборка реквизитов"
-              visible={isMultiSelectVisible}
-              onSelectionChange={handleSelectionChange}
-              onClose={handleCloseMultiSelect}
-            />
+              <MultiSelect
+                  jsonData={selectedGuidData}
+                  title="Выборка реквизитов"
+                  visible={isMultiSelectVisible}
+                  onSelectionChange={handleSelectionChange}
+                  onClose={handleCloseMultiSelect}
+              />
           )}
+          <TouchableOpacity onPress={buttonHandler}
+                            // disabled={selectedGuidData.length == 0 && selectedItem.length == 0}
+                            style={styles.button}>
+            <Text style={styles.buttonText}>Получить</Text>
+          </TouchableOpacity>
+
         </View>
       }
     />
