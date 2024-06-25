@@ -45,6 +45,7 @@
     "react-native-calendar-picker": "^8.0.2",
     "react-native-datepicker": "^1.7.2",
     "react-native-dotenv": "^3.4.11",
+    "react-native-element-dropdown": "^2.12.1",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-paper": "^5.12.3",
     "react-native-picker-select": "^9.1.3",

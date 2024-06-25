@@ -234,14 +234,34 @@ export async function getReportsTest(jsonBody: any): Promise<string> {
         data: JSON.stringify(jsonBody),
         withCredentials: false
       };
-  
-      let response = await axios.request(config);
-      // console.log(JSON.stringify(response.data));
-      let fileId = response.data.fileId;
+
+        let response = await axios.request(config);
+        // console.log(JSON.stringify(response.data));
+        let fileId = response.data.fileId;
       let downloading = axios.get(`https://bitrix24.martinural.ru/rest/527/i2jz9ji70u21wjgg/disk.file.get?id=${fileId}`)
     } catch (error) {
       console.error(error);
       return error.toString();
+    }
+  }
+
+  export async function getUpdRejectStatuses():Promise<Array<any>>{
+    try{
+        let config={
+            method:"post",
+            maxBodyLength: Infinity,
+            url:"https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.fields",
+            data:{
+                "entityTypeId": "168"
+            },
+            withCredentials: false
+        }
+        let response = await axios.request(config);
+        return response.data.result.fields.ufCrm5AcceptStatusList.items;
+    }
+    catch (err){
+        console.log(err);
+        return [];
     }
   }
   

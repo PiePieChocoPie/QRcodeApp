@@ -440,5 +440,14 @@ textInput: {
     flex: 1,
     // marginTop: '15%', 
   },
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginVertical: 10,
+    width: '80%',
+  },
 });
 

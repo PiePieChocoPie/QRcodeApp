@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import {Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput} from 'react-native';
+import React, { useState, useEffect } from "react";
+import { Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 import CustomModal from "src/components/custom-modal";
 import Toast from 'react-native-root-toast';
-import { updAttorneyStatus, updItineraryStatus, updUpdStatus } from "src/requests/docs";
+import { getUpdRejectStatuses, updAttorneyStatus, updItineraryStatus, updUpdStatus } from "src/requests/docs";
+import { Dropdown } from "react-native-element-dropdown";
 
 const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [checked, setChecked] = useState({ label: '', value: '' });
@@ -13,11 +14,20 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [itineraryStatuses] = useState(Store.itineraryStatusesData);
     const [attorneyStatuses] = useState(Store.attorneyStatusesData);
     const { loading, startLoading, stopLoading } = useLoading();
-    const [updWithComment, setUpdWithComment] = useState(false);
     const [comment, setComment] = useState(null);
+    const [isRejected, setRejected] = useState(false);
+    const [rejectStatus, setRejectStatus] = useState(null);
+    const [rejectStatuses, setRejectStatuses] = useState([]);
+
+    useEffect(() => {
+        const fetchRejectStatuses = async () => {
+            const statuses = await getUpdRejectStatuses();
+            setRejectStatuses(statuses);
+        };
+        fetchRejectStatuses();
+    }, []);
 
     const getNextStatus = () => {
-        // setUpdWithComment(docNumber==1&&docData.stageId=="DT168_9:UC_A3G3QR");
         if (!docData) {
             return { error: 'Изменение статуса документа невозможно' };
         }
@@ -42,9 +52,9 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                 }
             }
         } else if (docNumber === 3) {
-                let i = attorneyStatuses.length;
-                return attorneyStatuses[i - 2];
-            }
+            let i = attorneyStatuses.length;
+            return attorneyStatuses[i - 2];
+        }
 
         return newSt;
     };
@@ -52,7 +62,8 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const handleStatusUpdate = async (updateFunc:any) => {
         try {
             startLoading();
-            const assignableStatus = getNextStatus();
+            let assignableStatus:any;
+            isRejected ? assignableStatus = updStatuses[updStatuses.length - 1] : getNextStatus();
             let alertMes = '';
 
             if (assignableStatus.error) {
@@ -127,16 +138,45 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                             <Text style={[styles.Title, { textAlign: "center" }]}>{nextStatus.NAME}</Text>
                         </View>
                     )}
-                    <View style={styles.RBView}>{
-                        docNumber==1&&docData.stageId=="DT168_9:UC_A3G3QR"&&
-                            <TextInput
-                                style={styles.input}
-                                value={comment}
-                                placeholder='Комментарий'
-                                onChangeText={commentHandler}
-                                keyboardType={"ascii-capable"}
-                            />
-                    }
+                    <View style={styles.RBView}>
+                        {docNumber === 1 && docData.stageId === "DT168_9:UC_A3G3QR" && (
+                            <>
+                                <Dropdown
+                                    style={styles.dropdown}
+                                    data={rejectStatuses}
+                                    labelField="VALUE"
+                                    valueField="ID"
+                                    placeholder="Выберите статус"
+                                    value={rejectStatus}
+                                    onChange={item => {
+                                        setRejectStatus(item.ID);
+                                        if (item.VALUE === "Другое") {
+                                            setComment('');
+                                        } else {
+                                            setComment(item.VALUE);
+                                        }
+                                    }}
+                                />
+                                {rejectStatus === "Другое" && (
+                                    <TextInput
+                                        style={styles.input}
+                                        value={comment}
+                                        placeholder='Комментарий'
+                                        onChangeText={commentHandler}
+                                        keyboardType={"ascii-capable"}
+                                    />
+                                )}
+                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
+                                    <TouchableOpacity onPress={() => {
+                                        setRejected(true);
+                                        acceptAxios();
+                                        setRejected(false);
+                                    }} disabled={isDisabled}>
+                                        <Text style={styles.Title}>Отправить на переоформление</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
                                 <TouchableOpacity onPress={acceptAxios} disabled={isDisabled}>
@@ -150,8 +190,6 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                             </View>
                         </View>
                     </View>
-
-
                 </View>
             )}
             marginTOP={0.2}
