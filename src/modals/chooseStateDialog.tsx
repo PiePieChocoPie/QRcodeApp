@@ -47,7 +47,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             }
         } else if (docNumber === 2) {
             for (let i = 0; i < itineraryStatuses.length; i++) {
-                if (itineraryStatuses[i].STATUS_ID === curStatus && i !== itineraryStatuses.length - 2) {
+                if (itineraryStatuses[i].STATUS_ID === curStatus) {
                     return itineraryStatuses[i + 1];
                 }
             }
@@ -62,10 +62,10 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const handleStatusUpdate = async (updateFunc:any) => {
         try {
             startLoading();
-            let assignableStatus:any;
-            isRejected ? assignableStatus = updStatuses[updStatuses.length - 1] : getNextStatus();
+            let assignableStatus=getNextStatus();
+            docNumber==1&&isRejected ? assignableStatus = updStatuses[updStatuses.length - 1] : assignableStatus = getNextStatus();
             let alertMes = '';
-
+            console.log(assignableStatus, getNextStatus())
             if (assignableStatus.error) {
                 alertMes = assignableStatus.error;
             } else {
