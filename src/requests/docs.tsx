@@ -229,7 +229,7 @@ export async function getReportsTest(jsonBody: any): Promise<string> {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/Api1C/company_reports/default',
+        url: 'https://bitrix24.martinural.ru/Api1C/company_reports/with_link',
         headers: { 'Authorization': 'Basic VnZzOkV3cWF6MTIzNA==' },
         data: JSON.stringify(jsonBody),
         withCredentials: false
@@ -237,7 +237,8 @@ export async function getReportsTest(jsonBody: any): Promise<string> {
   
       let response = await axios.request(config);
       // console.log(JSON.stringify(response.data));
-      return response.data;
+      let fileId = response.data.fileId;
+      let downloading = axios.get(`https://bitrix24.martinural.ru/rest/527/i2jz9ji70u21wjgg/disk.file.get?id=${fileId}`)
     } catch (error) {
       console.error(error);
       return error.toString();

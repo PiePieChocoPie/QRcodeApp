@@ -150,15 +150,14 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
     });
   };
 
-  const buttonHandler = () => {
+  const buttonHandler = async () => {
     let dateArray = [storeInstance.mainDate, storeInstance.extraDate && storeInstance.extraDate];//массив дат
     let filterArray = [];//инициализация массива ГУИД
-
-    console.log("список репортов - ",JSON.stringify(reports), "\n","текущий репорт - ", JSON.stringify(reportName),"\n", "ключ репорта - ", JSON.stringify(reportKey));
 
     for (let i = 0; i < selectedItem.length; i++) {
       filterArray.push(selectedItem[i].GUID);
     }
+
     const jsonBody = {
       "filter": {
          "name": reportName.filters[0].inXml,
@@ -172,8 +171,8 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
       "storageID": storeInstance.userStorageData[0].ID
     };
 
-    // getReportsTest()
     console.log(JSON.stringify(jsonBody));
+    const response = await getReportsTest(jsonBody);
   };
 
 // Пример вызова функции buttonHandler
