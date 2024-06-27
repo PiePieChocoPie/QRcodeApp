@@ -81,18 +81,19 @@ export async function getTasksData(ID: string): Promise<any> {
   }
   
   
-  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:string): Promise<any> {
+  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:string,commentField:string): Promise<any> {
     const body = {
-      "entityTypeId": "168",
+      entityTypeId: "168",
       "id": IDUpd,
       "fields": {
         "stageId": IDStatus,
         "updatedBy": userID,
         "assignedById": userID,
         "movedBy": userID,
-        "ufCrm5AcceptComment": commentValue
+        [commentField]: commentValue
       }
     };
+    
     // console.log(body)
     const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
     return await axios.post(url, body);

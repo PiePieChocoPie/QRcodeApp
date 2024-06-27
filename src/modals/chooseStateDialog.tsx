@@ -62,14 +62,18 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const handleStatusUpdate = async (updateFunc:any) => {
         try {
             startLoading();
-            let assignableStatus: any;
-            docNumber==1&&isRejected ? assignableStatus = updStatuses[updStatuses.length - 1] : assignableStatus = getNextStatus();
+            let assignableStatus: any = getNextStatus();
+            let messageType:string ="ufCrm5AcceptComment";
+            if(docNumber==1&&isRejected){
+                assignableStatus = updStatuses[updStatuses.length - 1];
+                messageType = "ufCrm5RejectionComment";
+            }
             let alertMes = '';
             console.log(assignableStatus, getNextStatus())
             if (assignableStatus.error) {
                 alertMes = assignableStatus.error;
             } else {
-                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, comment);
+                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, comment, messageType);
                 alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}`;
             }
 
@@ -92,7 +96,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
 
     const acceptAxios = async () => {
         try {
-            setComment('');
+            console.log("ryjgrf")
             startLoading();
             if (docData.entityTypeId == "168") {
                 await updHandling();
@@ -116,7 +120,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     };
 
     const nextStatus = getNextStatus();
-    const isDisabled = !!nextStatus.error; // Преобразование в булевое значение
+    // const isDisabled = nextStatus.error; // Преобразование в булевое значение
 
     return (
         <CustomModal
@@ -130,26 +134,28 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             ) : (
                 <View style={styles.containerCentrallityFromUpper}>
                     <Text style={[styles.Text, { textAlign: "center" }]}>Обновление статуса документа</Text>
-                    {isDisabled ? (
+                    {/* {isDisabled ? (
                         <Text style={[styles.Title, { color: '#DE283B', textAlign: "center" }]}>недоступно</Text>
-                    ) : (
+                    ) : ( */}
                         <View>
                             <Text style={[styles.Text, { textAlign: "center" }]}>Установить статус -</Text>
-                            <Text style={[styles.Title, { textAlign: "center" }]}>{nextStatus.NAME}</Text>
+                            <Text style={[styles.Title, { textAlign: "center" }]}>{isRejected?updStatuses[updStatuses.length - 1].NAME:nextStatus.NAME}</Text>
                         </View>
-                    )}
+                    {/* )} */}
                     <View style={styles.RBView}>
-                        {docNumber === 1 && docData.stageId === "DT168_9:UC_A3G3QR" && (
+                        {docData.stageId === "DT168_9:UC_A3G3QR" && (
                             <>
                                 <Dropdown
                                     style={styles.dropdown}
                                     data={rejectStatuses}
+                                    
                                     labelField="VALUE"
                                     valueField="ID"
                                     placeholder="Выберите статус"
                                     value={rejectStatus}
-                                    onChange={item => {
-                                        setRejectStatus(item.ID);
+                                    onChange={async(item) => {
+                                        await setRejectStatus(item.ID);
+                                        item.VALUE=="Принято без нареканий"?setRejected(false):setRejected(true);
                                         if (item.VALUE === "Другое") {
                                             setComment('');
                                         } else {
@@ -157,8 +163,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                         }
                                     }}
                                 />
-                                {rejectStatus === "Другое" && (
-                                    <TextInput
+                                <TextInput
                                         style={styles.input}
                                         value={comment}
                                         placeholder='Комментарий'
@@ -166,25 +171,23 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                         keyboardType={"ascii-capable"}
                                         maxLength={50}
                                     />
-                                )}
-                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
-                                    <TouchableOpacity onPress={() => {
-                                        if(rejectStatus==="Другое"&&comment=="") {
-                                            Alert.alert("Укажите причину", "Укажите причину отклонения документа");
-                                            return;
-                                        }
-                                        setRejected(true);
-                                        acceptAxios();
-                                        setRejected(false);
-                                    }} disabled={isDisabled}>
-                                        <Text style={styles.Title}>Отправить на переоформление</Text>
-                                    </TouchableOpacity>
-                                </View>
                             </>
                         )}
+                         
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
-                                <TouchableOpacity onPress={acceptAxios} disabled={isDisabled}>
+                                <TouchableOpacity onPress={()=>{
+                                    console.log(`docData.stageId == "DT168_9:UC_A3G3QR" = ${docData.stageId == "DT168_9:UC_A3G3QR"}`)
+                                    if(docData.stageId == "DT168_9:UC_A3G3QR")
+                                        {
+                                            if(rejectStatus=="Другое"&&comment=="")
+                                            Alert.alert("Укажите причину", "Укажите причину отклонения документа");
+                                        }
+                                        acceptAxios();
+                                    }
+                                }
+                                    //  disabled={isDisabled}
+                                    >
                                     <Text style={styles.Title}>ОК</Text>
                                 </TouchableOpacity>
                             </View>
