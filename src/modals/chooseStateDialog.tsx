@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
+import {Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert} from 'react-native';
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
@@ -62,7 +62,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const handleStatusUpdate = async (updateFunc:any) => {
         try {
             startLoading();
-            let assignableStatus=getNextStatus();
+            let assignableStatus: any;
             docNumber==1&&isRejected ? assignableStatus = updStatuses[updStatuses.length - 1] : assignableStatus = getNextStatus();
             let alertMes = '';
             console.log(assignableStatus, getNextStatus())
@@ -164,10 +164,15 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                         placeholder='Комментарий'
                                         onChangeText={commentHandler}
                                         keyboardType={"ascii-capable"}
+                                        maxLength={50}
                                     />
                                 )}
                                 <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
                                     <TouchableOpacity onPress={() => {
+                                        if(rejectStatus==="Другое"&&comment=="") {
+                                            Alert.alert("Укажите причину", "Укажите причину отклонения документа");
+                                            return;
+                                        }
                                         setRejected(true);
                                         acceptAxios();
                                         setRejected(false);
