@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button, FlatList, Linking} from 'react-native';
 import { styles } from 'src/stores/styles';
 import CalendarPickerModal from 'src/components/calendarPicker';
 import storeInstance from 'src/stores/mobx';
 import MultiSelect from 'src/components/picker-select';
 import CustomModal from 'src/components/custom-modal';
-import App from 'src/components/hieralcy';
 import { getClients, getStorages, getUserStoragesID } from 'src/requests/storages';
 import { getReportsTest } from 'src/requests/docs';
 import {getHierarchy} from 'src/requests/hierarchy'
@@ -64,31 +63,13 @@ const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePres
   }
 };
 
-// Основной компонент формы
 const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }) => {
   const [selectedItem, setSelectedItems] = useState([]);
   const [isMultiSelectVisible, setMultiSelectVisible] = useState(false);
   const [expandedItems, setExpandedItems] = useState([]);
   const [selectedGuidData, setSelectedGuidData] = useState([]);
   const [hierarchy, setHierarchy] = useState(null);
-
-  // useEffect(() => {
-  //   try {
-  //     const getLocalHierarchy = async () => {
-  //       const hierarchy = await getHierarchy();
-  //       console.log(hierarchy)
-  //       setHierarchy(hierarchy);
-  //     };
-  //     const getUserStorages= async () =>{
-  //       await getUserStoragesID()
-  //     }
-  //     getLocalHierarchy();
-  //     getUserStorages();
-  //   }
-  //   catch (err) {
-  //     console.log((err))
-  //   }
-  // }, []);
+  const [link, setLink] = useState(null)
 
   useFocusEffect(
       React.useCallback(() => {
@@ -103,7 +84,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
           }
           getLocalHierarchy();
           getUserStorages();
-           buttonHandler()
         }
         catch (err) {
           console.log((err))
@@ -111,9 +91,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
       }, [])
   );
 
-  const curUserHierarchy = async ()=>{
 
-  }
 
   const handleCloseMultiSelect = () => {
     setMultiSelectVisible(false);
@@ -151,8 +129,8 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
   };
 
   const buttonHandler = async () => {
-    let dateArray = [storeInstance.mainDate, storeInstance.extraDate && storeInstance.extraDate];//массив дат
-    let filterArray = [];//инициализация массива ГУИД
+    let dateArray = [storeInstance.mainDate, storeInstance.extraDate && storeInstance.extraDate];
+    let filterArray = [];
 
     for (let i = 0; i < selectedItem.length; i++) {
       filterArray.push(selectedItem[i].GUID);
@@ -173,15 +151,16 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
 
     console.log(JSON.stringify(jsonBody));
     const response = await getReportsTest(jsonBody);
+    setLink(response)
   };
-
-// Пример вызова функции buttonHandler
-  buttonHandler();
-
-
   if (!reportName) {
     return null; 
   }
+  const handlePress = () => {
+    if (link) {
+      Linking.openURL(link).catch((err) => console.error('An error occurred', err));
+    }
+  };
 
   return (
     <CustomModal
@@ -198,6 +177,11 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   <CalendarPickerModal parameter={parameter.view}/>
                 </View>
             ))}
+      {link && (
+                <Text style={styles.link} onPress={handlePress}>
+                Download File
+              </Text>
+      )}
             {selectedItem.length > 0 && (
                 <View style={styles.selectedItemsContainer}>
                   <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
@@ -215,7 +199,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
             <View style={styles.container2}>
               {hierarchy && (
                   <FlatList
-                      data={Object.entries(hierarchy.Дирекция)}
+                      data={Object.entries(hierarchy)}
                       renderItem={({item}) => {
                         const isExpanded = expandedItems.includes(item[0]);
                         return (
@@ -252,6 +236,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   onClose={handleCloseMultiSelect}
               />
           )}
+
           <TouchableOpacity onPress={buttonHandler}
                             // disabled={selectedGuidData.length == 0 && selectedItem.length == 0}
                             style={styles.button}>

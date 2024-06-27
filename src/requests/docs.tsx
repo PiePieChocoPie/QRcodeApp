@@ -225,25 +225,39 @@ export async function getTasksData(ID: string): Promise<any> {
 } 
 
 export async function getReportsTest(jsonBody: any): Promise<string> {
-    try {
+  try {
       let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://bitrix24.martinural.ru/Api1C/company_reports/with_link',
-        headers: { 'Authorization': 'Basic VnZzOkV3cWF6MTIzNA==' },
-        data: JSON.stringify(jsonBody),
-        withCredentials: false
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: 'https://bitrix24.martinural.ru/Api1C/company_reports/with_link',
+          headers: { 'Authorization': 'Basic VnZzOkV3cWF6MTIzNA==' },
+          data: jsonBody,
+          withCredentials: false
       };
 
-        let response = await axios.request(config);
-        // console.log(JSON.stringify(response.data));
-        let fileId = response.data.fileId;
-      let downloading = axios.get(`https://bitrix24.martinural.ru/rest/527/i2jz9ji70u21wjgg/disk.file.get?id=${fileId}`)
-    } catch (error) {
+      let response:any = await axios.request(config);
+      console.log(response)
+      // let FileId = response.fileId;
+
+      console.log("Response data: " + JSON.stringify(response.data));
+
+      let fileId = response.data.fileId;
+
+      console.log("fileId" + fileId)
+
+      let downloadingResponse = await axios.get(`https://bitrix24.martinural.ru/rest/527/i2jz9ji70u21wjgg/disk.file.get?id=${fileId}`);
+      
+      console.log("link = " + JSON.stringify(downloadingResponse.data))
+      let downloadUrl = downloadingResponse.data.result.DOWNLOAD_URL;
+
+      // Return the download URL
+      return downloadUrl;
+      // return downloadingResponse;
+  } catch (error) {
       console.error(error);
       return error.toString();
-    }
   }
+}
 
   export async function getUpdRejectStatuses():Promise<Array<any>>{
     try{
