@@ -23,6 +23,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         const fetchRejectStatuses = async () => {
             const statuses = await getUpdRejectStatuses();
             setRejectStatuses(statuses);
+            setRejectStatus("Принято без нареканий")
         };
         fetchRejectStatuses();
     }, []);
@@ -163,7 +164,9 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                         }
                                     }}
                                 />
-                                <TextInput
+                                {
+                                rejectStatus=="Другое"&&
+                                    <TextInput
                                         style={styles.input}
                                         value={comment}
                                         placeholder='Комментарий'
@@ -171,6 +174,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                         keyboardType={"ascii-capable"}
                                         maxLength={50}
                                     />
+                                    }
                             </>
                         )}
                          
