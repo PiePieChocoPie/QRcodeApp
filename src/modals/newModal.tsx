@@ -210,7 +210,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                       renderItem={({item}) => {
                         const isExpanded = expandedItems.includes(item[0]);
                         return (
-                            <View style={styles.itemContainer2}>
+                            <View style={styles.itemContainer2}> 
                               <TouchableOpacity onPress={() => setExpandedItems([item[0]])}>
                                 <Text style={styles.itemTitle}>
                                   {isExpanded ? '▼ ' : '► '}
