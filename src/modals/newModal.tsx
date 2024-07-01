@@ -195,6 +195,13 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   ))}
                 </View>
             )}
+          <TouchableOpacity
+              onPress={buttonHandler}
+              disabled={selectedItem.length === 0}  // Отключаем кнопку, если нет выбранных элементов
+              style={[styles.button, { opacity: selectedItem.length === 0 ? 0.5 : 1 }]}
+            >
+              <Text style={styles.buttonText}>Получить</Text>
+          </TouchableOpacity>
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
             <View style={styles.container2}>
               {hierarchy && (
@@ -236,13 +243,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   onClose={handleCloseMultiSelect}
               />
           )}
-
-          <TouchableOpacity onPress={buttonHandler}
-                            // disabled={selectedGuidData.length == 0 && selectedItem.length == 0}
-                            style={styles.button}>
-            <Text style={styles.buttonText}>Получить</Text>
-          </TouchableOpacity>
-
         </View>
       }
     />

@@ -1,7 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-export class projColors{
-
+export class projColors {
     static lightVerse = {
         main: "#EBEBEB",
         extrasecond: "#F7F8F9",
@@ -13,7 +12,6 @@ export class projColors{
         listElementBackground:'#F7F8F9',
         redro: '#DE283B'
     };
-
 
     static darkVerse = {
         main: "#292929",
@@ -28,14 +26,8 @@ export class projColors{
     };
 
     static currentVerse = projColors.lightVerse
-
-    // static switchVerse() {
-    //     isDark=!isDark;
-    //     projColors.currentVerse = isDark? projColors.darkVerse : projColors.lightVerse;
-    //     //console.log(projColors.currentVerse.main, isDark);
-    //
-    // }
 }
+
 export const json_styles = StyleSheet.create({
   header_right_activity:{
     width: 50, 
@@ -44,9 +36,7 @@ export const json_styles = StyleSheet.create({
     flexDirection:'row', 
     justifyContent: 'flex-end'
   }
-
-}
-)
+});
 
 export const styles = StyleSheet.create({
   link: {
@@ -54,7 +44,7 @@ export const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
   },
-  searchInput: { // Новый стиль для поля поиска
+  searchInput: {
     padding: 10,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -66,157 +56,156 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center', 
-},
+  },
   modalContainer: {
     width: '100%',
     backgroundColor: 'white',
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20 ,
-},
-selectedItemContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: 8,
-  borderBottomWidth: 1,
-  borderColor: '#ddd'
-},
-deleteButton: {
-  backgroundColor: 'red',
-  paddingVertical: 4,
-  paddingHorizontal: 8,
-  borderRadius: 4,
-},
-deleteButtonText: {
-  color: 'white',
-  fontSize: 12,
-},
-modalContentContainer:{
-  flex:1,
-},
-container2: {
-  padding: 20,
-},
-itemContainer2: {
-  marginVertical: 5,
-  paddingLeft: 10,
-  borderLeftWidth: 2,
-  borderColor: '#ccc',
-},
-itemTitle: {
-  fontSize: 16,
-  fontWeight: 'bold',
-},
-itemValue: {
-  fontSize: 14,
-  paddingLeft: 20,
-},
-dataContainer: {
-  marginTop: 20,
-  padding: 10,
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 5,
-},
-dataTitle: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  marginBottom: 10,
-},
-
-selectedItemsContainer: {
-  marginTop: 10,
-  padding: 10,
-  backgroundColor: '#e0e0e0', 
-  borderRadius: 5,
-},
-selectedItemsTitle: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  color: '#333',
-  textAlign: 'center',
-},
-selectedItem: {
-  fontSize: 14,
-  color: '#333', // темный цвет для текста выбранных элементов
-},
-dateButton: {
-  marginTop: 20,
-  padding: 10,
-  backgroundColor: '#7300e6',
-  borderRadius: 5,
-},
-modalContent: {
-  backgroundColor: '#FFF',
-  padding: 20,
-  borderRadius: 10,
-  width: '80%', // Ширина модального окна
-  alignItems: 'center',
-},
-calendarModalContent: {
-  backgroundColor: '#FFF',
-  padding: 20,
-  borderRadius: 10,
-  width: '80%', // Ширина модального окна
-  alignItems: 'center',
-},
-dateButtonText: {
-  color: '#FFF',
-  fontWeight: 'bold',
-},
-confirmButton: {
-  marginTop: 20,
-  padding: 10,
-  backgroundColor: '#7300e6',
-  borderRadius: 5,
-},
-confirmButtonText: {
-  color: '#FFF',
-  fontWeight: 'bold',
-},
-closeButton: {
-  marginTop: 20,
-  padding: 10,
-  backgroundColor: '#888',
-  borderRadius: 5,
-},
-dateField: {
-  alignItems: 'center',
-  // borderWidth: 1, 
-  // borderColor: '#888',
-  // borderRadius: 5,
-  paddingHorizontal: 10,
-  paddingVertical: 8, 
-},
-filterContainer: {
-  marginTop: 10,
-  borderRadius: 5,
-  
-  flex:1
-},
-parameterContainer: {
-  marginTop: 10,
-  padding: 10,
-  borderRadius: 5,
-flex:1  
-},
-datePickerContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-},
-datePicker: {
-  width: '45%',
-  marginBottom: 10,
-},
-textInput: {
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 5,
-  padding: 10,
-  marginBottom: 10,
-},
+  },
+  selectedItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 8,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  modalContentContainer: {
+    flex: 1,
+  },
+  container2: {
+    padding: 20,
+  },
+  itemContainer2: {
+    marginVertical: 5,
+    paddingLeft: 10,
+    borderLeftWidth: 2,
+    borderColor: '#ccc',
+  },
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  itemValue: {
+    fontSize: 14,
+    paddingLeft: 20,
+  },
+  dataContainer: {
+    marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  dataTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  selectedItemsContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#e0e0e0', 
+    borderRadius: 5,
+  },
+  selectedItemsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  },
+  selectedItem: {
+    flex: 1, // Flexbox для занятости доступного пространства
+    fontSize: 14,
+    color: '#333',
+    marginRight: 10,
+    maxWidth: '70%',
+    flexWrap: 'wrap',
+  },
+  dateButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#7300e6',
+    borderRadius: 5,
+  },
+  modalContent: {
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  calendarModalContent: {
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  dateButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#7300e6',
+    borderRadius: 5,
+  },
+  confirmButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#888',
+    borderRadius: 5,
+  },
+  dateField: {
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 8, 
+  },
+  filterContainer: {
+    marginTop: 10,
+    borderRadius: 5,
+    flex: 1,
+  },
+  parameterContainer: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+  },
+  datePickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  datePicker: {
+    width: '45%',
+    marginBottom: 10,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
   authContainer: {
     flex: 1,
     backgroundColor: projColors.currentVerse.main,
@@ -228,7 +217,7 @@ textInput: {
     backgroundColor: projColors.currentVerse.main,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: Dimensions.get("window").height / 6
+    marginTop: Dimensions.get("window").height / 6,
   },
   input: {
     marginTop: 20,
@@ -242,7 +231,7 @@ textInput: {
   },
   container: {
     flex: 1,
-    backgroundColor: projColors.currentVerse.main
+    backgroundColor: projColors.currentVerse.main,
   },
   cameraContainer: {
     flex: 0,
@@ -250,7 +239,7 @@ textInput: {
     height: Dimensions.get('window').width - 60,
     alignItems: 'center',
     justifyContent: 'center',
-    verticalAlign:"middle",                 
+    verticalAlign: "middle",                 
     overflow: 'hidden',
   },
   cameraBorder: {
@@ -263,24 +252,23 @@ textInput: {
   },
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black color
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   camera: {
     flex: 1,
   },
   overlay: {
     flex: 1,
-
   },
-  absoluteFill : {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+  absoluteFill: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   overlayWithUser: {
     alignItems: "center",
   },
   horizontalBorders: {
-    flex:1,
-    flexDirection: 'row'
+    flex: 1,
+    flexDirection: 'row',
   },
   infoButtonContainer: {
     flex: 1,
@@ -294,19 +282,18 @@ textInput: {
     margin: 15,
   },
   btnopacities: {
-    width:'20%',
+    width: '20%',
     alignItems: "center",
     alignContent: 'center',
     margin: 15,
     borderColor: projColors.currentVerse.font,
-    overflow:'hidden',
-    borderRadius:15,
-    // borderWidth:2
+    overflow: 'hidden',
+    borderRadius: 15,
   },
   userB: {
     margin: 10,
     flexDirection: "row",
-    alignContent: "center"
+    alignContent: "center",
   },
   avatarContainer: {
     width: 70,
@@ -315,7 +302,7 @@ textInput: {
     overflow: 'hidden',
     marginTop: 15,
     alignItems: "center",
-    justifyContent:"center"
+    justifyContent: "center",
   },
   avatar: {
     flex: 1,
@@ -324,7 +311,7 @@ textInput: {
   },
   mainFrame: {
     width: Dimensions.get('window').width - 60,
-    height: Dimensions.get('window').width - 60
+    height: Dimensions.get('window').width - 60,
   },
   itemContainer: {
     width: Dimensions.get("window").width - 3,
@@ -333,13 +320,13 @@ textInput: {
     flexDirection: "row",
     borderWidth: 2,
     overflow: 'hidden',
-    borderColor: projColors.currentVerse.main
+    borderColor: projColors.currentVerse.main,
   },
   moreButton: {
     borderRadius: 50,
     backgroundColor: projColors.currentVerse.accent,
     alignItems: "center",
-    margin: 4
+    margin: 4,
   },
   taskView: {
     alignItems: "center",
@@ -351,7 +338,7 @@ textInput: {
     width: Dimensions.get("window").width - 8,
     overflow: 'hidden',
     marginTop: 5,
-    textAlign: "center"
+    textAlign: "center",
   },
   taskInternalView: {
     alignItems: "center",
@@ -359,7 +346,7 @@ textInput: {
     width: Dimensions.get("window").width - 3,
     borderColor: projColors.currentVerse.border,
     backgroundColor: projColors.currentVerse.main,
-    flex: 1
+    flex: 1,
   },
   dialog: {
     backgroundColor: projColors.currentVerse.second,
@@ -382,7 +369,7 @@ textInput: {
   RBView: {
     alignItems: "center",
     justifyContent: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#de283b",
@@ -398,38 +385,36 @@ textInput: {
     fontSize: 20,
     fontWeight: "700",
   },
-  containerCentrallity:{
+  containerCentrallity: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  containerCentrallityFromUpper:{
+  containerCentrallityFromUpper: {
     flex: 1,
-    width:'80%'
+    width: '80%',
   },
-  listElementContainer:{
-    backgroundColor:projColors.currentVerse.extrasecond,
-    borderColor:projColors.currentVerse.border,
-    borderWidth:1,
-    borderRadius:10,
-    margin:10,
-    gap:5,
-    padding:23,
+  listElementContainer: {
+    backgroundColor: projColors.currentVerse.extrasecond,
+    borderColor: projColors.currentVerse.border,
+    borderWidth: 1,
+    borderRadius: 10,
+    margin: 10,
+    gap: 5,
+    padding: 23,
     elevation: 2,
   },
-  Title:{
-    fontSize:16,
-    color: projColors.currentVerse.fontAccent
+  Title: {
+    fontSize: 16,
+    color: projColors.currentVerse.fontAccent,
   },
-  Text:{
-    fontSize:16,
-    color: projColors.currentVerse.fontAccent
+  Text: {
+    fontSize: 16,
+    color: projColors.currentVerse.fontAccent,
   },
   expanderContainer: {
-    // position: 'absolute',
     top: 0,
     width: '100%',
-    // zIndex: 1,
     backgroundColor: projColors.currentVerse.main,
   },
   expanderContent: {
@@ -438,7 +423,6 @@ textInput: {
   },
   containerContent: {
     flex: 1,
-    // marginTop: '15%', 
   },
   dropdown: {
     height: 50,
@@ -450,4 +434,3 @@ textInput: {
     width: '80%',
   },
 });
-
