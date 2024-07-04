@@ -120,7 +120,7 @@ export async function getAllStaticData(authToken: string, userData: boolean, dep
       }
       
       if (depData) {
-        await getDepData(Store.userData.UF_DEPARTMENT[0])
+        await getDepData(Store.userData.UF_DEPARTMENT)
           .catch(error => {
             curError = "Ошибка получения подразделения";
             status = false;
