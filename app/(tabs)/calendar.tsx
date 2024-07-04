@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Alert, ActivityIndicator, Text } from "react-native";
+import { View, Alert, ActivityIndicator, Text, StyleSheet } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
@@ -8,13 +8,13 @@ import Store from "src/stores/mobx";
 import CustomModal from "src/components/custom-modal";
 import { getUsersTrafficStatistics } from "src/requests/timeManagement";
 
-export default function Calendar() {
+const Calendar = () => {
     const { loading, startLoading, stopLoading } = useLoading();
     const [customDatesStyles, setCustomDatesStyles] = useState([]);
     const [month, setMonth] = useState(0);
     const [year, setYear] = useState(0);
     const [fullTime, setFullTime] = useState('');
-    const [middleTime, setmiddleTime] = useState('');
+    const [middleTime, setMiddleTime] = useState('');
     const [daysCount, setDaysCount] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
     const [dayData, setDayData] = useState('');
@@ -25,7 +25,7 @@ export default function Calendar() {
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear();
             setYear(currentYear);
-            const currentMonth = currentDate.getMonth() + 1; // Добавляем 1, так как месяцы в JS начинаются с 0
+            const currentMonth = currentDate.getMonth() + 1; // Adding 1 because months are zero-indexed
             setMonth(currentMonth);
             fetchData(currentYear, currentMonth);
         }, [])
@@ -36,22 +36,18 @@ export default function Calendar() {
             startLoading();
             const res = await getUsersTrafficStatistics(month, year);
             if (res) {
-                // console.log(Store.trafficData);
                 let days = 0;
                 let fullTimeCounter = 0;
                 const customStyles = Store.trafficData.map(day => {
                     let dayStatus = 0;
                     const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
-                    // console.log('начало дня - ', startTime);
                     dayStatus = startTime < 9 * 60 + 15 ? 0 : 1;
                     if (day.workday_complete) {
                         const endTime = new Date(day.workday_date_finish).getHours() * 60 + new Date(day.workday_date_finish).getMinutes();
-                        // console.log('конец дня - ', endTime);
                         dayStatus = endTime < 17 * 60 + 45 ? dayStatus + 1 : dayStatus;
                         fullTimeCounter = fullTimeCounter + endTime - startTime;
                         days++;
                     }
-                    // console.log(day.day_title, dayStatus);
                     let color = '';
                     switch (dayStatus) {
                         case 0:
@@ -73,22 +69,21 @@ export default function Calendar() {
                         allowDisabled: true,
                     };
                 });
-                let hours = Math.floor(fullTimeCounter / 60); // Получаем количество целых часов
-                // console.log(fullTimeCounter);
+                let hours = Math.floor(fullTimeCounter / 60);
                 let minutes = fullTimeCounter % 60;
                 const middleMin = fullTimeCounter / days;
                 setDaysCount(days);
                 setFullTime(`${hours}ч${minutes}мин`);
-                hours = Math.floor(middleMin / 60); // Получаем количество целых часов
+                hours = Math.floor(middleMin / 60);
                 minutes = Math.floor(middleMin % 60);
-                setmiddleTime(`${hours}ч${minutes}мин`);
-                if (fullTimeCounter === 0) setmiddleTime(`0ч0мин`);
+                setMiddleTime(`${hours}ч${minutes}мин`);
+                if (fullTimeCounter === 0) setMiddleTime(`0ч0мин`);
                 setCustomDatesStyles(customStyles);
             } else {
-                Alert.alert("ошибка", "непредвиденная ошибка");
+                Alert.alert("Error", "Unexpected error occurred");
             }
         } catch (error) {
-            Alert.alert("Ошибка", 'Ошибка: \n' + error);
+            Alert.alert("Error", 'Error: \n' + error);
         } finally {
             stopLoading();
         }
@@ -96,17 +91,14 @@ export default function Calendar() {
 
     const handleMonthChange = async (date) => {
         startLoading();
-        // console.log('Новый выбранный месяц:', date);
         const newYear = date.getFullYear();
         setYear(newYear);
         const newMonth = date.getMonth() + 1;
         setMonth(newMonth);
-        // console.log(year, month);
-        // console.log(newYear, newMonth);
         try {
             await fetchData(newYear, newMonth);
         } catch (err) {
-            Alert.alert("Ошибка", 'Ошибка: \n' + err);
+            Alert.alert("Error", 'Error: \n' + err);
         }
         stopLoading();
     };
@@ -129,7 +121,7 @@ export default function Calendar() {
                 let durationInMinute = selectedDayData.workday_duration_final / 60;
                 let duration = '';
                 if (durationInMinute > 0) {
-                    let hours = Math.floor(durationInMinute / 60); // Получаем количество целых часов
+                    let hours = Math.floor(durationInMinute / 60);
                     let minutes = Math.floor(durationInMinute % 60);
                     duration = `${hours}ч${minutes}мин`;
                 } else duration = 'не установлено';
@@ -150,7 +142,7 @@ export default function Calendar() {
 
     return (
         <View style={styles.container}>
-            <View style={{marginTop:"7%"}}>
+            <View style={localStyles.calendarContainer}>
                 <CalendarPicker
                     previousTitle="Предыдущий"
                     nextTitle="Следующий"
@@ -179,9 +171,9 @@ export default function Calendar() {
                     <View>
                         {Store.trafficData ? (
                             <View>
-                                <Text style={[styles.Text, { textAlign: "center" }]}>Закрыто дней - {daysCount}</Text>
-                                <Text style={[styles.Text, { textAlign: "center" }]}>Времени на работе - {fullTime}</Text>
-                                <Text style={[styles.Text, { textAlign: "center" }]}>Среднее время - {middleTime}</Text>
+                                <Text style={[styles.Text, localStyles.infoText]}>Закрыто дней - {daysCount}</Text>
+                                <Text style={[styles.Text, localStyles.infoText]}>Времени на работе - {fullTime}</Text>
+                                <Text style={[styles.Text, localStyles.infoText]}>Среднее время - {middleTime}</Text>
                             </View>
                         ) : (
                             <View style={styles.containerCentrallity}>
@@ -198,10 +190,25 @@ export default function Calendar() {
                 title={dayTitle}
                 content={
                     <View>
-                        <Text style={[styles.Text, { textAlign: "center" }]}>{dayData}</Text>
+                        <Text style={[styles.Text, localStyles.modalText]}>{dayData}</Text>
                     </View>
                 }
             />
         </View>
     );
-}
+};
+
+const localStyles = StyleSheet.create({
+    calendarContainer: {
+        marginTop: "7%",
+    },
+    infoText: {
+        textAlign: "center",
+        marginVertical: 10,
+    },
+    modalText: {
+        textAlign: "center",
+    },
+});
+
+export default Calendar;
