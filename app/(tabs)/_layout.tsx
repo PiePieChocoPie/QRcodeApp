@@ -10,7 +10,7 @@ import * as Icons from '../../assets/navbar_icons';
 const TabsLayout = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
-      statusDay(Store.userData.ID);
+      // statusDay(Store.userData.ID);
     }, 1000);
 
     return () => clearInterval(intervalId);

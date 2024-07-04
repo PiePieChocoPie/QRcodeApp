@@ -9,6 +9,8 @@ import { getClients, getStorages, getUserStoragesID } from 'src/requests/storage
 import { getReportsTest } from 'src/requests/docs';
 import {getHierarchy} from 'src/requests/hierarchy'
 import { useFocusEffect } from '@react-navigation/native';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePressGuid }) => {
   const handleToggleExpand = (key) => {
@@ -152,13 +154,38 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
     console.log(JSON.stringify(jsonBody));
     const response = await getReportsTest(jsonBody);
     setLink(response)
+    openExcelFile()
   };
   if (!reportName) {
     return null; 
   }
-  const handlePress = () => {
-    if (link) {
-      Linking.openURL(link).catch((err) => console.error('An error occurred', err));
+  // const handlePress = () => {
+  //   if (link) {
+  //     Linking.openURL(link).catch((err) => console.error('An error occurred', err));
+  //   }
+  // };
+  const openExcelFile = async () => {
+    if (!link) {
+      return;
+    }
+
+    try {
+      const fileUri = `${FileSystem.documentDirectory}yourfile.xlsx`;
+
+      const downloadResumable = FileSystem.createDownloadResumable(
+        link,
+        fileUri
+      );
+
+      const { uri } = await downloadResumable.downloadAsync();
+
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        await Sharing.shareAsync(uri);
+      } else {
+      }
+    } catch (err) {
+      console.error('Произошла ошибка', err);
     }
   };
 
@@ -177,11 +204,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   <CalendarPickerModal parameter={parameter.view}/>
                 </View>
             ))}
-      {link && (
-                <Text style={styles.link} onPress={handlePress}>
-                Download File
-              </Text>
-      )}
             {selectedItem.length > 0 && (
                 <View style={styles.selectedItemsContainer}>
                   <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
@@ -238,8 +260,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
           )}
 
           <TouchableOpacity onPress={buttonHandler}
-                            // disabled={selectedGuidData.length == 0 && selectedItem.length == 0}
-                            style={styles.button}>
+            style={styles.button}>
             <Text style={styles.buttonText}>Получить</Text>
           </TouchableOpacity>
 
