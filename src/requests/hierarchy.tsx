@@ -24,7 +24,7 @@ export async function getDepData(ID: string): Promise<any> {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'https://bitrix24.martinural.ru/MartinAPI/Hieralcy.php',
+      url: `https://bitrix24.martinural.ru/MartinAPI/Hieralcy.php?param=${Store.userData.WORK_POSITION}`,
       headers: { 'Authorization': 'Basic arm:Zxc123' },
       withCredentials: false
     };
