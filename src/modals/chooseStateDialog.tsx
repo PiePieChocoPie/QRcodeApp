@@ -154,48 +154,52 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                     placeholder="Выберите статус"
                                     value={rejectStatus}
                                     onChange={async(item) => {
-                                        await setRejectStatus(item.ID);
+                                        await setRejectStatus(item.VALUE);
+                                        console.log(rejectStatus)
                                         item.VALUE=="Принято без нареканий"?setRejected(false):setRejected(true);
-                                        if (item.VALUE === "Другое") {
+                                        if (item.VALUE == "Другое") {
                                             setComment('');
                                         } else {
                                             setComment(item.VALUE);
                                         }
                                     }}
                                 />
-                                {
+                               
+                            </>
+                        )}
+                          {
                                 rejectStatus=="Другое"&&
-                                    <TextInput
+                                    (<TextInput
                                         style={styles.input}
                                         value={comment}
                                         placeholder='Комментарий'
                                         onChangeText={commentHandler}
                                         keyboardType={"ascii-capable"}
                                         maxLength={50}
-                                    />
+                                    />)
                                     }
-                            </>
-                        )}
-                         
                         <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={()=>{
+                        <TouchableOpacity style={{flex:1, width:'40%'}} onPress={()=>{
                                     console.log(`docData.stageId == "DT168_9:UC_YAHBD0" = ${docData.stageId == "DT168_9:UC_YAHBD0"}`)
                                     if(docData.stageId == "DT168_9:UC_YAHBD0")
                                         {
                                             if(rejectStatus=="Другое"&&comment=="")
-                                            Alert.alert("Укажите причину", "Укажите причину отклонения документа");
+                                            {
+                                            alert("Укажите причину отклонения документа");
+                                            return
+                                            }
                                         }
                                         acceptAxios();
                                     }
                                 }
                                     //  disabled={isDisabled}
                                     >
-                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>                               
+                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, alignContent: "center", alignItems: "center", borderRadius: 20 }}>                               
                                 <Text style={styles.Title}>ОК</Text>
                             </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={onClose}>
-                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>                                
+                                <TouchableOpacity style={{flex:1, width:'40%'}} onPress={onClose}>
+                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, alignContent: "center", alignItems: "center", borderRadius: 20 }}>                                
                                     <Text style={styles.Title}>Отмена</Text>                                
                                 </View>
                             </TouchableOpacity>
