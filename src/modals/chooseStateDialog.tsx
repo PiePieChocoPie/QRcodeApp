@@ -45,7 +45,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                     return updStatuses[i + 1];
                 }
             }
-        } else if (docNumber === 2&&docData.ufCrm6Driver==Store.userData.ID) {
+        } else if (docNumber === 2&&(docData.ufCrm6Driver==Store.userData.ID||Store.isWarehouse&&curStatus=="DT133_10:PREPARATION")) {
             for (let i = 0; i < itineraryStatuses.length; i++) {
                 if (itineraryStatuses[i].STATUS_ID === curStatus) {
                     return itineraryStatuses[i + 1];
