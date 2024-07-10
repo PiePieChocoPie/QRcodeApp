@@ -45,7 +45,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                     return updStatuses[i + 1];
                 }
             }
-        } else if (docNumber === 2&&docData.ufCrm6Driver==Store.userData.ID) {
+        } else if (docNumber === 2&&(docData.ufCrm6Driver==Store.userData.ID||Store.isWarehouse&&curStatus=="DT133_10:PREPARATION")) {
             for (let i = 0; i < itineraryStatuses.length; i++) {
                 if (itineraryStatuses[i].STATUS_ID === curStatus) {
                     return itineraryStatuses[i + 1];
@@ -143,7 +143,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         </View>
                     {/* )} */}
                     <View style={styles.RBView}>
-                        {docData.stageId === "DT168_9:UC_A3G3QR" && (
+                        {docData.stageId === "DT168_9:UC_YAHBD0" && (
                             <>
                                 <Dropdown
                                     style={styles.dropdown}
@@ -178,9 +178,9 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         )}
                          
                         <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={{flex:1,width: '40%'}} onPress={()=>{
-                                    console.log(`docData.stageId == "DT168_9:UC_A3G3QR" = ${docData.stageId == "DT168_9:UC_A3G3QR"}`)
-                                    if(docData.stageId == "DT168_9:UC_A3G3QR")
+                        <TouchableOpacity onPress={()=>{
+                                    console.log(`docData.stageId == "DT168_9:UC_YAHBD0" = ${docData.stageId == "DT168_9:UC_YAHBD0"}`)
+                                    if(docData.stageId == "DT168_9:UC_YAHBD0")
                                         {
                                             if(rejectStatus=="Другое"&&comment=="")
                                             Alert.alert("Укажите причину", "Укажите причину отклонения документа");

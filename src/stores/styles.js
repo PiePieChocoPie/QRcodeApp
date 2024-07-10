@@ -39,6 +39,16 @@ export const json_styles = StyleSheet.create({
 });
 
 export const styles = StyleSheet.create({
+  moreItemsButton: {
+    padding: 10,
+    backgroundColor: '#ddd',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  moreItemsText: {
+    color: '#333',
+  },
   link: {
     fontSize: 20,
     color: 'blue',

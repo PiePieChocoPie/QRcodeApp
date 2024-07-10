@@ -13,38 +13,43 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
 const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePressGuid }) => {
-  const handleToggleExpand = (key) => {
+  const handleToggleExpand = (key, value) => {
     const currentPath = [...path, key].join('/');
-    setExpandedItems(prevExpandedItems => {
-      if (prevExpandedItems.includes(currentPath)) {
-        return prevExpandedItems.filter(item => item !== currentPath);
-      } else {
-        return [...prevExpandedItems, currentPath];
-      }
-    });
+    if (typeof value === 'string') {
+      handlePressGuid(value);
+    } else {
+      setExpandedItems(prevExpandedItems => {
+        if (prevExpandedItems.includes(currentPath)) {
+          return prevExpandedItems.filter(item => item !== currentPath);
+        } else {
+          return [...prevExpandedItems, currentPath];
+        }
+      });
+    }
   };
-
+  
   if (typeof item === 'object') {
     return (
       <FlatList
         data={Object.entries(item)}
         renderItem={({ item }) => {
-          const currentPath = [...path, item[0]].join('/');
+          const [key, value] = item;
+          const currentPath = [...path, key].join('/');
           const isExpanded = expandedItems.includes(currentPath);
           return (
             <View style={styles.itemContainer2}>
-              <TouchableOpacity onPress={() => handleToggleExpand(item[0])}>
+              <TouchableOpacity onPress={() => handleToggleExpand(key, value)}>
                 <Text style={styles.itemTitle}>
                   {isExpanded ? '▼ ' : '► '}
-                  {item[0]}
+                  {key}
                 </Text>
               </TouchableOpacity>
-              {isExpanded && (
+              {isExpanded && typeof value !== 'string' && (
                 <RecursiveItem 
-                  item={item[1]} 
+                  item={value} 
                   expandedItems={expandedItems} 
                   setExpandedItems={setExpandedItems} 
-                  path={[...path, item[0]]} 
+                  path={[...path, key]} 
                   handlePressGuid={handlePressGuid}
                 />
               )}
@@ -58,7 +63,7 @@ const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePres
     return (
       <View style={styles.itemContainer2}>
         <TouchableOpacity onPress={() => handlePressGuid(item)}>
-          <Text style={styles.itemValue}>{item}</Text>
+          <Text style={styles.itemValue}>Выбрать клиентов</Text>
         </TouchableOpacity>
       </View>
     );
@@ -159,11 +164,6 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
   if (!reportName) {
     return null; 
   }
-  // const handlePress = () => {
-  //   if (link) {
-  //     Linking.openURL(link).catch((err) => console.error('An error occurred', err));
-  //   }
-  // };
   const openExcelFile = async () => {
     if (!link) {
       return;
@@ -204,19 +204,22 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   <CalendarPickerModal parameter={parameter.view}/>
                 </View>
             ))}
-            {selectedItem.length > 0 && (
-                <View style={styles.selectedItemsContainer}>
-                  <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
-                  {selectedItem.map(item => (
-                      <View key={item.GUID || item.ID} style={styles.selectedItemContainer}>
-                        <Text style={styles.selectedItem}>{item.NAME}</Text>
-                        <TouchableOpacity onPress={() => handleRemoveItem(item.GUID)} style={styles.deleteButton}>
-                          <Text style={styles.deleteButtonText}>Удалить</Text>
-                        </TouchableOpacity>
-                      </View>
-                  ))}
-                </View>
+          <View style={styles.selectedItemsContainer}>
+            <Text style={styles.selectedItemsTitle}>Выбранные элементы:</Text>
+            {selectedItem.slice(0, 3).map(item => (
+              <View key={item.GUID || item.ID} style={styles.selectedItemContainer}>
+                <Text style={styles.selectedItem}>{item.NAME}</Text>
+                <TouchableOpacity onPress={() => handleRemoveItem(item.GUID)} style={styles.deleteButton}>
+                  <Text style={styles.deleteButtonText}>Удалить</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+            {selectedItem.length > 5 && (
+              <TouchableOpacity style={styles.moreItemsButton}>
+                <Text style={styles.moreItemsText}>и еще {selectedItem.length - 5} элементов</Text>
+              </TouchableOpacity>
             )}
+          </View>
           <TouchableOpacity
               onPress={buttonHandler}
               disabled={selectedItem.length === 0}  
@@ -235,7 +238,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                             <View style={styles.itemContainer2}> 
                               <TouchableOpacity onPress={() => setExpandedItems([item[0]])}>
                                 <Text style={styles.itemTitle}>
-                                  {isExpanded ? '▼ ' : '► '}
+                                  {isExpanded ? '+ ' : '- '}
                                   {item[0]}
                                 </Text>
                               </TouchableOpacity>
