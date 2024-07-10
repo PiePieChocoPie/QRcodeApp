@@ -178,7 +178,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         )}
                          
                         <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={()=>{
+                        <TouchableOpacity style={{flex:1,width: '40%'}} onPress={()=>{
                                     console.log(`docData.stageId == "DT168_9:UC_A3G3QR" = ${docData.stageId == "DT168_9:UC_A3G3QR"}`)
                                     if(docData.stageId == "DT168_9:UC_A3G3QR")
                                         {
@@ -190,12 +190,12 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                 }
                                     //  disabled={isDisabled}
                                     >
-                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>                               
+                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, alignContent: "center", alignItems: "center", borderRadius: 20 }}>                               
                                 <Text style={styles.Title}>ОК</Text>
                             </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={onClose}>
-                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>                                
+                                <TouchableOpacity style={{flex:1, width: '40%'}}  onPress={onClose}>
+                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10,  alignContent: "center", alignItems: "center", borderRadius: 20 }}>                                
                                     <Text style={styles.Title}>Отмена</Text>                                
                                 </View>
                             </TouchableOpacity>
