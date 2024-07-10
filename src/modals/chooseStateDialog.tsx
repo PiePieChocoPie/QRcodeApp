@@ -143,7 +143,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         </View>
                     {/* )} */}
                     <View style={styles.RBView}>
-                        {docData.stageId === "DT168_9:UC_A3G3QR" && (
+                        {docData.stageId === "DT168_9:UC_YAHBD0" && (
                             <>
                                 <Dropdown
                                     style={styles.dropdown}
@@ -179,8 +179,8 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                          
                         <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={()=>{
-                                    console.log(`docData.stageId == "DT168_9:UC_A3G3QR" = ${docData.stageId == "DT168_9:UC_A3G3QR"}`)
-                                    if(docData.stageId == "DT168_9:UC_A3G3QR")
+                                    console.log(`docData.stageId == "DT168_9:UC_YAHBD0" = ${docData.stageId == "DT168_9:UC_YAHBD0"}`)
+                                    if(docData.stageId == "DT168_9:UC_YAHBD0")
                                         {
                                             if(rejectStatus=="Другое"&&comment=="")
                                             Alert.alert("Укажите причину", "Укажите причину отклонения документа");
