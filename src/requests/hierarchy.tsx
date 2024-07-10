@@ -1,9 +1,12 @@
 import axios from "axios";
 import Store from "src/stores/mobx"
 
-export async function getDepData(ID: string): Promise<any> {
+export async function getDepData(ids: string[]): Promise<any> {
+  let results = [];
+
+  for (let ID of ids) {
     let data = { "ID": ID };
-  
+
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
@@ -14,11 +17,19 @@ export async function getDepData(ID: string): Promise<any> {
       data: data,
       withCredentials: false
     };
-  
+
     const response = await axios.request(config);
-    Store.setDepData(response.data.result[0]);
-    return response;
+    let depData = response.data.result[0];
+    Store.setDepData(depData);
+    results.push(depData);
   }
+
+  let isWarehouse = results.some(depData => depData.ID === '23' || depData.PARENT === '23');
+  Store.setIsWarehouse(isWarehouse);
+
+  return results;
+}
+
   
   export async function getHierarchy(): Promise<any> {
     let config = {

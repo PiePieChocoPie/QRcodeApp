@@ -9,7 +9,6 @@ import { getUpdRejectStatuses, updAttorneyStatus, updItineraryStatus, updUpdStat
 import { Dropdown } from "react-native-element-dropdown";
 
 const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
-    const [checked, setChecked] = useState({ label: '', value: '' });
     const [updStatuses] = useState(Store.updStatusesData);
     const [itineraryStatuses] = useState(Store.itineraryStatusesData);
     const [attorneyStatuses] = useState(Store.attorneyStatusesData);
@@ -46,7 +45,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                     return updStatuses[i + 1];
                 }
             }
-        } else if (docNumber === 2) {
+        } else if (docNumber === 2&&docData.ufCrm6Driver==Store.userData.ID) {
             for (let i = 0; i < itineraryStatuses.length; i++) {
                 if (itineraryStatuses[i].STATUS_ID === curStatus) {
                     return itineraryStatuses[i + 1];
@@ -179,8 +178,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                         )}
                          
                         <View style={{ flexDirection: 'row' }}>
-                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
-                                <TouchableOpacity onPress={()=>{
+                        <TouchableOpacity onPress={()=>{
                                     console.log(`docData.stageId == "DT168_9:UC_A3G3QR" = ${docData.stageId == "DT168_9:UC_A3G3QR"}`)
                                     if(docData.stageId == "DT168_9:UC_A3G3QR")
                                         {
@@ -192,14 +190,15 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                 }
                                     //  disabled={isDisabled}
                                     >
-                                    <Text style={styles.Title}>ОК</Text>
-                                </TouchableOpacity>
+                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>                               
+                                <Text style={styles.Title}>ОК</Text>
                             </View>
-                            <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>
+                                </TouchableOpacity>
                                 <TouchableOpacity onPress={onClose}>
-                                    <Text style={styles.Title}>Отмена</Text>
-                                </TouchableOpacity>
-                            </View>
+                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, width: '40%', alignContent: "center", alignItems: "center", borderRadius: 20 }}>                                
+                                    <Text style={styles.Title}>Отмена</Text>                                
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
