@@ -73,7 +73,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             if (assignableStatus.error) {
                 alertMes = assignableStatus.error;
             } else {
-                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, comment, messageType);
+                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, rejectStatus, messageType);
                 alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}`;
             }
 
@@ -152,10 +152,10 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                     labelField="VALUE"
                                     valueField="ID"
                                     placeholder="Выберите статус"
-                                    value={rejectStatus}
+                                    value={rejectStatus.ID}
                                     onChange={async(item) => {
-                                        await setRejectStatus(item.VALUE);
-                                        console.log(rejectStatus)
+                                        await setRejectStatus(item);
+                                        console.log(rejectStatus.VALUE)
                                         item.VALUE=="Принято без нареканий"?setRejected(false):setRejected(true);
                                         if (item.VALUE == "Другое") {
                                             setComment('');
@@ -168,7 +168,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                             </>
                         )}
                           {
-                                rejectStatus=="Другое"&&
+                                rejectStatus&&rejectStatus.VALUE=="Другое"&&
                                     (<TextInput
                                         style={styles.input}
                                         value={comment}
@@ -183,7 +183,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                                     console.log(`docData.stageId == "DT168_9:UC_YAHBD0" = ${docData.stageId == "DT168_9:UC_YAHBD0"}`)
                                     if(docData.stageId == "DT168_9:UC_YAHBD0")
                                         {
-                                            if(rejectStatus=="Другое"&&comment=="")
+                                            if(rejectStatus.VALUE=="Другое"&&comment=="")
                                             {
                                             alert("Укажите причину отклонения документа");
                                             return
