@@ -412,7 +412,6 @@ export const styles = StyleSheet.create({
     margin: 10,
     gap: 5,
     padding: 23,
-    elevation: 2,
   },
   Title: {
     fontSize: 16,
