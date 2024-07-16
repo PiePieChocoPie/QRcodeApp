@@ -1,65 +1,73 @@
+import React, { useState, useEffect } from 'react';
+import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
 import { encode as base64encode } from 'base-64';
-import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet } from "react-native";
-import { router } from "expo-router";
-import Store from "src/stores/mobx";
-import useLoading from "src/useLoading";
-import { Image } from "expo-image";
+import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
+import Store from 'src/stores/mobx';
+import useLoading from 'src/useLoading';
 import * as Animatable from 'react-native-animatable';
 import { getAllStaticData } from "src/requests/userData";
 import { statusDay } from "src/requests/timeManagement";
 import * as Icons from '../assets';
-
+import { router } from "expo-router";
 const LoadingScreen = () => {
     return (
-        <Animatable.View 
-            animation="pulse" 
-            iterationCount="infinite" 
+        <Animatable.View
+            animation="pulse"
+            iterationCount="infinite"
             style={loadingStyles.Loading}
         >
-            <Icons.loading width="55%" height="55%"/>
+            <Icons.loading width="55%" height="55%" />
         </Animatable.View>
     );
 };
 
-const authorize = () => {
+const authorize = observer(() => {
     const [loadingScreen, setLoadingScreen] = useState(true);
-    const [login, setLogin] = useState('arm');
-    const [password, setPassword] = useState('Zxc123');
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
     const [isInvalidLogin, setIsInvalidLogin] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
     const { loading, startLoading, stopLoading } = useLoading();
+    const navigation = useNavigation();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoadingScreen(false);
-        }, 3000);
-        return () => clearTimeout(timer);
+        const checkToken = async () => {
+            const token = await SecureStore.getItemAsync('authToken');
+            if (token) {
+                const res = await getAllStaticData(token, true, false, false, false);
+                if (res.status) {
+                    Store.setTokenData(token);
+                    router.push({ pathname: "/(tabs)/profile" });
+                    statusDay(Store.userData.ID);
+                } else {
+                    setLoadingScreen(false);
+                }
+            } else {
+                setLoadingScreen(false);
+            }
+        };
+        checkToken();
     }, []);
 
     const buttonHandler = async () => {
         startLoading();
-        if (login.length > 1) {
-            if (password.length > 1) {
-                const token = base64encode(`${login}:${password}`);
+        if (login.length > 1 && password.length > 1) {
+            const token = base64encode(`${login}:${password}`);
+            const res = await getAllStaticData(token, true, false, false, false);
+            if (res.status) {
+                await SecureStore.setItemAsync('authToken', token);
                 Store.setTokenData(token);
-                
-                await getAllStaticData(token, true, false, false, false)
-                    .then(async (res) => {
-                        if (res.status) {
-                            router.push({ pathname: "/(tabs)/profile" });
-                            statusDay(Store.userData.ID);
-                        } else {
-                            Alert.alert("Ошибка авторизации", res.curError);
-                        }
-                    })
-                    .catch(err => {
-                        Alert.alert("Ошибка авторизации", 'Ошибка авторизации: \n' + err);
-                    });
+                router.push({ pathname: "/(tabs)/profile" });
+                statusDay(Store.userData.ID);
             } else {
+                Alert.alert("Ошибка авторизации", res.curError);
                 setIsInvalidLogin(true);
             }
+        } else {
+            setIsInvalidLogin(true);
         }
         stopLoading();
     };
@@ -125,22 +133,14 @@ const authorize = () => {
             </View>
         </View>
     );
-};
+});
 
 const loadingStyles = StyleSheet.create({
-    LoadingChild: {
-        position: "absolute",
-        top: '39%',
-        left: '30%',
-        width: '40%',
-        height: '20%',
-    },
     Loading: {
         backgroundColor: "#de283b",
         flex: 1,
         width: "100%",
         height: "100%",
-        overflow: "hidden",
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
     frameParent: {
         width: '90%',
         alignSelf: 'center',
-        marginTop: '20%', // Отступ сверху для размещения в верхней части экрана
-        justifyContent: 'flex-start', // Выравнивание по верхнему краю
+        marginTop: '20%',
+        justifyContent: 'flex-start',
     },
     inputContainer: {
         width: '100%',
@@ -213,8 +213,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         height: "100%",
-        overflow: "hidden",
-        justifyContent: 'flex-start', // Выравнивание по верхнему краю
+        justifyContent: 'flex-start',
     },
 });
 
