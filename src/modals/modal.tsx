@@ -48,9 +48,7 @@ const ModalForm = ({ modalVisible, toggleModal, ID }) => {
                     style={styles.modalContent}
                     >
                         <QRCode value={ID} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />
-                        <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-                            <Text style={styles.closeButtonText}>Закрыть</Text>
-                        </TouchableOpacity>
+
                     {/* </View> */}
                 </View>
             }
