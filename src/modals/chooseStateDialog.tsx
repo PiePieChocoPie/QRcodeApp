@@ -66,6 +66,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             let messageType:string ="ufCrm5AcceptComment";
             let alertMes = 'документ не был отправлен';
             let docBackgroundColor = '#db6464';
+            let textColors = "#ccc"
             if(docNumber==1&&isRejected){
                 assignableStatus = updStatuses[updStatuses.length - 1];
                 messageType = "ufCrm5RejectionComment";
@@ -78,12 +79,15 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                 await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, rejectStatus, messageType, comment);
                 alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}`;
                 docBackgroundColor = '#d2ff41';
+                textColors="#DE283B"
             }
 
             let toast = Toast.show(alertMes, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.TOP,
-                backgroundColor: docBackgroundColor
+                backgroundColor: docBackgroundColor,
+                shadow:false,
+                textColor:textColors
             });
             setTimeout(() => { Toast.hide(toast); }, 15000);
         } catch (e) {
