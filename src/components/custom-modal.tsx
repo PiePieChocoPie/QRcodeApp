@@ -77,16 +77,25 @@ const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
                 visible={visible}
                 onRequestClose={onClose}
             >
+                <View style={styles.closeButtonContainer}>
+                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                    <Text style={styles.closeButtonText}>X</Text>
+                    </TouchableOpacity>
+                </View>
+                
                 <ModalBackdrop visible={visible} onPress={onClose} />
                 <View style={[styles.modalContainer, { marginTop: modalPos, height: modalHeight}]}>
                     <View
                         style={{ height: '10%', width: '100%', backgroundColor: 'white',borderRadius: 15, justifyContent: 'center' }}
                         {...panResponder.panHandlers}
                     >
-                        <Text style={styles.modalTitle}> {title}</Text>
+                        {title && (
+                        <Text style={styles.modalTitle}> {title.substr(0,24) + '...'}</Text>
+                            
+                        )}
                         <View style={{ height: '0.5%', width: '15%', marginTop: "3%", marginBottom: "3%" }} />
                     </View>
-                    <View style={{ flex: 1,  justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
+                    <View style={{ flex: 1, alignItems: 'center', paddingHorizontal: 20}}>
 
                         {content}
                     </View>

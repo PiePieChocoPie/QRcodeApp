@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: 'center', 
+    textAlign: 'center',
   },
   modalContainer: {
     width: '100%',
@@ -441,5 +441,23 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginVertical: 10,
     width: '80%',
+  },
+  closeButtonContainer: {
+    position: 'absolute',
+    top: '12%',
+    right: 10,
+  },
+  closeButton: {
+    backgroundColor: 'white', // Цвет фона кнопки
+    width: 60, // Ширина кнопки
+    height: 60, // Высота кнопки
+    borderRadius: 30, // Радиус скругления углов, чтобы кнопка была круглой
+    alignItems: 'center', // Выравнивание содержимого по центру
+    justifyContent: 'center', // Выравнивание содержимого по центру
+  },
+  closeButtonText: {
+    color: 'black', // Цвет текста кнопки
+    fontSize: 20, // Размер шрифта текста кнопки
+    fontWeight: 'bold', // Жирный шрифт
   },
 });

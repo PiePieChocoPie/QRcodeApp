@@ -12,7 +12,8 @@ import {getHierarchy} from 'src/requests/hierarchy'
 import { useFocusEffect } from '@react-navigation/native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import HierarchyItem from 'src/components/hierarchy'
+import HierarchyItem from 'src/components/hierarchy';
+
 const RecursiveItem = ({ item, expandedItems, setExpandedItems, path, handlePressGuid }) => {
   const handleToggleExpand = (key, value) => {
     const currentPath = [...path, key].join('/');
@@ -227,7 +228,7 @@ if (!reportName) {
             ))}
           <SelectedItemsList selectedItem={selectedItem} handleRemoveItem={handleRemoveItem} />
           <Button
-            title={'butt'}
+            title={'Получить отчёт'}
             handlePress={buttonHandler}
           />
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>

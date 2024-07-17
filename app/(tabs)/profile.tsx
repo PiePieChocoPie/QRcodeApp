@@ -9,13 +9,13 @@ import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import { Button } from "react-native-paper";
-import CustomModal from "src/components/custom-modal";
+import ModalForm from "src/modals/modal"; // Updated import
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 
-function profile() {
-    const [userData, setUserdata] = React.useState('');
+function Profile() {
+    const [userData, setUserData] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
@@ -27,7 +27,6 @@ function profile() {
             Store.setTokenData(null);
             Store.setUserData(null);
             Store.setUserPhoto(null);
-            // router.dismissAll();
             router.push('/');
         } catch (error) {
             console.error('Ошибка при выходе:', error);
@@ -58,18 +57,18 @@ function profile() {
                     await getAllStaticData(Store.tokenData, false, true, false, false)
                         .then(async (res) => {
                             if (res.status) {
-                                setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME && Store.depData.NAME}`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME && Store.depData.NAME}`);
                                 setPhotoUrl(Store.userPhoto);
                             } else {
-                                setUserdata(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
                                 setPhotoUrl(Store.userPhoto);
                             }
                         })
                         .catch(err => {
-                            Alert.alert("ошибка", 'Ошибка: \n' + err);
+                            Alert.alert("Ошибка", 'Ошибка: \n' + err);
                         });
                 } catch (error) {
-                    console.error('ошибка:', error);
+                    console.error('Ошибка:', error);
                 } finally {
                     stopLoading();
                 }
@@ -98,7 +97,7 @@ function profile() {
                     <Text style={[styles.Text, { textAlign: "center" }]}>{userData}</Text>
                     <TouchableOpacity style={styles.opacities} onPress={handleLogout}>
                         <Icon name="user-times" size={40} color={projColors.currentVerse.font} />
-                        <Text style={styles.Text}>выход</Text>
+                        <Text style={styles.Text}>Выход</Text>
                     </TouchableOpacity>
                     <Button onPress={toggleModal}>
                         <Text style={styles.Text}>
@@ -107,17 +106,13 @@ function profile() {
                     </Button>
                 </View>
             )}
-            <CustomModal
-                visible={modalVisible}
-                onClose={toggleModal}
-                marginTOP={0.2}
-                title={"QR - Code"}
-                content={
-                    <QRCode value={Store.userData.ID} size={Dimensions.get('window').width - 60} />
-                }
+            <ModalForm
+                modalVisible={modalVisible}
+                toggleModal={toggleModal}
+                ID={Store.userData.ID}
             />
         </View>
     );
 }
 
-export default profile;
+export default Profile;
