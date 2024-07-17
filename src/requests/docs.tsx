@@ -81,7 +81,7 @@ export async function getTasksData(ID: string): Promise<any> {
   }
   
   
-  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:any,commentField:string): Promise<any> {
+  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:any,commentField:string, comment:string): Promise<any> {
     const body = {
       entityTypeId: "168",
       "id": IDUpd,
@@ -90,7 +90,7 @@ export async function getTasksData(ID: string): Promise<any> {
         "updatedBy": userID,
         "assignedById": userID,
         "movedBy": userID,
-        [commentField]: commentValue.VALUE,
+        [commentField]: commentValue.ID=="78"?comment:commentValue.VALUE,
         "ufCrm5AcceptStatusList":commentValue.ID
       }
     };
