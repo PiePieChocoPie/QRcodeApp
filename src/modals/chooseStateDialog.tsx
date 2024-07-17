@@ -64,22 +64,26 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             startLoading();
             let assignableStatus: any = getNextStatus();
             let messageType:string ="ufCrm5AcceptComment";
+            let alertMes = 'документ не был отправлен';
+            let docBackgroundColor = '#db6464';
             if(docNumber==1&&isRejected){
                 assignableStatus = updStatuses[updStatuses.length - 1];
                 messageType = "ufCrm5RejectionComment";
             }
-            let alertMes = '';
+            
             console.log(assignableStatus, getNextStatus())
             if (assignableStatus.error) {
                 alertMes = assignableStatus.error;
             } else {
-                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, rejectStatus, messageType);
+                await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, rejectStatus, messageType, comment);
                 alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}`;
+                docBackgroundColor = '#d2ff41';
             }
 
             let toast = Toast.show(alertMes, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.TOP,
+                backgroundColor: docBackgroundColor
             });
             setTimeout(() => { Toast.hide(toast); }, 15000);
         } catch (e) {

@@ -87,7 +87,6 @@ const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
                         <View style={{ height: '0.5%', width: '15%', marginTop: "3%", marginBottom: "3%" }} />
                     </View>
                     <View style={{ flex: 1,  justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
-
                         {content}
                     </View>
                 </View>
