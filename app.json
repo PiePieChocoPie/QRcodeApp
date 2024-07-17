@@ -40,7 +40,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "upd.scanner",
-      "versionCode": 1,
+      "versionCode": 2,
       "publishBundlePath": "app.aab"
     },
     "web": {

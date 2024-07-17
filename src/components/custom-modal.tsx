@@ -2,22 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal, View, Text, TouchableOpacity, Dimensions, PanResponder, Button } from 'react-native';
 import { styles } from "src/stores/styles";
 
-const ModalBackdrop = ({ visible, onPress }) => {
-    return (
-        <Modal
-            animationType="fade"
-            transparent={true}
-            visible={visible}
-            onRequestClose={onPress}
-        >
-            <TouchableOpacity
-                activeOpacity={1}
-                onPress={onPress}
-                style={styles.backdrop}
-            />
-        </Modal>
-    );
-};
+
 
 const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
     const [modalYPosition, setModalYPosition] = useState(0);
@@ -71,26 +56,27 @@ const CustomModal = ({ visible, onClose, content, marginTOP,title }) => {
 
     return (
         <View>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={visible}
-                onRequestClose={onClose}
-            >
-                <ModalBackdrop visible={visible} onPress={onClose} />
-                <View style={[styles.modalContainer, { marginTop: modalPos, height: modalHeight}]}>
-                    <View
-                        style={{ height: '10%', width: '100%', backgroundColor: 'white',borderRadius: 15, justifyContent: 'center' }}
-                        {...panResponder.panHandlers}
-                    >
-                        <Text style={styles.modalTitle}> {title}</Text>
-                        <View style={{ height: '0.5%', width: '15%', marginTop: "3%", marginBottom: "3%" }} />
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={visible}
+                    onRequestClose={onClose}
+                >
+                    <View style={[styles.modalContainer, { marginTop: modalPos, height: modalHeight}]}>
+                        
+                        <View
+                            style={{ height: '10%', width: '100%', backgroundColor: 'white',borderRadius: 15, justifyContent: 'center' }}
+                            {...panResponder.panHandlers}
+                        >
+                            <Text style={styles.modalTitle}> {title}</Text>
+                            <View style={{ height: '0.5%', width: '15%', marginTop: "3%", marginBottom: "3%" }} />
+                        </View>
+                        <View style={{ flex: 1,  justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
+
+                            {content}
+                        </View>
                     </View>
-                    <View style={{ flex: 1,  justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
-                        {content}
-                    </View>
-                </View>
-            </Modal>
+                </Modal>
         </View>
     );
 };
