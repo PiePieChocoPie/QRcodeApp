@@ -16,7 +16,7 @@ const CalendarPickerModal = ({ parameter }) => {
     const [selectedDate, setSelectedDate] = useState(yesterday); // Yesterday selected by default
     const [selectedStartDate, setSelectedStartDate] = useState(yesterday); // Yesterday selected by default
     const [selectedEndDate, setSelectedEndDate] = useState(today); // Today selected by default
-    const [isPeriod, setPeriod] = useState(false);
+    const [isPeriod, setPeriod] = useState(parameter === 'Период');
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -70,7 +70,9 @@ const CalendarPickerModal = ({ parameter }) => {
         <TouchableOpacity style={styles.textInput} onPress={() => setModalVisible(true)}>
             <View style={styles.dateField}>
                 <Text style={selectedDate ? styles.Text : styles.Title}>
-                    {selectedDate ? (parameter === 'Период' ? `${formatDateString(Store.mainDate)} - ${formatDateString(Store.extraDate)}` : formatDateString(selectedStartDate)) : 'Выберите дату'}
+                    {selectedDate ? 
+                        (parameter === 'Период' ? `${formatDateString(selectedStartDate)} - ${formatDateString(selectedEndDate)}` : formatDateString(selectedStartDate)) 
+                        : 'Выберите дату'}
                 </Text>
                 <CustomModal
                     title="Календарь"

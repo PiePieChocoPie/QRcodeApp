@@ -161,11 +161,11 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                 <CalendarPickerModal parameter={parameter.view} />
               </View>
             ))}
-            <SelectedItemsList selectedItem={selectedItem} handleRemoveItem={handleRemoveItem} />
-            <Button
-              title={'butt'}
-              handlePress={buttonHandler}
-            />
+          <SelectedItemsList selectedItem={selectedItem} handleRemoveItem={handleRemoveItem} />
+          <Button
+            title={'Получить отчёт'}
+            handlePress={buttonHandler}
+          />
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
             <View style={styles.container2}>
               {hierarchy && renderRecursiveList({
