@@ -21,14 +21,7 @@ const Reader: React.FC = () => {
     const { loading, startLoading, stopLoading } = useLoading();
     const [permission, requestPermission] = useCameraPermissions();
     const [isFocused, setIsFocused] = useState(false);
-    useEffect(() => {
-        const getCameraPermissions = async () => {
-            const { status } = await requestPermission();
-            return status === "granted";
-        };
-        getCameraPermissions().then(requestPermission);
-    }, []);
-
+    
     useEffect(() => {
         const getCameraPermissions = async () => {
             const { status } = await requestPermission();
