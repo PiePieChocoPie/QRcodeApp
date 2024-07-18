@@ -472,4 +472,5 @@ dimmedBackground: {
     fontSize: 20, // Размер шрифта текста кнопки
     fontWeight: 'bold', // Жирный шрифт
   },
+  
 });
