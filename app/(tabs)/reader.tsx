@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from "expo-camera";
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,14 +20,6 @@ const Reader: React.FC = () => {
     const [docNumber, setDocNumber] = useState(0);
     const { loading, startLoading, stopLoading } = useLoading();
     const [permission, requestPermission] = useCameraPermissions();
-    const [isFocused, setIsFocused] = useState(false);
-    useEffect(() => {
-        const getCameraPermissions = async () => {
-            const { status } = await requestPermission();
-            return status === "granted";
-        };
-        getCameraPermissions().then(requestPermission);
-    }, []);
 
     useEffect(() => {
         const getCameraPermissions = async () => {
@@ -38,50 +30,36 @@ const Reader: React.FC = () => {
     }, []);
 
     useFocusEffect(
-        useCallback(() => {
+        React.useCallback(() => {
             const fetchData = async () => {
                 try {
                     startLoading();
                     await getAllStaticData(Store.tokenData, false, false, false, true)
                         .then(async (res) => {
                             if (res.status) {
-                            } else {
-                                Alert.alert("Ошибка", res.curError);
+
                             }
+                            else
+                                Alert.alert("Ошибка", res.curError);
                         })
                         .catch(err => {
                             Alert.alert("ошибка", 'Ошибка: \n' + err);
                         });
                 } catch (error) {
                     console.error('ошибка:', error);
-                } finally {
+                }
+                finally {
                     stopLoading();
                 }
             };
-
-            const onFocus = () => {
-                setIsFocused(true);
-                fetchData();
-            };
-
-            const onBlur = () => {
-                setIsFocused(false);
-                setScanned(false); 
-            };
-
-            onFocus(); 
-
-            return () => {
-                onBlur(); 
-            };
+            fetchData();
         }, [])
     );
-
 
     const handleBarCodeScanned = async ({ data }) => {
         try {
             setScanned(true);
-            const res = await getDataAboutDocs(data); 
+            const res = await getDataAboutDocs(data); // Ожидание завершения запроса
             // console.log("Scanned response:", res); // Лог ответа
     
             if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
@@ -136,8 +114,8 @@ const Reader: React.FC = () => {
                 </View>
             ) : (
                 <View style={styles.overlay}>
-                    {isFocused && !scanned ? (
-                        <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} mute>
+                    {!scanned ? (
+                        <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned?undefined:handleBarCodeScanned} mute>
                             <View style={styles.overlay} />
                             <View style={styles.horizontalBorders}>
                                 <View style={styles.overlay} />
