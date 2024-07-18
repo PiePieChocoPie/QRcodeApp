@@ -13,14 +13,13 @@ import anim2 from 'src/anim2.json';
 import { getAllStaticData } from "src/requests/userData";
 import { getDataAboutDocs } from "src/requests/docs";
 
-const Reader: React.FC = () => {
+const Reader = () => {
     const [scanned, setScanned] = useState<boolean>(false);
     const [modalVisibleState, setModalVisibleState] = useState<boolean>(false);
     const [modalText, setModalText] = useState('');
     const [docNumber, setDocNumber] = useState(0);
     const { loading, startLoading, stopLoading } = useLoading();
     const [permission, requestPermission] = useCameraPermissions();
-    const [isFocused, setIsFocused] = useState(false);
     
     useEffect(() => {
         const getCameraPermissions = async () => {
@@ -30,64 +29,44 @@ const Reader: React.FC = () => {
         getCameraPermissions().then(requestPermission);
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            const fetchData = async () => {
-                try {
-                    startLoading();
-                    await getAllStaticData(Store.tokenData, false, false, false, true)
-                        .then(async (res) => {
-                            if (res.status) {
-                            } else {
-                                Alert.alert("Ошибка", res.curError);
-                            }
-                        })
-                        .catch(err => {
-                            Alert.alert("ошибка", 'Ошибка: \n' + err);
-                        });
-                } catch (error) {
-                    console.error('ошибка:', error);
-                } finally {
-                    stopLoading();
-                }
-            };
-
-            const onFocus = () => {
-                setIsFocused(true);
-                fetchData();
-            };
-
-            const onBlur = () => {
-                setIsFocused(false);
-                setScanned(false); 
-            };
-
-            onFocus(); 
-
-            return () => {
-                onBlur(); 
-            };
-        }, [])
-    );
-
+    const fetchData = async () => {
+        try {
+            startLoading();
+            await getAllStaticData(Store.tokenData, false, false, false, true)
+                .then(async (res) => {
+                    if (res.status) {
+                    } else {
+                        Alert.alert("Ошибка", res.curError);
+                    }
+                })
+                .catch(err => {
+                    Alert.alert("ошибка", 'Ошибка: \n' + err);
+                });
+        } catch (error) {
+            console.error('ошибка:', error);
+        } finally {
+            stopLoading();
+        }
+    };
 
     const handleBarCodeScanned = async ({ data }) => {
         try {
+            fetchData()
             setScanned(true);
             const res = await getDataAboutDocs(data); 
-            // console.log("Scanned response:", res); // Лог ответа
-    
             if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
                 const item = res.result.items[0];
-                 // console.log(item.entityTypeId, item.stageId);
-                if (item.entityTypeId == "168"&&((Store.isWarehouse&&(item.stageId=="DT168_9:NEW"||item.stageId=="DT168_9:UC_NOOWSD"||item.stageId=="DT168_9:UC_9ARBA5"))||(item.ufCrm5Driver==Store.userData.ID&&(item.stageId=="DT168_9:UC_A3G3QR"||item.stageId=="DT168_9:UC_YAHBD0")))) {
+                if (item.entityTypeId == "168" && ((Store.isWarehouse && (item.stageId == "DT168_9:NEW" || item.stageId == "DT168_9:UC_NOOWSD" || item.stageId == "DT168_9:UC_9ARBA5")) || (item.ufCrm5Driver == Store.userData.ID && (item.stageId == "DT168_9:UC_A3G3QR" || item.stageId == "DT168_9:UC_YAHBD0")))) {
                     setDocNumber(1);
                 } else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") {
                     setDocNumber(2);
                 } else if (item.entityTypeId == "166" && item.stageId == "DT166_16:UC_NU0MRZ") {
                     setDocNumber(3);
                 } else {
-                    return Alert.alert("Неверный тип или этап документа", "Невозможно обработать документ");
+                    return Alert.alert("Неверный тип или этап документа", "Невозможно обработать документ", [{
+                        onPress: ()=> setScanned(false), 
+                    }])
+                    
                 }
                 setModalVisibleState(true);
                 Store.setUpdData(item);
@@ -102,6 +81,7 @@ const Reader: React.FC = () => {
                     Toast.hide(toast);
                 }, 15000);
             }
+
         } catch (error) {
             console.error("Ошибка при сканировании штрихкода:", error);
             let toast = Toast.show(`Ошибка: ${error.message}`, {
@@ -113,8 +93,6 @@ const Reader: React.FC = () => {
             }, 500);
         }
     };
-    
-    
 
     const toggleModalState = () => {
         setModalVisibleState(!modalVisibleState);
@@ -129,32 +107,14 @@ const Reader: React.FC = () => {
                 </View>
             ) : (
                 <View style={styles.overlay}>
-                    {isFocused && !scanned ? (
                         <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} mute>
-                            <View style={styles.overlay} />
-                            <View style={styles.horizontalBorders}>
-                                <View style={styles.overlay} />
-                                <View style={styles.cameraContainer}>
-                                    <LottieView
-                                        source={anim2}
-                                        style={{ width: "100%", height: "100%" }}
-                                        autoPlay
-                                        loop
-                                    />
-                                </View>
-                                <View style={styles.overlay} />
-                            </View>
-                            <View style={styles.overlay} />
+                                <LottieView
+                                    source={anim2}
+                                    style={{ width: "100%", height: "100%" }}
+                                    autoPlay
+                                    loop
+                                />
                         </CameraView>
-                    ) : (
-                        <View style={styles.containerCentrallity}>
-                            <TouchableOpacity style={styles.opacities} onPress={() => setScanned(false)}>
-                                <Icon2 name="refresh" size={40} color={projColors.currentVerse.main} />
-                                <Text style={styles.Text}>сканировать снова</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-
                     <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState} docData={modalText} docNumber={docNumber} />
                 </View>
             )}
