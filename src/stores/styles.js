@@ -270,6 +270,18 @@ export const styles = StyleSheet.create({
   overlay: {
     flex: 1,
   },
+  overlay2: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 100,
+    backgroundColor: 'black',
+    opacity: 0.5,
+},
+dimmedBackground: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+},
   absoluteFill: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },

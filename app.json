@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Code Reader",
+    "name": "MU Tools",
     "slug": "appqr",
     "scheme": "app",
     "version": "1.0.0",
@@ -40,7 +40,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "upd.scanner",
-      "versionCode": 2,
+      "versionCode": 3,
       "publishBundlePath": "app.aab"
     },
     "web": {
