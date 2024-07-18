@@ -8,12 +8,11 @@ import Store from "src/stores/mobx";
 import { projColors, styles } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import { Button } from "react-native-paper";
 import ModalForm from "src/modals/modal"; // Updated import
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
-
+import Button from 'src/components/button'
 function Profile() {
     const [userData, setUserData] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
@@ -95,15 +94,11 @@ function Profile() {
                         </View>
                     </View>
                     <Text style={[styles.Text, { textAlign: "center" }]}>{userData}</Text>
-                    <TouchableOpacity style={styles.opacities} onPress={handleLogout}>
-                        <Icon name="user-times" size={40} color={projColors.currentVerse.font} />
-                        <Text style={styles.Text}>Выход</Text>
-                    </TouchableOpacity>
-                    <Button onPress={toggleModal}>
-                        <Text style={styles.Text}>
-                            Просмотр QR-кода
-                        </Text>
-                    </Button>
+    
+                    <Button handlePress={handleLogout} title={'Выйти из аккаунта'}/>
+
+                    <Button handlePress={toggleModal} title={'QR код сотрудника'}/>
+
                 </View>
             )}
             <ModalForm

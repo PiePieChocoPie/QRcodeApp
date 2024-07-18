@@ -3,7 +3,6 @@ import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet } from 'reac
 import { Ionicons } from "@expo/vector-icons";
 import { encode as base64encode } from 'base-64';
 import * as SecureStore from 'expo-secure-store';
-import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import Store from 'src/stores/mobx';
 import useLoading from 'src/useLoading';
@@ -12,6 +11,9 @@ import { getAllStaticData } from "src/requests/userData";
 import { statusDay } from "src/requests/timeManagement";
 import * as Icons from '../assets';
 import { router } from "expo-router";
+import Button from 'src/components/button'
+
+
 const LoadingScreen = () => {
     return (
         <Animatable.View
@@ -31,7 +33,6 @@ const authorize = observer(() => {
     const [isInvalidLogin, setIsInvalidLogin] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
     const { loading, startLoading, stopLoading } = useLoading();
-    const navigation = useNavigation();
 
     useEffect(() => {
         const checkToken = async () => {
@@ -126,9 +127,7 @@ const authorize = observer(() => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <TouchableOpacity onPress={buttonHandler} disabled={loading} style={styles.button}>
-                    <Text style={styles.buttonText}>Войти</Text>
-                </TouchableOpacity>
+                <Button handlePress={buttonHandler} title ={'Войти'}disabled={loading}/>
                 {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
             </View>
         </View>

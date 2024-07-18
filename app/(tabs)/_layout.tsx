@@ -1,20 +1,16 @@
 import { Tabs } from "expo-router";
 import { projColors } from "src/stores/styles";
-import Store from "src/stores/mobx";
-import LottieView from 'lottie-react-native';
 import React, { useEffect, useRef } from "react";
-import { useFocusEffect } from '@react-navigation/native';
-import { statusDay } from "src/requests/timeManagement";
 import * as Icons from '../../assets/navbar_icons';
 
 const TabsLayout = () => {
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      // statusDay(Store.userData.ID);
-    }, 1000);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     statusDay(Store.userData.ID);
+  //   }, 1000);
 
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <Tabs
