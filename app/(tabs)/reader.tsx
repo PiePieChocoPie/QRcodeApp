@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from "expo-camera";
 import ChooseStateDialog from "src/modals/chooseStateDialog";

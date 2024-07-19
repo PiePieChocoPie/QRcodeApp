@@ -13,12 +13,14 @@ import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import Button from 'src/components/button'
+import Popup from 'src/components/popup'
 function Profile() {
     const [userData, setUserData] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [popupVisible, setPopupVisible] = React.useState(false);
 
     const handleLogout = async () => {
         try {
@@ -34,6 +36,10 @@ function Profile() {
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
+    };
+
+    const activePOP = () => {
+        setPopupVisible(true)
     };
 
     useFocusEffect(
@@ -86,6 +92,20 @@ function Profile() {
                     <Button handlePress={handleLogout} title={'Выйти из аккаунта'}/>
 
                     <Button handlePress={toggleModal} title={'QR код сотрудника'}/>
+
+                    <Button
+                        handlePress={activePOP}
+                        title={'вызвать попку'}
+                    />
+                    {
+                        popupVisible && (
+                            <Popup 
+                            type={'warning'}
+                            message={'Я робот долбоёб!'}
+                            
+                            />
+                        )
+                    }
 
                 </View>
             )}
