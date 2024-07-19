@@ -6,7 +6,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import TaskItem from "src/ListItems/taskItem";
 import AttorneysItem from "src/ListItems/attorneysItem";
-import * as Icons from '../../assets/navbar_icons';  // Импорт всех иконок из указанного пути
 import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 import Svg, { Path } from 'react-native-svg';
 
@@ -19,13 +18,13 @@ const Tasks = () => {
     const scrollViewRef = useRef(null);
 
     const data = [
-        { id: '0', status: 'все', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
-        { id: '1', status: 'просрочены', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
-        { id: '2', status: 'на сегодня', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
-        { id: '3', status: 'на этой неделе', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
-        { id: '4', status: 'на следующей неделе', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
-        { id: '5', status: 'без срока', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
-        { id: '6', status: 'больше двух недель', colors: ['#83AD00', '#FFFFFF'] },  // зеленый фон и белый текст
+        { id: '0', status: 'все', colors: ['#83AD00', '#FFFFFF'] },  
+        { id: '1', status: 'просрочены', colors: ['#83AD00', '#FFFFFF'] },  
+        { id: '2', status: 'на сегодня', colors: ['#83AD00', '#FFFFFF'] },  
+        { id: '3', status: 'на этой неделе', colors: ['#83AD00', '#FFFFFF'] },
+        { id: '4', status: 'на следующей неделе', colors: ['#83AD00', '#FFFFFF'] },  
+        { id: '5', status: 'без срока', colors: ['#83AD00', '#FFFFFF'] },  
+        { id: '6', status: 'больше двух недель', colors: ['#83AD00', '#FFFFFF'] },  
     ];
     
 
