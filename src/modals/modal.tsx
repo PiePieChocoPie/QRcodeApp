@@ -47,7 +47,7 @@ const ModalForm = ({ modalVisible, toggleModal, ID }) => {
                     <View 
                     style={styles.modalContent}
                     >
-                        <QRCode value={ID} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />
+                        <QRCode value={ID} size={Dimensions.get('window').width - 100} />
 
                     {/* </View> */}
                 </View>
