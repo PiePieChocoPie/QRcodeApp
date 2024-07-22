@@ -7,6 +7,7 @@ import CustomModal from "src/components/custom-modal";
 import Toast from 'react-native-root-toast';
 import { getUpdRejectStatuses, updAttorneyStatus, updItineraryStatus, updUpdStatus } from "src/requests/docs";
 import { Dropdown } from "react-native-element-dropdown";
+import Popup from "src/components/popup";
 
 const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [updStatuses] = useState(Store.updStatusesData);
@@ -17,6 +18,16 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [isRejected, setRejected] = useState(false);
     const [rejectStatus, setRejectStatus] = useState(null);
     const [rejectStatuses, setRejectStatuses] = useState([]);
+
+    const [popupVisible, setPopupVisible] = React.useState(false);
+
+
+    
+    const activePOP = () => {
+        setPopupVisible(!popupVisible);
+    };
+
+
 
     useEffect(() => {
         const fetchRejectStatuses = async () => {
@@ -77,19 +88,19 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                 alertMes = assignableStatus.error;
             } else {
                 await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, rejectStatus, messageType, comment);
-                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}:)`;
+                // alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}:)`;
                 docBackgroundColor = '#83AD00';
                 
             }
 
-            let toast = Toast.show(alertMes, {
-                duration: Toast.durations.LONG,
-                position: Toast.positions.TOP,
-                backgroundColor: docBackgroundColor,
-                shadow:false,
-                textColor:textColors
-            });
-            setTimeout(() => { Toast.hide(toast); }, 15000);
+            // let toast = Toast.show(alertMes, {
+            //     duration: Toast.durations.LONG,
+            //     position: Toast.positions.TOP,
+            //     backgroundColor: docBackgroundColor,
+            //     shadow:false,
+            //     textColor:textColors
+            // });
+            // setTimeout(() => { Toast.hide(toast); }, 15000);
         } catch (e) {
             alert(e);
         } finally {
@@ -104,6 +115,8 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
 
     const acceptAxios = async () => {
         try {
+            activePOP()
+
             console.log("ryjgrf")
             startLoading();
             if (docData.entityTypeId == "168") {
@@ -139,8 +152,15 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                 <View style={styles.containerCentrallity}>
                     <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
                 </View>
-            ) : (
+            ) : (                
                 <View style={styles.containerCentrallityFromUpper}>
+                    {popupVisible && (
+                        <Popup 
+                            type={'info'}
+                            message={'Я люблю печеньки очень сильно!'}
+                            PopVisible={popupVisible}
+                        />
+                    )}
                     <Text style={[styles.Text, { textAlign: "center" }]}>Обновление статуса документа</Text>
                     {/* {isDisabled ? (
                         <Text style={[styles.Title, { color: '#DE283B', textAlign: "center" }]}>недоступно</Text>

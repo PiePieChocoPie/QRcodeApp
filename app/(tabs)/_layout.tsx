@@ -1,7 +1,8 @@
 import { Tabs } from "expo-router";
 import { projColors } from "src/stores/styles";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Icons from '../../assets/navbar_icons';
+import Popup from "src/components/popup";
 
 const TabsLayout = () => {
   // useEffect(() => {
@@ -11,8 +12,21 @@ const TabsLayout = () => {
 
   //   return () => clearInterval(intervalId);
   // }, []);
+  const [visible, setVisible] = useState(true);
+  const [popupVisible, setPopupVisible] = React.useState(false);
 
+  const activePOP = () => {
+    setPopupVisible(!popupVisible);
+};
   return (
+    <>
+    <Popup
+      type={'success'}
+      message={'Бабаба'}
+      PopVisible={true}
+    />
+
+      
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#DE283B', // Активный цвет иконок - красный
@@ -75,6 +89,7 @@ const TabsLayout = () => {
         }}
       />
     </Tabs>
+    </>
   );
 };
 
