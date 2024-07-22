@@ -29,33 +29,34 @@ const TaskItem = ({ item }) => {
     };
 
     const renderDescription = (description:string) => {
-        const parts = description
-        // let match;
-
-        // while (description.includes("[")) {
-        //     // console.log(match);
-        //     // console.log(match[1]);
-        //     const beforeText = description.substring(lastIndex, match.index);
-        //     if (beforeText) {
-        //         parts.push(<Text key={`text-${lastIndex}`}>{beforeText}</Text>);
-        //     }
-        //     parts.push(
-        //         <Text key={`link-${match.index}`} style={[styles.Text,{
-        //             fontSize: 20,
-        //             color: 'blue',
-        //             textDecorationLine: 'underline',
-        //           }]} onPress={() => {openURL(match[1]); console.log(match[1])}}>
-        //             {match[1]}
-        //         </Text>
-        //     );
-        //     lastIndex = match.index + match[0].length;
-        // }
-
-        // const afterText = description.substring(lastIndex);
-        // if (afterText) {
-        //     parts.push(<Text key={`text-${lastIndex}`}>{afterText}</Text>);
-        // }
-
+//         раз [URL=https://www.google.ru/]https://www.google.ru/[/URL], два 
+// [URL=https://ya.ru/]https://ya.ru/[/URL]три[URL=https://duckduckgo.com/]https://duckduckgo.com/[/URL]
+        console.log(description)
+        let match=-1;
+        let linkEnd=0;
+        const target = "[URL="
+        if((description.indexOf(target,match+1))==-1) return description
+        const parts:any[]=[];
+        while((match=description.indexOf(target,match+1))!=-1){
+            if(match>0){
+                let preLink= description.slice(linkEnd,match?match:description.length)
+                parts.push(<Text key={`text-${match}`}>{preLink}</Text>)
+            }
+            linkEnd=description.indexOf("]",match)
+            let link = description.slice(match+5,linkEnd);
+            parts.push(<Text key={`link-${match}`} style={[styles.Text,{
+                            fontSize: 20,
+                            color: 'blue',
+                            textDecorationLine: 'underline',
+                          }]} onPress={() => {
+                            openURL(link)
+                          }
+                          }>
+                            {link}
+                        </Text>)
+            linkEnd=description.indexOf('[/URL]',linkEnd)+6
+        }
+        
         return parts;
     };
 
