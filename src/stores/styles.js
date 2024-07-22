@@ -39,6 +39,28 @@ export const json_styles = StyleSheet.create({
 });
 
 export const styles = StyleSheet.create({
+  skeleton: {
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+},
+skeletonText: {
+    height: 20,
+    marginBottom: 10,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+},
+skeletonAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#e0e0e0',
+},
+skeletonButton: {
+    height: 45,
+    borderRadius: 4,
+    backgroundColor: '#e0e0e0',
+    marginBottom: 10,
+},
   moreItemsButton: {
     padding: 10,
     backgroundColor: '#ddd',

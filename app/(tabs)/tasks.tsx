@@ -89,11 +89,6 @@ const Tasks = () => {
     };
 
     return (
-        loading ? (
-            <View style={styles.containerCentrallity}>
-                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-            </View>
-        ) : (
             <View style={styles.container}>
                 <ScrollView
                     ref={scrollViewRef}
@@ -171,7 +166,6 @@ const Tasks = () => {
                 </Pressable>
 
             </View>
-        )
     );
 };
 

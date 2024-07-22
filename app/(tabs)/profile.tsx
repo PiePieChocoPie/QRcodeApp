@@ -72,11 +72,6 @@ function Profile() {
 
     return (
         <View style={styles.container}>
-            {loading ? (
-                <View style={styles.containerCentrallity}>
-                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-                </View>
-            ) : (
                 <View>
                     <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                         <View style={styles.avatarContainer}>
@@ -108,7 +103,6 @@ function Profile() {
                     }
 
                 </View>
-            )}
             <CustomModal
                 visible={modalVisible}
                 onClose={toggleModal}
