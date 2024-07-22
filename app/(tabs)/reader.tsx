@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from "expo-camera";
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import ChooseStateDialog from "src/modals/chooseStateDialog";
 import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
@@ -29,6 +28,13 @@ const Reader = () => {
         getCameraPermissions().then(requestPermission);
     }, []);
 
+    useFocusEffect(
+        useCallback(() => {
+            fetchData()
+
+        }, [])
+    );
+
     const fetchData = async () => {
         try {
             startLoading();
@@ -51,7 +57,6 @@ const Reader = () => {
 
     const handleBarCodeScanned = async ({ data }) => {
         try {
-            fetchData()
             setScanned(true);
             const res = await getDataAboutDocs(data); 
             if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {

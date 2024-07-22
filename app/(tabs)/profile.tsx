@@ -13,6 +13,7 @@ import Popup from 'src/components/popup';
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
+import CustomModal from "src/components/custom-modal";
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -38,20 +39,8 @@ function Profile() {
         setModalVisible(!modalVisible);
     };
 
-    const updateStatus = () => {
-        statusDay(Store.userData.ID);
-    };
-
     const activePOP = () => {
         setPopupVisible(!popupVisible);
-    };
-
-    const startDay = async () => {
-        try {
-            const response = await openDay(Store.userData.ID);
-        } catch (error) {
-            console.error('Ошибка:', error);
-        }
     };
 
     useFocusEffect(
@@ -114,10 +103,18 @@ function Profile() {
                     )}
                 </View>
             )}
-            <ModalForm
-                modalVisible={modalVisible}
-                toggleModal={toggleModal}
-                ID={Store.userData.ID}
+            <CustomModal
+                visible={modalVisible}
+                onClose={toggleModal}
+                marginTOP={0.2} 
+                title={"QR - Code"} 
+                content={
+                    <View 
+                        // style={styles.modalContent}
+                    >
+                        <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />
+                    </View>
+                }
             />
         </View>
     );
