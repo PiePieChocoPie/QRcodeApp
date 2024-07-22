@@ -1,19 +1,20 @@
 import React from "react";
-import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
-import { storeAuthStatus } from 'src/secStore';
+import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { router } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
 import Store from "src/stores/mobx";
-import { projColors, styles } from "src/stores/styles";
+import { projColors } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import CustomModal from "src/components/custom-modal"; 
+import ModalForm from "src/modals/modal";
+import Button from 'src/components/button';
+import Popup from 'src/components/popup';
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
-import Button from 'src/components/button'
-import Popup from 'src/components/popup'
+import CustomModal from "src/components/custom-modal";
+
 function Profile() {
     const [userData, setUserData] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
@@ -39,7 +40,7 @@ function Profile() {
     };
 
     const activePOP = () => {
-        setPopupVisible(true)
+        setPopupVisible(!popupVisible);
     };
 
     useFocusEffect(
@@ -73,40 +74,33 @@ function Profile() {
     return (
         <View style={styles.container}>
             {loading ? (
-                <View style={styles.containerCentrallity}>
+                <View style={styles.loader}>
                     <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
                 </View>
             ) : (
-                <View>
-                    <View style={[styles.overlayWithUser, { margin: "7%" }]}>
-                        <View style={styles.avatarContainer}>
-                            {photoUrl ? (
-                                <Image source={{ uri: photoUrl }} style={styles.avatar} />
-                            ) : (
-                                <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
-                            )}
-                        </View>
+                <View style={styles.profileContainer}>
+                    <View style={styles.avatarContainer}>
+                        {photoUrl ? (
+                            <Image source={{ uri: photoUrl }} style={styles.avatar} />
+                        ) : (
+                            <Icon name="user-o" size={80} color={projColors.currentVerse.font} />
+                        )}
                     </View>
-                    <Text style={[styles.Text, { textAlign: "center" }]}>{userData}</Text>
-    
-                    <Button handlePress={handleLogout} title={'Выйти из аккаунта'}/>
+                    <Text style={styles.userInfo}>{userData}</Text>
 
-                    <Button handlePress={toggleModal} title={'QR код сотрудника'}/>
+                    <View style={styles.buttonsContainer}>
+                        <Button handlePress={toggleModal} title={'QR код сотрудника'} />
+                        <Button handlePress={handleLogout} title={'Выйти из аккаунта'} />
+                        <Button handlePress={activePOP} title={'Вызвать попку'} />
+                    </View>
 
-                    <Button
-                        handlePress={activePOP}
-                        title={'вызвать попку'}
-                    />
-                    {
-                        popupVisible && (
-                            <Popup 
-                            type={'warning'}
-                            message={'Я робот долбоёб!'}
-                            
-                            />
-                        )
-                    }
-
+                    {popupVisible && (
+                        <Popup 
+                            type={'info'}
+                            message={'Я люблю печеньки очень сильно!'}
+                            PopVisible={popupVisible}
+                        />
+                    )}
                 </View>
             )}
             <CustomModal
@@ -116,7 +110,7 @@ function Profile() {
                 title={"QR - Code"} 
                 content={
                     <View 
-                        style={styles.modalContent}
+                        // style={styles.modalContent}
                     >
                         <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />
                     </View>
@@ -125,5 +119,46 @@ function Profile() {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+        padding: 16,
+    },
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    profileContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    avatarContainer: {
+        borderWidth: 4,
+        borderColor: projColors.currentVerse.border,
+        borderRadius: 100,
+        overflow: 'hidden',
+        marginBottom: 16,
+    },
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+    },
+    userInfo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: projColors.currentVerse.text,
+        textAlign: 'center',
+        marginBottom: 24,
+    },
+    buttonsContainer: {
+        width: '100%',
+        paddingHorizontal: 32,
+    },
+});
 
 export default Profile;
