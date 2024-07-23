@@ -40,9 +40,6 @@ function Profile() {
         setModalVisible(!modalVisible);
     };
 
-    const activePOP = () => {
-        showPopup('Бабаба', 'info');
-    };
 
     useFocusEffect(
         React.useCallback(() => {
@@ -92,7 +89,6 @@ function Profile() {
                     <View style={styles.buttonsContainer}>
                         <Button handlePress={toggleModal} title={'QR код сотрудника'} />
                         <Button handlePress={handleLogout} title={'Выйти из аккаунта'} />
-                        <Button handlePress={activePOP} title={'Вызвать попку'} />
                     </View>
 
                     {/* {popupVisible && (
