@@ -40,10 +40,6 @@ function Profile() {
         setModalVisible(!modalVisible);
     };
 
-    const activePOP = () => {
-        showPopup('Бабаба', 'info');
-    };
-
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
@@ -60,9 +56,12 @@ function Profile() {
                             }
                         })
                         .catch(err => {
-                            Alert.alert("Ошибка", 'Ошибка: \n' + err);
+                            showPopup(`Ошибка:\n${err}`, "error");
+                            console.error('Ошибка:', err);
+
                         });
                 } catch (error) {
+                    showPopup(`Ошибка:\n${error}`, "error");
                     console.error('Ошибка:', error);
                 } finally {
                     stopLoading();
@@ -92,7 +91,6 @@ function Profile() {
                     <View style={styles.buttonsContainer}>
                         <Button handlePress={toggleModal} title={'QR код сотрудника'} />
                         <Button handlePress={handleLogout} title={'Выйти из аккаунта'} />
-                        <Button handlePress={activePOP} title={'Вызвать попку'} />
                     </View>
 
                     {/* {popupVisible && (
