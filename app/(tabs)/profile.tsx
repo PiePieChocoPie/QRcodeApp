@@ -40,7 +40,6 @@ function Profile() {
         setModalVisible(!modalVisible);
     };
 
-
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
@@ -57,9 +56,12 @@ function Profile() {
                             }
                         })
                         .catch(err => {
-                            Alert.alert("Ошибка", 'Ошибка: \n' + err);
+                            showPopup(`Ошибка:\n${err}`, "error");
+                            console.error('Ошибка:', err);
+
                         });
                 } catch (error) {
+                    showPopup(`Ошибка:\n${error}`, "error");
                     console.error('Ошибка:', error);
                 } finally {
                     stopLoading();

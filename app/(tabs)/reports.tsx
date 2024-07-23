@@ -4,12 +4,14 @@ import ModalForm from "src/modals/newModal";
 import { styles } from 'src/stores/styles';
 import { getReports } from 'src/requests/timeManagement';
 import * as Icons from '../../assets/icons'; 
+import { usePopupContext } from "src/PopupContext";
 
 const Home = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [reportKey, setReportKey] = useState(null);
   const [reports, setReports] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const {showPopup} = usePopupContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +21,8 @@ const Home = () => {
         setReports(response.data);
         // console.log('Fetched reports:', response.data);
       } catch (error) {
-        console.error('Error fetching reports:', error);
+        showPopup(`Ошибка:\n${error}`, "error")
+          console.error('Ошибка:', error);
       }
     };
 

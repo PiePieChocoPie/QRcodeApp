@@ -11,6 +11,7 @@ import LottieView from 'lottie-react-native';
 import anim2 from 'src/anim2.json';
 import { getAllStaticData } from "src/requests/userData";
 import { getDataAboutDocs } from "src/requests/docs";
+import { usePopupContext } from "src/PopupContext";
 
 const Reader = () => {
     const [scanned, setScanned] = useState<boolean>(false);
@@ -19,6 +20,7 @@ const Reader = () => {
     const [docNumber, setDocNumber] = useState(0);
     const { loading, startLoading, stopLoading } = useLoading();
     const [permission, requestPermission] = useCameraPermissions();
+    const {showPopup} = usePopupContext();
     
     useEffect(() => {
         const getCameraPermissions = async () => {
@@ -68,33 +70,29 @@ const Reader = () => {
                 } else if (item.entityTypeId == "166" && item.stageId == "DT166_16:UC_NU0MRZ") {
                     setDocNumber(3);
                 } else {
-                    return Alert.alert("Неверный тип или этап документа", "Невозможно обработать документ", [{
-                        onPress: ()=> setScanned(false), 
-                    }])
+                    showPopup('Неверный тип или этап документа', 'warning');
+                    setTimeout(function scanned(){
+                        setScanned(false)
+                    }, 500);
+                    return 
                     
                 }
                 setModalVisibleState(true);
                 Store.setUpdData(item);
                 await setModalText(item);
             } else {
-                console.error('No items found or invalid response structure:', res);
-                let toast = Toast.show(`Ошибка: документ не найден`, {
-                    duration: Toast.durations.LONG,
-                    position: Toast.positions.TOP
-                });
-                setTimeout(function hideToast() {
-                    Toast.hide(toast);
-                }, 15000);
+                console.error(':', res);
+                showPopup('Документ не найден', 'warning');
+                setTimeout(function scanned(){
+                    setScanned(false)
+                }, 500);
             }
 
         } catch (error) {
             console.error("Ошибка при сканировании штрихкода:", error);
-            let toast = Toast.show(`Ошибка: ${error.message}`, {
-                position: Toast.positions.TOP,
-                duration: Toast.durations.LONG,
-            });
-            setTimeout(function hideToast() {
-                Toast.hide(toast);
+            showPopup(`Ошибка: ${error.message}`, 'warning');
+            setTimeout(function scanned(){
+                setScanned(false)
             }, 500);
         }
     };
