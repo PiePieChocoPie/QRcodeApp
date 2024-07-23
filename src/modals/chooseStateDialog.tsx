@@ -8,6 +8,7 @@ import Toast from 'react-native-root-toast';
 import { getUpdRejectStatuses, updAttorneyStatus, updItineraryStatus, updUpdStatus } from "src/requests/docs";
 import { Dropdown } from "react-native-element-dropdown";
 import Popup from "src/components/popup";
+import { usePopupContext } from "src/PopupContext";
 
 const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [updStatuses] = useState(Store.updStatusesData);
@@ -18,15 +19,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [isRejected, setRejected] = useState(false);
     const [rejectStatus, setRejectStatus] = useState(null);
     const [rejectStatuses, setRejectStatuses] = useState([]);
-
-    const [popupVisible, setPopupVisible] = React.useState(false);
-
-
-    
-    const activePOP = () => {
-        setPopupVisible(!popupVisible);
-    };
-
+    const {showPopup} = usePopupContext();
 
 
     useEffect(() => {
@@ -76,8 +69,6 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             let assignableStatus: any = getNextStatus();
             let messageType:string ="ufCrm5AcceptComment";
             let alertMes = ':(\nдокумент не был отправлен';
-            let docBackgroundColor = '#BB1E2F';
-            let textColors="#FFFFFF"
             if(docNumber==1&&isRejected){
                 assignableStatus = updStatuses[updStatuses.length - 1];
                 messageType = "ufCrm5RejectionComment";
@@ -86,23 +77,16 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             console.log(assignableStatus, getNextStatus())
             if (assignableStatus.error) {
                 alertMes = assignableStatus.error;
+                showPopup(alertMes, "error")
             } else {
                 await updateFunc(docData.id, assignableStatus.STATUS_ID, Store.userData.ID, rejectStatus, messageType, comment);
-                // alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}:)`;
-                docBackgroundColor = '#83AD00';
+                alertMes = `Отправлен документ - \n${docData.title}\n\nCо статусом - \n${assignableStatus.NAME}:)`;
+                showPopup(alertMes, "success")
                 
             }
-
-            // let toast = Toast.show(alertMes, {
-            //     duration: Toast.durations.LONG,
-            //     position: Toast.positions.TOP,
-            //     backgroundColor: docBackgroundColor,
-            //     shadow:false,
-            //     textColor:textColors
-            // });
-            // setTimeout(() => { Toast.hide(toast); }, 15000);
         } catch (e) {
             alert(e);
+            showPopup(`непредвиденная ошибка:\n${e}`,"error");
         } finally {
             stopLoading();
             onClose();
@@ -115,8 +99,6 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
 
     const acceptAxios = async () => {
         try {
-            activePOP()
-
             console.log("ryjgrf")
             startLoading();
             if (docData.entityTypeId == "168") {
@@ -125,11 +107,9 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                 await itineraryHandling();
             } else if (docData.entityTypeId == "166") {
                 await attorneyHandling();
-            } else {
-                alert("Неверный формат обрабатываемого документа");
-            }
+            } 
         } catch (e) {
-            alert(e);
+            showPopup(`непредвиденная ошибка:\n${e}`, "error");
         } finally {
             stopLoading();
             onClose();
@@ -154,22 +134,11 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                 </View>
             ) : (                
                 <View style={styles.containerCentrallityFromUpper}>
-                    {popupVisible && (
-                        <Popup 
-                            type={'info'}
-                            message={'Я люблю печеньки очень сильно!'}
-                            PopVisible={popupVisible}
-                        />
-                    )}
                     <Text style={[styles.Text, { textAlign: "center" }]}>Обновление статуса документа</Text>
-                    {/* {isDisabled ? (
-                        <Text style={[styles.Title, { color: '#DE283B', textAlign: "center" }]}>недоступно</Text>
-                    ) : ( */}
                         <View>
                             <Text style={[styles.Text, { textAlign: "center" }]}>Установить статус -</Text>
                             <Text style={[styles.Title, { textAlign: "center" }]}>{isRejected?updStatuses[updStatuses.length - 1].NAME:nextStatus.NAME}</Text>
                         </View>
-                    {/* )} */}
                     <View style={styles.RBView}>
                         {docData.stageId === "DT168_9:UC_YAHBD0" && (
                             <>
