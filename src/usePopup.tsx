@@ -27,6 +27,10 @@ const usePopup = (): IUsePopup => {
   // Функция для показа подсказки
   const showPopup = (message: string, type: PopupType) => {
     setPopup({ type, message, popVisible: true });
+
+    setTimeout(() => {
+      setPopup((prevPopup) => ({ ...prevPopup, popVisible: false }));
+    }, 3000);
   };
 
   return { popup, showPopup };

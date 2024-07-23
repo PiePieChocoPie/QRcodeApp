@@ -41,7 +41,7 @@ function Profile() {
     };
 
     const activePOP = () => {
-        showPopup('Бабаба', 'success');
+        showPopup('Бабаба', 'info');
     };
 
     useFocusEffect(
