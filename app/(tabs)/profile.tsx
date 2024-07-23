@@ -14,6 +14,7 @@ import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
+import { usePopupContext } from "src/PopupContext";
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -21,8 +22,8 @@ function Profile() {
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
-    const [popupVisible, setPopupVisible] = React.useState(false);
-
+    // const [popupVisible, setPopupVisible] = React.useState(false);
+    const {showPopup} = usePopupContext();
     const handleLogout = async () => {
         try {
             await SecureStore.deleteItemAsync('authToken');
@@ -40,7 +41,7 @@ function Profile() {
     };
 
     const activePOP = () => {
-        setPopupVisible(!popupVisible);
+        showPopup('Бабаба', 'success');
     };
 
     useFocusEffect(
@@ -94,13 +95,13 @@ function Profile() {
                         <Button handlePress={activePOP} title={'Вызвать попку'} />
                     </View>
 
-                    {popupVisible && (
+                    {/* {popupVisible && (
                         <Popup 
                             type={'info'}
                             message={'Я люблю печеньки очень сильно!'}
                             PopVisible={popupVisible}
                         />
-                    )}
+                    )} */}
                 </View>
             )}
             <CustomModal
