@@ -12,10 +12,6 @@ import { statusDay } from "src/requests/timeManagement";
 import * as Icons from '../assets';
 import { router } from "expo-router";
 import Button from 'src/components/button';
-// import SavePinScreen from 'src/components/pinSave';
-// import CheckPinScreen from 'src/components/pinAuth';
-
-
 
 const LoadingScreen = () => {
     return (
@@ -44,9 +40,15 @@ const PinInput = ({ pin, setPin }) => {
         <View style={styles.pinContainer}>
             <View style={styles.pinDisplay}>
                 {Array.from({ length: 4 }).map((_, index) => (
-                    <View key={index} style={styles.pinCircle}>
+                    <Animatable.View
+                        key={index}
+                        style={styles.pinCircle}
+                        animation={index < pin.length ? "pulse" : undefined}
+                        duration={500}
+                        iterationCount="infinite"
+                    >
                         {index < pin.length ? <View style={styles.pinFilled} /> : null}
-                    </View>
+                    </Animatable.View>
                 ))}
             </View>
             <View style={styles.numPad}>
@@ -94,21 +96,27 @@ const SavePinScreen = ({ onSavePin }) => {
 
 const CheckPinScreen = ({ onPinSuccess }) => {
     const [pin, setPin] = useState('');
-    const handleCheckPin = async () => {
-        const savedPin = await SecureStore.getItemAsync('userPin');
-        if (pin === savedPin) {
-            onPinSuccess();
-        } else {
-            Alert.alert("Ошибка", "Неверный PIN-код");
+
+    useEffect(() => {
+        const handleCheckPin = async () => {
+            const savedPin = await SecureStore.getItemAsync('userPin');
+            if (pin === savedPin) {
+                onPinSuccess();
+            } else {
+                Alert.alert("Ошибка", "Неверный PIN-код");
+            }
+        };
+
+        if (pin.length === 4) {
+            handleCheckPin();
         }
-    };
+    }, [pin, onPinSuccess]);
 
     return (
         <View style={styles.Registration}>
             <View style={styles.frameParent}>
                 <Text style={styles.welcomeText}>Введите PIN-код</Text>
                 <PinInput pin={pin} setPin={setPin} />
-                <Button handlePress={handleCheckPin} title={'Войти'} disabled={pin.length !== 4} />
             </View>
         </View>
     );
