@@ -25,7 +25,7 @@ const LoadingScreen = () => {
     );
 };
 
-const PinInput = ({ pin, setPin }) => {
+const PinInput = ({ pin, setPin, isError }) => {
     const handlePress = (num) => {
         if (pin.length < 4) {
             setPin(pin + num);
@@ -42,7 +42,10 @@ const PinInput = ({ pin, setPin }) => {
                 {Array.from({ length: 4 }).map((_, index) => (
                     <Animatable.View
                         key={index}
-                        style={styles.pinCircle}
+                        style={[
+                            styles.pinCircle,
+                            isError && index >= pin.length ? styles.pinCircleError : {}
+                        ]}
                         animation={index < pin.length ? "pulse" : undefined}
                         duration={500}
                         iterationCount="infinite"
@@ -72,23 +75,30 @@ const PinInput = ({ pin, setPin }) => {
     );
 };
 
-const SavePinScreen = ({ onSavePin }) => {
+const SavePinScreen = ({ onPinSaved }) => {
     const [pin, setPin] = useState('');
-    const handleSavePin = async () => {
+    const [isError, setIsError] = useState(false);
+
+    useEffect(() => {
+        const savePin = async () => {
+            if (pin.length === 4) {
+                await SecureStore.setItemAsync('userPin', pin);
+                onPinSaved();
+            } else {
+                setIsError(true);
+            }
+        };
+
         if (pin.length === 4) {
-            await SecureStore.setItemAsync('userPin', pin);
-            onSavePin();
-        } else {
-            Alert.alert("Ошибка", "PIN-код должен состоять из 4 цифр");
+            savePin();
         }
-    };
+    }, [pin, onPinSaved]);
 
     return (
         <View style={styles.Registration}>
             <View style={styles.frameParent}>
                 <Text style={styles.welcomeText}>Сохраните PIN-код</Text>
-                <PinInput pin={pin} setPin={setPin} />
-                <Button handlePress={handleSavePin} title={'Сохранить PIN'} />
+                <PinInput pin={pin} setPin={setPin} isError={isError} />
             </View>
         </View>
     );
@@ -96,6 +106,7 @@ const SavePinScreen = ({ onSavePin }) => {
 
 const CheckPinScreen = ({ onPinSuccess }) => {
     const [pin, setPin] = useState('');
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         const handleCheckPin = async () => {
@@ -103,6 +114,8 @@ const CheckPinScreen = ({ onPinSuccess }) => {
             if (pin === savedPin) {
                 onPinSuccess();
             } else {
+                setIsError(true);
+                setPin('');
                 Alert.alert("Ошибка", "Неверный PIN-код");
             }
         };
@@ -116,7 +129,7 @@ const CheckPinScreen = ({ onPinSuccess }) => {
         <View style={styles.Registration}>
             <View style={styles.frameParent}>
                 <Text style={styles.welcomeText}>Введите PIN-код</Text>
-                <PinInput pin={pin} setPin={setPin} />
+                <PinInput pin={pin} setPin={setPin} isError={isError} />
             </View>
         </View>
     );
@@ -197,7 +210,7 @@ const authorize = observer(() => {
     }
 
     if (showSavePin) {
-        return <SavePinScreen onSavePin={handlePinSuccess} />;
+        return <SavePinScreen onPinSaved={handlePinSuccess} />;
     }
 
     if (showCheckPin) {
@@ -345,6 +358,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    pinCircleError: {
+        borderColor: '#de283b', // Цвет границы при ошибке
+    },
     pinFilled: {
         width: 10,
         height: 10,
@@ -355,7 +371,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        width: 250, 
+        width: 250,
         alignSelf: 'center',
     },
     numButton: {
