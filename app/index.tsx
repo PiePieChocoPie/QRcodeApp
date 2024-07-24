@@ -11,7 +11,10 @@ import { getAllStaticData } from "src/requests/userData";
 import { statusDay } from "src/requests/timeManagement";
 import * as Icons from '../assets';
 import { router } from "expo-router";
-import Button from 'src/components/button'
+import Button from 'src/components/button';
+// import SavePinScreen from 'src/components/pinSave';
+// import CheckPinScreen from 'src/components/pinAuth';
+
 
 
 const LoadingScreen = () => {
@@ -26,31 +29,113 @@ const LoadingScreen = () => {
     );
 };
 
+const PinInput = ({ pin, setPin }) => {
+    const handlePress = (num) => {
+        if (pin.length < 4) {
+            setPin(pin + num);
+        }
+    };
+
+    const handleDelete = () => {
+        setPin(pin.slice(0, -1));
+    };
+
+    return (
+        <View style={styles.pinContainer}>
+            <View style={styles.pinDisplay}>
+                {Array.from({ length: 4 }).map((_, index) => (
+                    <View key={index} style={styles.pinCircle}>
+                        {index < pin.length ? <View style={styles.pinFilled} /> : null}
+                    </View>
+                ))}
+            </View>
+            <View style={styles.numPad}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                    <TouchableOpacity
+                        key={num}
+                        style={styles.numButton}
+                        onPress={() => handlePress(num.toString())}
+                    >
+                        <Text style={styles.numButtonText}>{num}</Text>
+                    </TouchableOpacity>
+                ))}
+                <TouchableOpacity style={styles.numButton} onPress={handleDelete}>
+                    <Text style={styles.numButtonText}>⌫</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.numButton} onPress={() => handlePress('0')}>
+                    <Text style={styles.numButtonText}>0</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+};
+
+const SavePinScreen = ({ onSavePin }) => {
+    const [pin, setPin] = useState('');
+    const handleSavePin = async () => {
+        if (pin.length === 4) {
+            await SecureStore.setItemAsync('userPin', pin);
+            onSavePin();
+        } else {
+            Alert.alert("Ошибка", "PIN-код должен состоять из 4 цифр");
+        }
+    };
+
+    return (
+        <View style={styles.Registration}>
+            <View style={styles.frameParent}>
+                <Text style={styles.welcomeText}>Сохраните PIN-код</Text>
+                <PinInput pin={pin} setPin={setPin} />
+                <Button handlePress={handleSavePin} title={'Сохранить PIN'} />
+            </View>
+        </View>
+    );
+};
+
+const CheckPinScreen = ({ onPinSuccess }) => {
+    const [pin, setPin] = useState('');
+    const handleCheckPin = async () => {
+        const savedPin = await SecureStore.getItemAsync('userPin');
+        if (pin === savedPin) {
+            onPinSuccess();
+        } else {
+            Alert.alert("Ошибка", "Неверный PIN-код");
+        }
+    };
+
+    return (
+        <View style={styles.Registration}>
+            <View style={styles.frameParent}>
+                <Text style={styles.welcomeText}>Введите PIN-код</Text>
+                <PinInput pin={pin} setPin={setPin} />
+                <Button handlePress={handleCheckPin} title={'Войти'} disabled={pin.length !== 4} />
+            </View>
+        </View>
+    );
+};
+
 const authorize = observer(() => {
     const [loadingScreen, setLoadingScreen] = useState(true);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [isInvalidLogin, setIsInvalidLogin] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
+    const [showSavePin, setShowSavePin] = useState(false);
+    const [showCheckPin, setShowCheckPin] = useState(false);
     const { loading, startLoading, stopLoading } = useLoading();
 
     useEffect(() => {
-        const checkToken = async () => {
+        const checkPin = async () => {
+            const pin = await SecureStore.getItemAsync('userPin');
             const token = await SecureStore.getItemAsync('authToken');
-            if (token) {
-                const res = await getAllStaticData(token, true, false, false, false);
-                if (res.status) {
-                    Store.setTokenData(token);
-                    router.push({ pathname: "/(tabs)/profile" });
-                    statusDay(Store.userData.ID);
-                } else {
-                    setLoadingScreen(false);
-                }
+            if (pin && token) {
+                setShowCheckPin(true);
+                setLoadingScreen(false);
             } else {
                 setLoadingScreen(false);
             }
         };
-        checkToken();
+        checkPin();
     }, []);
 
     const buttonHandler = async () => {
@@ -61,8 +146,8 @@ const authorize = observer(() => {
             if (res.status) {
                 await SecureStore.setItemAsync('authToken', token);
                 Store.setTokenData(token);
-                router.push({ pathname: "/(tabs)/profile" });
-                statusDay(Store.userData.ID);
+                setShowSavePin(true);
+                setLoadingScreen(false);
             } else {
                 Alert.alert("Ошибка авторизации", res.curError);
                 setIsInvalidLogin(true);
@@ -71,6 +156,18 @@ const authorize = observer(() => {
             setIsInvalidLogin(true);
         }
         stopLoading();
+    };
+
+    const handlePinSuccess = async () => {
+        const token = await SecureStore.getItemAsync('authToken');
+        const res = await getAllStaticData(token, true, false, false, false);
+        if (res.status) {
+            Store.setTokenData(token);
+            router.push({ pathname: "/(tabs)/profile" });
+            statusDay(Store.userData.ID);
+        } else {
+            Alert.alert("Ошибка", "Не удалось загрузить данные пользователя");
+        }
     };
 
     const loginHandler = (value) => {
@@ -89,6 +186,14 @@ const authorize = observer(() => {
 
     if (loadingScreen) {
         return <LoadingScreen />;
+    }
+
+    if (showSavePin) {
+        return <SavePinScreen onSavePin={handlePinSuccess} />;
+    }
+
+    if (showCheckPin) {
+        return <CheckPinScreen onPinSuccess={handlePinSuccess} />;
     }
 
     return (
@@ -127,7 +232,7 @@ const authorize = observer(() => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <Button handlePress={buttonHandler} title ={'Войти'}disabled={loading}/>
+                <Button handlePress={buttonHandler} title={'Войти'} disabled={loading} />
                 {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
             </View>
         </View>
@@ -213,6 +318,50 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         justifyContent: 'flex-start',
+    },
+    pinContainer: {
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    pinDisplay: {
+        flexDirection: 'row',
+        marginBottom: 20,
+    },
+    pinCircle: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#000',
+        marginHorizontal: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    pinFilled: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: '#000',
+    },
+    numPad: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        width: 250, 
+        alignSelf: 'center',
+    },
+    numButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#f7f8f9',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 10,
+    },
+    numButtonText: {
+        fontSize: 24,
+        color: '#000',
     },
 });
 

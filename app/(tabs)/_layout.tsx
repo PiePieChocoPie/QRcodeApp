@@ -1,25 +1,13 @@
-import { Tabs } from "expo-router";
-import { projColors } from "src/stores/styles";
-import React, { useState } from "react";
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
-import Popup from "src/components/popup";
+import Popup from 'src/components/popup';
+import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
 
-
-const TabsLayout = ()  => {
-  const [popupVisible, setPopupVisible] = useState(false);
-
-  const activePOP = () => {
-    setPopupVisible(!popupVisible);
-  };
-
+const TabsLayout = () => {
   return (
-    <>
-      <Popup
-        type={'success'}
-        message={'Бабаба'}
-        PopVisible={popupVisible}
-        onClose={activePOP} 
-      />
+    <PopupProvider>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: '#DE283B', // Активный цвет иконок - красный
@@ -71,7 +59,20 @@ const TabsLayout = ()  => {
           }}
         />
       </Tabs>
-    </>
+      <PopupComponent />
+    </PopupProvider>
+  );
+};
+
+const PopupComponent = () => {
+  const { popup } = usePopupContext();
+
+  return (
+    <Popup
+      type={popup.type}
+      message={popup.message}
+      PopVisible={popup.popVisible}
+    />
   );
 };
 
