@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
+import { Text, TouchableOpacity, View, Alert, ActivityIndicator, StyleSheet } from 'react-native';
 import { CameraView, useCameraPermissions } from "expo-camera";
 import ChooseStateDialog from "src/modals/chooseStateDialog";
-import { projColors, styles } from "src/stores/styles";
+import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
@@ -14,14 +14,14 @@ import { getDataAboutDocs } from "src/requests/docs";
 import { usePopupContext } from "src/PopupContext";
 
 const Reader = () => {
-    const [scanned, setScanned] = useState<boolean>(false);
-    const [modalVisibleState, setModalVisibleState] = useState<boolean>(false);
+    const [scanned, setScanned] = useState(false);
+    const [modalVisibleState, setModalVisibleState] = useState(false);
     const [modalText, setModalText] = useState('');
     const [docNumber, setDocNumber] = useState(0);
     const { loading, startLoading, stopLoading } = useLoading();
     const [permission, requestPermission] = useCameraPermissions();
-    const {showPopup} = usePopupContext();
-    
+    const { showPopup } = usePopupContext();
+
     useEffect(() => {
         const getCameraPermissions = async () => {
             const { status } = await requestPermission();
@@ -70,11 +70,10 @@ const Reader = () => {
                     setDocNumber(3);
                 } else {
                     showPopup('Неверный тип или этап документа', 'warning');
-                    setTimeout(function scanned(){
-                        setScanned(false)
+                    setTimeout(() => {
+                        setScanned(false);
                     }, 500);
-                    return 
-                    
+                    return;
                 }
                 setModalVisibleState(true);
                 Store.setUpdData(item);
@@ -82,16 +81,15 @@ const Reader = () => {
             } else {
                 console.error(':', res);
                 showPopup('Документ не найден', 'warning');
-                setTimeout(function scanned(){
-                    setScanned(false)
+                setTimeout(() => {
+                    setScanned(false);
                 }, 500);
             }
-
         } catch (error) {
             console.error("Ошибка при сканировании штрихкода:", error);
             showPopup(`Ошибка: ${error.message}`, 'warning');
-            setTimeout(function scanned(){
-                setScanned(false)
+            setTimeout(() => {
+                setScanned(false);
             }, 500);
         }
     };
@@ -109,19 +107,41 @@ const Reader = () => {
                 </View>
             ) : (
                 <View style={styles.overlay}>
-                        <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} mute>
-                                <LottieView
-                                    source={anim2}
-                                    style={{ width: "100%", height: "100%" }}
-                                    autoPlay
-                                    loop
-                                />
-                        </CameraView>
+                    <CameraView style={styles.camera} facing={'back'} onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} mute>
+                        <LottieView
+                            source={anim2}
+                            style={{ width: "100%", height: "100%" }}
+                            autoPlay
+                            loop
+                        />
+                    </CameraView>
                     <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState} docData={modalText} docNumber={docNumber} />
                 </View>
             )}
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: projColors.currentVerse.main,
+    },
+    containerCentrallity: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    camera: {
+        width: '100%',
+        height: '100%',
+    },
+});
 
 export default Reader;

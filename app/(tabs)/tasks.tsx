@@ -6,7 +6,7 @@ import TaskItem from "src/ListItems/taskItem";
 import AttorneysItem from "src/ListItems/attorneysItem";
 import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 import Store from "src/stores/mobx";
-import { projColors, styles } from "src/stores/styles";
+import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
 import * as Icons from '../../assets';
 
 const Tasks = () => {
@@ -85,11 +85,16 @@ const Tasks = () => {
 
     const focusChange = async (selectedData) => {
         await setSelectedList(selectedData);
-        console.log(selectedList)
+        console.log(selectedList);
     };
 
     return (
-            <View style={styles.container}>
+        loading ? (
+            <View style={localStyles.containerCentrallity}>
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            </View>
+        ) : (
+            <View style={localStyles.container}>
                 <ScrollView
                     ref={scrollViewRef}
                     refreshControl={<RefreshControl
@@ -98,22 +103,22 @@ const Tasks = () => {
                         colors={[projColors.currentVerse.accent]}
                     />}
                 >
-                    <View style={[styles.expanderContainer, { backgroundColor: "transparent", marginTop: '10%' }]}>
+                    <View style={[localStyles.expanderContainer, { backgroundColor: "transparent", marginTop: '10%' }]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Pressable onPress={() => focusChange('Tasks')} 
-                            style={[styles.listElementContainer, { width: '40%', alignItems: "center", flex: 1 }, selectedList == 'Tasks' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
+                            style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Tasks' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
                                 <Icons.tasks width={35} height={35} 
                                 fill={selectedList == 'Tasks' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
                                 <Text 
-                                style={[styles.Title, selectedList == 'Tasks' ? { color: projColors.currentVerse.extrasecond  } : { color: projColors.currentVerse.extra}]}>
+                                style={[localStyles.buttonTitle, selectedList == 'Tasks' ? { color: projColors.currentVerse.extrasecond  } : { color: projColors.currentVerse.extra}]}>
                                     Задачи
-                                    </Text>
+                                </Text>
                             </Pressable>
                             <Pressable onPress={() => focusChange('Attorney')} 
-                            style={[styles.listElementContainer, { width: '40%', alignItems: "center", flex: 1 }, selectedList == 'Attorney' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
+                            style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Attorney' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
                                 <Icons.attorney width={35} height={35} 
                                    fill={selectedList == 'Attorney' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
-                                <Text style={[styles.Title, selectedList == 'Attorney' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>Доверенность</Text>
+                                <Text style={[localStyles.buttonTitle, selectedList == 'Attorney' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>Доверенность</Text>
                             </Pressable>
                         </View>
                         {selectedList === "Tasks" && (
@@ -124,12 +129,12 @@ const Tasks = () => {
                             renderItem={({ item }) =>
                                 <Pressable onPress={() => setFilterIndex(item.id)}>
                                     <View style={[
-                                        styles.listElementContainer,
+                                        localStyles.listElementContainer,
                                         { backgroundColor: filterIndex === item.id ? item.colors[0] : '#FFFFFF' }, // Установка цвета по умолчанию, белый
                                         { padding: 15, margin: 7 }
                                     ]}>
                                         <Text style={[
-                                            styles.Title,
+                                            localStyles.Title,
                                             { color: filterIndex === item.id ? item.colors[1] : '#000000' } // Установка цвета текста по умолчанию, черный
                                         ]}>
                                             {item.status}
@@ -141,14 +146,14 @@ const Tasks = () => {
                         />
                         )}
                     </View>
-                    <View style={styles.container}>
+                    <View style={localStyles.container}>
                         {taskCount ? (
                             <View style={{ flex: 1 }}>
                                 {selectedList === 'Tasks' && filterTaskList.map(item => <TaskItem key={item.id} item={item} />)}
                                 {selectedList === 'Attorney' && Store.attorneys.map(item => <AttorneysItem key={item.ufCrm10ProxyNumber} item={item} />)}
                             </View>
                         ) : (
-                            <Text style={styles.Text}>Задачи не установлены</Text>
+                            <Text style={localStyles.Text}>Задачи не установлены</Text>
                         )}
                     </View>
                 </ScrollView>
@@ -166,10 +171,53 @@ const Tasks = () => {
                 </Pressable>
 
             </View>
-    );
+    ));
 };
 
 const localStyles = StyleSheet.create({
+    containerCentrallity: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    container: {
+        flex: 1,
+        backgroundColor: projColors.currentVerse.main,
+    },
+    expanderContainer: {
+        flex: 1,
+        padding: 10,
+    },
+    buttonContainer: {
+        backgroundColor: projColors.currentVerse.listElementBackground,
+        borderRadius: 10,
+        margin: 5,
+        padding: 20,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonTitle: {
+        fontSize: 16,
+        color: projColors.currentVerse.font,
+        marginTop: 10,
+    },
+    listElementContainer: {
+        backgroundColor: projColors.currentVerse.listElementBackground,
+        borderRadius: 5,
+        margin: 5,
+        padding: 15,
+    },
+    Title: {
+        fontSize: 16,
+        color: projColors.currentVerse.font,
+    },
+    Text: {
+        fontSize: 16,
+        color: projColors.currentVerse.fontAccent,
+        textAlign: 'center',
+        marginTop: 20,
+    },
     scrollToTopButton: {
         position: 'absolute',
         right: 20,
