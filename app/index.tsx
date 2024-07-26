@@ -125,11 +125,26 @@ const CheckPinScreen = ({ onPinSuccess }) => {
         }
     }, [pin, onPinSuccess]);
 
+    const handleLogout = async () => {
+        try {
+            await SecureStore.deleteItemAsync('authToken');
+            Store.setTokenData(null);
+            Store.setUserData(null);
+            Store.setUserPhoto(null);
+            router.push('/');
+        } catch (error) {
+            console.error('Ошибка при выходе:', error);
+        }
+    };
+
     return (
         <View style={styles.Registration}>
             <View style={styles.frameParent}>
                 <Text style={styles.welcomeText}>Введите PIN-код</Text>
                 <PinInput pin={pin} setPin={setPin} isError={isError} />
+            </View>
+            <View style={styles.forgotPasswordContainer}>
+                <Text style={styles.forgotPasswordText} onPress={handleLogout}>Забыли пароль?</Text>
             </View>
         </View>
     );
@@ -386,6 +401,14 @@ const styles = StyleSheet.create({
     numButtonText: {
         fontSize: 24,
         color: '#000',
+    },
+    forgotPasswordContainer: {
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    forgotPasswordText: {
+        color: "#de283b",
+        fontSize: 16,
     },
 });
 
