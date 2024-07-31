@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, Alert, ActivityIndicator, Text, StyleSheet } from "react-native";
+import { View, Alert, ActivityIndicator, Text, StyleSheet, Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
-import { projColors, styles } from "src/stores/styles";
+import { projColors } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import Store from "src/stores/mobx";
@@ -141,7 +141,7 @@ const Calendar = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={localStyles.container}>
             <View style={localStyles.calendarContainer}>
                 <CalendarPicker
                     previousTitle="Предыдущий"
@@ -152,7 +152,7 @@ const Calendar = () => {
                     onMonthChange={handleMonthChange}
                     customDatesStyles={customDatesStyles}
                     onDateChange={onDateChange}
-                    textStyle={styles.Title}
+                    textStyle={localStyles.calendarText}
                     todayBackgroundColor={projColors.currentVerse.main}
                     selectedDayColor={projColors.currentVerse.fontAccent}
                     selectedDayTextColor={projColors.currentVerse.main}
@@ -164,20 +164,20 @@ const Calendar = () => {
                     })}
                 />
                 {loading ? (
-                    <View style={styles.containerCentrallity}>
+                    <View style={localStyles.centered}>
                         <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
                     </View>
                 ) : (
                     <View>
                         {Store.trafficData ? (
                             <View>
-                                <Text style={[styles.Text, localStyles.infoText]}>Закрыто дней - {daysCount}</Text>
-                                <Text style={[styles.Text, localStyles.infoText]}>Времени на работе - {fullTime}</Text>
-                                <Text style={[styles.Text, localStyles.infoText]}>Среднее время - {middleTime}</Text>
+                                <Text style={localStyles.infoText}>Закрыто дней - {daysCount}</Text>
+                                <Text style={localStyles.infoText}>Времени на работе - {fullTime}</Text>
+                                <Text style={localStyles.infoText}>Среднее время - {middleTime}</Text>
                             </View>
                         ) : (
-                            <View style={styles.containerCentrallity}>
-                                <Text style={styles.Text}>Записи о времени отсутствуют</Text>
+                            <View style={localStyles.centered}>
+                                <Text style={localStyles.infoText}>Записи о времени отсутствуют</Text>
                             </View>
                         )}
                     </View>
@@ -190,7 +190,7 @@ const Calendar = () => {
                 title={dayTitle}
                 content={
                     <View>
-                        <Text style={[styles.Text, localStyles.modalText]}>{dayData}</Text>
+                        <Text style={localStyles.modalText}>{dayData}</Text>
                     </View>
                 }
             />
@@ -199,15 +199,32 @@ const Calendar = () => {
 };
 
 const localStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: projColors.currentVerse.main,
+    },
     calendarContainer: {
         marginTop: "7%",
+    },
+    centered: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
     },
     infoText: {
         textAlign: "center",
         marginVertical: 10,
+        color: projColors.currentVerse.fontAccent,
+        fontSize: 16,
     },
     modalText: {
         textAlign: "center",
+        color: projColors.currentVerse.fontAccent,
+        fontSize: 16,
+    },
+    calendarText: {
+        color: projColors.currentVerse.fontAccent,
+        fontSize: 16,
     },
 });
 
