@@ -7,6 +7,7 @@ import CustomModal from 'src/components/custom-modal';
 import Button from 'src/components/button';
 import SelectedItemsList from 'src/components/itemlist';
 import { getClients, getStorages, getUserStoragesID } from 'src/requests/storages';
+import Store from 'src/stores/mobx'
 import { getReportsTest } from 'src/requests/docs';
 import { getHierarchy } from 'src/requests/hierarchy';
 import { useFocusEffect } from '@react-navigation/native';
@@ -56,7 +57,11 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
     try {
       const clientsData = await Promise.all(guids.map(guid => getClients(guid)));
       const clients = clientsData.flatMap(response => response.data.body);
-      setSelectedGuidData(clients);
+      if (reportName.filters[0].view == "Склады") {
+        setSelectedGuidData(Store.userStorageData);
+      } else {
+        setSelectedGuidData(clients);
+      }
       setMultiSelectVisible(true);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -167,6 +172,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
             handlePress={buttonHandler}
           />
             <Text style={styles.Text}>{reportName.filters[0].view}</Text>
+            {reportName.filters[0].view == "Менеджеры" && (
             <View style={styles.container2}>
               {hierarchy && renderRecursiveList({
                   data: hierarchy,
@@ -175,6 +181,7 @@ const ModalForm = ({ modalVisible, toggleModal, reportName, reports, reportKey }
                   handlePressGuid
                 })}
             </View>
+            )}
           </View>
           {selectedGuidData.length > 0 && (
             <MultiSelect
