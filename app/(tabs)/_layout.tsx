@@ -57,8 +57,21 @@ const TabsLayout = () => {
               <Icons.list name="document-outline" width={32} height={32} fill={color} />
             ),
           }}
+          
+        />
+        <Tabs.Screen
+          name="calendar"
+          options={{
+            headerTitle: 'Календарь',
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color }) => (
+              <Icons.calendar name="calendar" width={32} height={32} fill={color} />
+            ),
+          }}
         />
       </Tabs>
+      
       <PopupComponent />
     </PopupProvider>
   );
