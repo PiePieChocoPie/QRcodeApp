@@ -12,6 +12,9 @@ import { statusDay } from "src/requests/timeManagement";
 import * as Icons from '../assets';
 import { router } from "expo-router";
 import Button from 'src/components/button';
+import useNetworkStatus from 'src/hooks/networkStatus/useNetworkStatus';
+
+
 
 const LoadingScreen = () => {
     return (
@@ -197,6 +200,7 @@ const authorize = observer(() => {
     const handlePinSuccess = async () => {
         const token = await SecureStore.getItemAsync('authToken');
         const res = await getAllStaticData(token, true, false, false, false);
+        console.log(res)
         if (res.status) {
             Store.setTokenData(token);
             router.push({ pathname: "/(tabs)/profile" });

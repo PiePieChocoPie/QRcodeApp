@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
 import Popup from 'src/components/popup';
-import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
+import { PopupProvider, usePopupContext } from 'src/hooks/popup/PopupContext'; // Обновите путь при необходимости
 
 const TabsLayout = () => {
   return (

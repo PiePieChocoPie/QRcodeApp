@@ -4,7 +4,7 @@ import ModalForm from "src/modals/newModal";
 import { projColors } from 'src/stores/styles'; // Цвета из общего файла стилей
 import { getReports } from 'src/requests/timeManagement';
 import * as Icons from '../../assets/icons'; 
-import { usePopupContext } from "src/PopupContext";
+import { usePopupContext } from "src/hooks/popup/PopupContext";
 
 const Home = () => {
   const [selectedReport, setSelectedReport] = useState(null);

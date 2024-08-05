@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Stack } from "expo-router";
+import React from 'react';
+import { Stack } from 'expo-router';
 import { RootSiblingParent } from 'react-native-root-siblings';
-
-
+import { NetworkStatusProvider } from 'src/hooks/networkStatus/networkStatusProvider';
 
 const RootLayout = () => {
-
   return (
-    <RootSiblingParent>
-      <Stack>
-        <Stack.Screen
-          name={'index'}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={'(tabs)'}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
-    </RootSiblingParent>
+    <NetworkStatusProvider>
+      <RootSiblingParent>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </RootSiblingParent>
+    </NetworkStatusProvider>
   );
 };
 
