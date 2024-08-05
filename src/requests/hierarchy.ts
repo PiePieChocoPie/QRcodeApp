@@ -1,5 +1,7 @@
 import axios from "axios";
 import Store from "src/stores/mobx"
+import {setData} from 'src/stores/asyncStorage'
+
 
 export async function getDepData(ids: string[]): Promise<any> {
   let results = [];
@@ -20,12 +22,12 @@ export async function getDepData(ids: string[]): Promise<any> {
 
     const response = await axios.request(config);
     let depData = response.data.result[0];
-    Store.setDepData(depData);
+    await setData('depData', response.data);
     results.push(depData);
   }
 
   let isWarehouse = results.some(depData => depData.ID === '23' || depData.PARENT === '23');
-  Store.setIsWarehouse(isWarehouse);
+  await setData('isWarehouse', isWarehouse);
 
   return results;
 }

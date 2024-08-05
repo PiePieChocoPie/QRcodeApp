@@ -4,11 +4,9 @@ import { projColors, styles } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 import CustomModal from "src/components/custom-modal";
-import Toast from 'react-native-root-toast';
 import { getUpdRejectStatuses, updAttorneyStatus, updItineraryStatus, updUpdStatus } from "src/requests/docs";
 import { Dropdown } from "react-native-element-dropdown";
-import Popup from "src/components/popup";
-import { usePopupContext } from "src/PopupContext";
+import { usePopupContext } from "src/hooks/popup/PopupContext";
 
 const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
     const [updStatuses] = useState(Store.updStatusesData);

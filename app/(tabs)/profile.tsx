@@ -14,7 +14,8 @@ import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
-import { usePopupContext } from "src/PopupContext";
+import { usePopupContext } from "src/hooks/popup/PopupContext";
+import useNetworkStatus from "src/hooks/networkStatus/useNetworkStatus";
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -22,8 +23,9 @@ function Profile() {
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
-    // const [popupVisible, setPopupVisible] = React.useState(false);
-    const {showPopup} = usePopupContext();
+    const isConnected = useNetworkStatus();
+    const { showPopup } = usePopupContext();
+
     const handleLogout = async () => {
         try {
             await SecureStore.deleteItemAsync('authToken');
@@ -48,17 +50,16 @@ function Profile() {
                     await getAllStaticData(Store.tokenData, false, true, false, false)
                         .then(async (res) => {
                             if (res.status) {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME && Store.depData.NAME}`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${(isConnected && Store.depData.NAME) ? Store.depData.NAME : ''}`);
                                 setPhotoUrl(Store.userPhoto);
                             } else {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}`);
                                 setPhotoUrl(Store.userPhoto);
                             }
                         })
                         .catch(err => {
                             showPopup(`Ошибка:\n${err}`, "error");
                             console.error('Ошибка:', err);
-
                         });
                 } catch (error) {
                     showPopup(`Ошибка:\n${error}`, "error");
@@ -68,45 +69,35 @@ function Profile() {
                 }
             };
             fetchData();
-        }, [])
+        }, [isConnected])
     );
 
     return (
         <View style={styles.container}>
-                <View>
-                    <View style={[styles.overlayWithUser, { margin: "7%" }]}>
-                        <View style={styles.avatarContainer}>
-                            {photoUrl ? (
-                                <Image source={{ uri: photoUrl }} style={styles.avatar} />
-                            ) : (
-                                <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
-                            )}
-                        </View>
+            <View>
+                <View style={[styles.overlayWithUser, { margin: "7%" }]}>
+                    <View style={styles.avatarContainer}>
+                        {photoUrl ? (
+                            <Image source={{ uri: photoUrl }} style={styles.avatar} />
+                        ) : (
+                            <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
+                        )}
                     </View>
-                    <Text style={styles.userInfo}>{userData}</Text>
-
-                    <View style={styles.buttonsContainer}>
-                        <Button handlePress={toggleModal} title={'QR код сотрудника'} />
-                        <Button handlePress={handleLogout} title={'Выйти из аккаунта'} />
-                    </View>
-
-                    {/* {popupVisible && (
-                        <Popup 
-                            type={'info'}
-                            message={'Я люблю печеньки очень сильно!'}
-                            PopVisible={popupVisible}
-                        />
-                    )} */}
                 </View>
+                <Text style={styles.userInfo}>{userData}</Text>
+
+                <View style={styles.buttonsContainer}>
+                    <Button handlePress={toggleModal} title={'QR код сотрудника'} />
+                    <Button handlePress={handleLogout} title={'Выйти из аккаунта'} />
+                </View>
+            </View>
             <CustomModal
                 visible={modalVisible}
                 onClose={toggleModal}
                 marginTOP={0.2} 
                 title={"QR - Code"} 
                 content={
-                    <View 
-                        // style={styles.modalContent}
-                    >
+                    <View>
                         <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />
                     </View>
                 }
@@ -118,7 +109,7 @@ function Profile() {
 const styles = StyleSheet.create({
     overlayWithUser: {
         alignItems: "center",
-      },
+    },
     container: {
         flex: 1,
         backgroundColor: '#F5F5F5',

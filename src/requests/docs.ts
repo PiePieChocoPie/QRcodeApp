@@ -1,5 +1,8 @@
 import axios from "axios";
 import Store from "src/stores/mobx";
+import * as SecureStore from 'expo-secure-store';
+import { setData } from "src/stores/asyncStorage";
+
 
 export async function getTasksData(ID: string): Promise<any> {
     let data = JSON.stringify({
@@ -152,7 +155,7 @@ export async function getTasksData(ID: string): Promise<any> {
     };
   
     const response = await axios.request(config);
-    Store.setUpdStatusesData(response.data.result);
+    await setData('updStatusesData', response.data);
     return response;
   }
   
@@ -169,7 +172,7 @@ export async function getTasksData(ID: string): Promise<any> {
     };
   
     const response = await axios.request(config);
-    Store.setItineraryStatusesData(response.data.result);
+    await setData('itineraryStatusesData', response.data);
     return response;
   }
   
@@ -186,7 +189,8 @@ export async function getTasksData(ID: string): Promise<any> {
     };
   
     const response = await axios.request(config);
-    Store.setAttorneyStatusesData(response.data.result);
+    await setData('attorneyStatusesData', response.data);
+
     return response;
   }
 
@@ -219,7 +223,7 @@ export async function getTasksData(ID: string): Promise<any> {
       
       axios.request(config)
       .then((response) => {
-        // console.log(JSON.stringify(response.data));
+        //console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
