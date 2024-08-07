@@ -26,17 +26,36 @@ function Profile() {
     const isConnected = useNetworkStatus();
     const { showPopup } = usePopupContext();
 
-    const handleLogout = async () => {
+    const handleLogoutConfirmation = async () => {
         try {
-            await SecureStore.deleteItemAsync('authToken');
-            Store.setTokenData(null);
-            Store.setUserData(null);
-            Store.setUserPhoto(null);
-            router.push('/');
+          await SecureStore.deleteItemAsync('authToken');
+          Store.setTokenData(null);
+          Store.setUserData(null);
+          Store.setUserPhoto(null);
+          router.push('/');
         } catch (error) {
-            console.error('Ошибка при выходе:', error);
+          console.error('Ошибка при выходе:', error);
         }
-    };
+      };
+      
+      const handleLogout = async () => {
+        Alert.alert(
+          'Подтверждение',
+          'Вы уверены, что хотите выйти из аккаунта?',
+          [
+            {
+              text: 'Отмена',
+              style: 'cancel',
+            },
+            {
+              text: 'Выйти из аккаунта',
+              style: 'destructive',
+              onPress: handleLogoutConfirmation,
+            },
+          ],
+          { cancelable: false }
+        );
+      };
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
