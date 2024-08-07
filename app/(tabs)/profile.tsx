@@ -24,17 +24,37 @@ function Profile() {
     const [modalVisible, setModalVisible] = React.useState(false);
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
-    const handleLogout = async () => {
+    const handleLogoutConfirmation = async () => {
         try {
-            await SecureStore.deleteItemAsync('authToken');
-            Store.setTokenData(null);
-            Store.setUserData(null);
-            Store.setUserPhoto(null);
-            router.push('/');
+          await SecureStore.deleteItemAsync('authToken');
+          Store.setTokenData(null);
+          Store.setUserData(null);
+          Store.setUserPhoto(null);
+          router.push('/');
         } catch (error) {
-            console.error('Ошибка при выходе:', error);
+          console.error('Ошибка при выходе:', error);
         }
-    };
+      };
+      
+      const handleLogout = async () => {
+        Alert.alert(
+          'Подтверждение',
+          'Вы уверены, что хотите выйти из аккаунта?',
+          [
+            {
+              text: 'Отмена',
+              style: 'cancel',
+            },
+            {
+              text: 'Выйти из аккаунта',
+              style: 'destructive',
+              onPress: handleLogoutConfirmation,
+            },
+          ],
+          { cancelable: false }
+        );
+      };
+
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
@@ -48,7 +68,7 @@ function Profile() {
                     await getAllStaticData(Store.tokenData, false, true, false, false)
                         .then(async (res) => {
                             if (res.status) {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${Store.depData.NAME && Store.depData.NAME}`);
+                                setUserData(`Имя: ${Store.userData.NAME}\n Фамилия: ${Store.userData.LAST_NAME}\n Должность: ${Store.userData.WORK_POSITION}\n Подразделение: ${Store.depData.NAME && Store.depData.NAME}`);
                                 setPhotoUrl(Store.userPhoto);
                             } else {
                                 setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
