@@ -1,7 +1,8 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Button = ({ handlePress, title, disabled = false }) => {
+const Button = ({ handlePress, title, disabled = false, icon=null }) => {
   return (
     <Pressable 
       disabled={disabled} 
@@ -16,6 +17,11 @@ const Button = ({ handlePress, title, disabled = false }) => {
     >
       <View style={styles.buttonContent}>
         <Text style={styles.buttonText}>{title}</Text>
+        { icon && (
+          <Icon name={icon} size={30} color={'black'} />
+
+        )
+        }
       </View>
     </Pressable>
   );

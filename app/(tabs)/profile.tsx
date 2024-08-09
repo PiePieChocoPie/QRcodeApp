@@ -57,6 +57,7 @@ function Profile() {
 
 
     const toggleModal = () => {
+        // const a = "123"
         setModalVisible(!modalVisible);
     };
 
@@ -93,6 +94,7 @@ function Profile() {
 
     return (
         <View style={styles.container}>
+
                 <View>
                     <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                         <View style={styles.avatarContainer}>
@@ -104,10 +106,15 @@ function Profile() {
                         </View>
                     </View>
                     <Text style={styles.userInfo}>{userData}</Text>
-
+                    
                     <View style={styles.buttonsContainer}>
                         <Button handlePress={toggleModal} title={'QR код сотрудника'} />
-                        <Button handlePress={handleLogout} title={'Выйти из аккаунта'} />
+                        <Button
+                            handlePress={handleLogout}
+                            title={"123"}
+                            icon={"address-card"}
+                        />
+                        
                     </View>
 
                     {/* {popupVisible && (
