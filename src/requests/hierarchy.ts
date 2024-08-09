@@ -22,12 +22,12 @@ export async function getDepData(ids: string[]): Promise<any> {
 
     const response = await axios.request(config);
     let depData = response.data.result[0];
-    await setData('depData', response.data);
+    await setData('depData', JSON.stringify(response.data));
     results.push(depData);
   }
 
   let isWarehouse = results.some(depData => depData.ID === '23' || depData.PARENT === '23');
-  await setData('isWarehouse', isWarehouse);
+  await setData('isWarehouse', JSON.stringify(isWarehouse));
 
   return results;
 }

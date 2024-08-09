@@ -8,6 +8,7 @@ import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 import Store from "src/stores/mobx";
 import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
 import * as Icons from '../../assets';
+import { useNetworkStatusContext } from "src/hooks/networkStatus/networkStatusProvider";
 
 const Tasks = () => {
     const { loading, startLoading, stopLoading } = useLoading();
@@ -16,6 +17,7 @@ const Tasks = () => {
     const [filterIndex, setFilterIndex] = useState("0");
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef(null);
+    const isConnected = useNetworkStatusContext();
 
     const data = useMemo(() => [
         { id: '0', status: 'все', colors: ['#83AD00', '#FFFFFF'] },  
@@ -30,7 +32,7 @@ const Tasks = () => {
     const fetchData = useCallback(async () => {
         try {
             startLoading();
-            await getAllStaticData(Store.tokenData, false, false, true, false);
+            await getAllStaticData(Store.tokenData, false, false, true, false, isConnected);
             setTaskCount(Store.taskData && Store.taskData.length > 0);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -74,7 +76,7 @@ const Tasks = () => {
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
         try {
-            if (selectedList === 'Tasks') await getAllStaticData(Store.tokenData, false, false, true, false);
+            if (selectedList === 'Tasks') await getAllStaticData(Store.tokenData, false, false, true, false, isConnected);
             else if (selectedList === 'Attorney') await getUserAttorney(false);
         } catch (error) {
             console.error('Error refreshing data:', error);

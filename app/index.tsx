@@ -13,6 +13,7 @@ import * as Icons from '../assets';
 import { router } from "expo-router";
 import Button from 'src/components/button';
 import useNetworkStatus from 'src/hooks/networkStatus/useNetworkStatus';
+import { useNetworkStatusContext } from 'src/hooks/networkStatus/networkStatusProvider';
 
 
 
@@ -162,6 +163,7 @@ const authorize = observer(() => {
     const [showSavePin, setShowSavePin] = useState(false);
     const [showCheckPin, setShowCheckPin] = useState(false);
     const { loading, startLoading, stopLoading } = useLoading();
+    const isConnected = useNetworkStatusContext();
 
     useEffect(() => {
         const checkPin = async () => {
@@ -181,7 +183,8 @@ const authorize = observer(() => {
         startLoading();
         if (login.length > 1 && password.length > 1) {
             const token = base64encode(`${login}:${password}`);
-            const res = await getAllStaticData(token, true, false, false, false);
+            const res = await getAllStaticData(token, true, false, false, false, isConnected);
+            console.log("status = ",res.status, res.curError)
             if (res.status) {
                 await SecureStore.setItemAsync('authToken', token);
                 Store.setTokenData(token);
@@ -199,7 +202,7 @@ const authorize = observer(() => {
 
     const handlePinSuccess = async () => {
         const token = await SecureStore.getItemAsync('authToken');
-        const res = await getAllStaticData(token, true, false, false, false);
+        const res = await getAllStaticData(token, true, false, false, false, isConnected);
         console.log(res)
         if (res.status) {
             Store.setTokenData(token);

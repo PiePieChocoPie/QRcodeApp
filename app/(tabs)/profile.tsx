@@ -16,6 +16,7 @@ import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
 import { usePopupContext } from "src/hooks/popup/PopupContext";
 import useNetworkStatus from "src/hooks/networkStatus/useNetworkStatus";
+import { getData } from "src/stores/asyncStorage";
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -46,8 +47,9 @@ function Profile() {
         React.useCallback(() => {
             const fetchData = async () => {
                 try {
+                    console.log("async - ",await getData('userData'))
                     startLoading();
-                    await getAllStaticData(Store.tokenData, false, true, false, false)
+                    await getAllStaticData(Store.tokenData, false, true, false, false, isConnected)
                         .then(async (res) => {
                             if (res.status) {
                                 setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n${(isConnected && Store.depData.NAME) ? Store.depData.NAME : ''}`);

@@ -40,7 +40,7 @@ const Reader = () => {
     const fetchData = async () => {
         try {
             startLoading();
-            await getAllStaticData(Store.tokenData, false, false, false, true)
+            await getAllStaticData(Store.tokenData, false, false, false, true,isConnected)
                 .then(async (res) => {
                     if (res.status) {
                     } else {
@@ -61,32 +61,32 @@ const Reader = () => {
         try {
             setScanned(true);
             console.log(data);
-            // const res = await getDataAboutDocs(data); 
-            // if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
-            //     const item = res.result.items[0];
-            //     if (item.entityTypeId == "168" && ((Store.isWarehouse && (item.stageId == "DT168_9:NEW" || item.stageId == "DT168_9:UC_NOOWSD" || item.stageId == "DT168_9:UC_9ARBA5")) || (item.ufCrm5Driver == Store.userData.ID && (item.stageId == "DT168_9:UC_A3G3QR" || item.stageId == "DT168_9:UC_YAHBD0")))) {
-            //         setDocNumber(1);
-            //     } else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL") {
-            //         setDocNumber(2);
-            //     } else if (item.entityTypeId == "166" && item.stageId == "DT166_16:UC_NU0MRZ") {
-            //         setDocNumber(3);
-            //     } else {
-            //         showPopup('Неверный тип или этап документа', 'warning');
-            //         setTimeout(() => {
-            //             setScanned(false);
-            //         }, 500);
-            //         return;
-            //     }
-            //     setModalVisibleState(true);
-            //     Store.setUpdData(item);
-            //     setModalText(item);
-            // } else {
-            //     console.error(':', res);
-            //     showPopup('Документ не найден', 'warning');
-            //     setTimeout(() => {
-            //         setScanned(false);
-            //     }, 500);
-            // }
+            const res = await getDataAboutDocs(data); 
+            if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
+                const item = res.result.items[0];
+                if (item.entityTypeId == "168" && ((Store.isWarehouse && (item.stageId == "DT168_9:NEW" || item.stageId == "DT168_9:UC_NOOWSD" || item.stageId == "DT168_9:UC_9ARBA5")) || (item.ufCrm5Driver == Store.userData.ID && (item.stageId == "DT168_9:UC_A3G3QR" || item.stageId == "DT168_9:UC_YAHBD0")))) {
+                    setDocNumber(1);
+                } else if (item.entityTypeId == "133" && item.stageId != "DT133_10:SUCCESS" && item.stageId != "DT133_10:FAIL" && item.ufCrm6AllUpdAssembled!="N") {
+                    setDocNumber(2);
+                } else if (item.entityTypeId == "166" && item.stageId == "DT166_16:UC_NU0MRZ") {
+                    setDocNumber(3);
+                } else {
+                    showPopup('Неверный тип или этап документа', 'warning');
+                    setTimeout(() => {
+                        setScanned(false);
+                    }, 500);
+                    return;
+                }
+                setModalVisibleState(true);
+                Store.setUpdData(item);
+                setModalText(item);
+            } else {
+                console.error(':', res);
+                showPopup('Документ не найден', 'warning');
+                setTimeout(() => {
+                    setScanned(false);
+                }, 500);
+            }
         } catch (error) {
             console.error("Ошибка при сканировании штрихкода:", error);
             showPopup(`Ошибка: ${error.message}`, 'warning');

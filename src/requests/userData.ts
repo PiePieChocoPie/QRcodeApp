@@ -8,6 +8,7 @@ import { getUsersTrafficStatistics } from './timeManagement';
 import * as SecureStore from 'expo-secure-store';
 import { getData } from 'src/stores/asyncStorage';
 import { useNetworkStatusContext } from 'src/hooks/networkStatus/networkStatusProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function getDataByToken(authToken) {
   let config = {
@@ -21,8 +22,8 @@ export async function getDataByToken(authToken) {
   };
 
   const response = await axios.request(config);
-  await SecureStore.setItemAsync('userData', response.data);
-
+  await AsyncStorage.setItem('userData', JSON.stringify(response.data));
+  await Store.setUserData(response.data)
   let config2 = {
     method: 'get',
     maxBodyLength: Infinity,
@@ -31,7 +32,8 @@ export async function getDataByToken(authToken) {
   };
 
   const dataForPhoto = await axios.request(config2);
-  Store.setUserPhoto(dataForPhoto.data.result[0].PERSONAL_PHOTO);
+  console.log(dataForPhoto)
+  Store.setUserPhoto(dataForPhoto.data.result[0].PERSONAL_PHOTO?dataForPhoto.data.result[0].PERSONAL_PHOTO:null);
 
   return response;
 }
@@ -95,10 +97,10 @@ export async function getUserAttorney(onAuthorize) {
   return false;
 }
 
-export async function getAllStaticData(authToken, userData, depData, TaskData, docsStatuses) {
+export async function getAllStaticData(authToken, userData, depData, TaskData, docsStatuses, isConnected) {
+  
   try {
-    const isConnected = useNetworkStatusContext();
-    console.log(isConnected);
+    console.log(isConnected); 
     let status = true;
     let curError = 'Неверная авторизация';
     console.log(await SecureStore.getItemAsync('userData'));
@@ -117,9 +119,10 @@ export async function getAllStaticData(authToken, userData, depData, TaskData, d
         })
         .catch((error) => {
           status = false;
+          console.log(error)
         });
     }
-    console.log(await SecureStore.getItemAsync('userData'));
+    console.log(status);
 
     Store.setUserData(await getData('userData'));
 
@@ -130,6 +133,7 @@ export async function getAllStaticData(authToken, userData, depData, TaskData, d
       });
     }
     Store.setDepData(await getData('depData'));
+    console.log(status);
 
     if (isConnected && TaskData) {
       await getTasksData(Store.userData.ID).catch((error) => {
@@ -137,6 +141,7 @@ export async function getAllStaticData(authToken, userData, depData, TaskData, d
         status = false;
       });
     }
+    console.log(status);
 
     if (isConnected && docsStatuses) {
       await getUpdStatusesData().catch((error) => {
@@ -145,6 +150,7 @@ export async function getAllStaticData(authToken, userData, depData, TaskData, d
       });
     }
     Store.setUpdStatusesData(await getData('updStatusesData'));
+    console.log(status);
 
     if (isConnected && docsStatuses) {
       await getItineraryStatusesData().catch((error) => {
@@ -153,6 +159,7 @@ export async function getAllStaticData(authToken, userData, depData, TaskData, d
       });
     }
     Store.setItineraryStatusesData(await getData('itineraryStatusesData'));
+    console.log(status);
 
     if (isConnected && docsStatuses) {
       await getAttorneyStatusesData().catch((error) => {
@@ -161,6 +168,7 @@ export async function getAllStaticData(authToken, userData, depData, TaskData, d
       });
     }
     Store.setAttorneyStatusesData(await getData('attorneyStatusesData'));
+    console.log(status);
 
     return { status, curError };
   } catch (error) {

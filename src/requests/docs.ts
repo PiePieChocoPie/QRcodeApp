@@ -85,6 +85,7 @@ export async function getTasksData(ID: string): Promise<any> {
   
   
   export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:any,commentField:string, comment:string): Promise<any> {
+    let currentDate = new Date()
     const body = {
       entityTypeId: "168",
       "id": IDUpd,
@@ -97,7 +98,9 @@ export async function getTasksData(ID: string): Promise<any> {
         "ufCrm5AcceptStatusList":commentValue.ID
       }
     };
-    
+    if (IDStatus == "DT168_9:UC_YAHBD0") {
+      body.fields.ufCrm5DocScannedTime = currentDate;
+    }
     // console.log(body)
     const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
     return await axios.post(url, body);
@@ -155,7 +158,7 @@ export async function getTasksData(ID: string): Promise<any> {
     };
   
     const response = await axios.request(config);
-    await setData('updStatusesData', response.data);
+    await setData('updStatusesData', JSON.stringify(response.data));
     return response;
   }
   
@@ -172,7 +175,7 @@ export async function getTasksData(ID: string): Promise<any> {
     };
   
     const response = await axios.request(config);
-    await setData('itineraryStatusesData', response.data);
+    await setData('itineraryStatusesData', JSON.stringify(response.data));
     return response;
   }
   
@@ -189,7 +192,7 @@ export async function getTasksData(ID: string): Promise<any> {
     };
   
     const response = await axios.request(config);
-    await setData('attorneyStatusesData', response.data);
+    await setData('attorneyStatusesData', JSON.stringify(response.data));
 
     return response;
   }
