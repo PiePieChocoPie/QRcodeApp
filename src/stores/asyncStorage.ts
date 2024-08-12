@@ -20,7 +20,7 @@ export const getData = async (key) => {
     }
   };
 
-  export async function getArrayFromStorage(key) {
+export async function getArrayFromStorage(key) {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : [];
@@ -30,14 +30,18 @@ export const getData = async (key) => {
   }
 }
 
-export async function addObjectToArray(key, newObject) {
+export async function addToArray(newObject) {
   try {
-    const array = await getArrayFromStorage(key);
+    const jsonArray = await AsyncStorage.getItem('myArray');
+    let array = jsonArray != null ? JSON.parse(jsonArray) : [];
+
+    // Добавляем новый объект в массив
     array.push(newObject);
-    const jsonValue = JSON.stringify(array);
-    await AsyncStorage.setItem(key, jsonValue);
-  } catch (e) {
-    console.error("ошибка внесения массива в AsyncStorage", e);
+
+    // Сохраняем обновленный массив обратно в AsyncStorage
+    await AsyncStorage.setItem('myArray', JSON.stringify(array));
+  } catch (error) {
+    console.error('Ошибка при добавлении в массив:', error);
   }
 }
 

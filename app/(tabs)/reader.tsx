@@ -12,7 +12,7 @@ import { getAllStaticData } from "src/requests/userData";
 import { getDataAboutDocs } from "src/requests/docs";
 import { usePopupContext } from "src/hooks/popup/PopupContext";
 import useNetworkStatus from "src/hooks/networkStatus/useNetworkStatus";
-import { findObjectById } from "src/stores/asyncStorage";
+import { addToArray, findObjectById } from "src/stores/asyncStorage";
 
 const Reader = () => {
     const [scanned, setScanned] = useState(false);
@@ -58,12 +58,19 @@ const Reader = () => {
         }
     };
 
+    const addObjInStory = async(id) =>{
+        let date = new Date();
+        addToArray({id: id, scanTime: date});
+    }
+
     const handleBarCodeScanned = async ({ data }) => {
         try {
+            if(data.includes('$')){
             if(!findObjectById(data))
             {
-                
+                addObjInStory(data);
             }
+        }
             setScanned(true);
             console.log(data);
             const res = await getDataAboutDocs(data); 
