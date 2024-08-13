@@ -32,14 +32,14 @@ export async function getArrayFromStorage(key) {
 
 export async function addToArray(newObject) {
   try {
-    const jsonArray = await AsyncStorage.getItem('myArray');
+    const jsonArray = await AsyncStorage.getItem('scanDocArray');
     let array = jsonArray != null ? JSON.parse(jsonArray) : [];
 
     // Добавляем новый объект в массив
     array.push(newObject);
 
     // Сохраняем обновленный массив обратно в AsyncStorage
-    await AsyncStorage.setItem('myArray', JSON.stringify(array));
+    await AsyncStorage.setItem('scanDocArray', JSON.stringify(array));
   } catch (error) {
     console.error('Ошибка при добавлении в массив:', error);
   }
@@ -49,7 +49,7 @@ export async function updateObjectInArray(key, objectId, updatedFields) {
   try {
     const array = await getArrayFromStorage(key);
     
-    const index = array.findIndex(obj => obj.id === objectId);
+    const index = array.findIndex(obj => JSON.stringify(obj.id_time.startsWith(objectId)));
     if (index !== -1) {
       array[index] = { ...array[index], ...updatedFields };
     }
@@ -63,11 +63,11 @@ export async function updateObjectInArray(key, objectId, updatedFields) {
 
 export async  function findObjectById(id) {
   try {
-    const jsonArray = await AsyncStorage.getItem('myArray');
+    const jsonArray = await AsyncStorage.getItem('scanDocArray');
     let array = jsonArray != null ? JSON.parse(jsonArray) : [];
 
     // Поиск объекта по ID в массиве
-    const foundObject = array.find(item => item.searchableid == id);
+    const foundObject = array.find(item => JSON.stringify(item.id_time.startsWith(id)));
 
     return foundObject;
   } catch (error) {

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { formatDate } from "src/func";
 import { projColors } from "src/stores/styles";
 import * as Icons from '../../assets/dosStatuses';
-const AttorneysItem = ({ item }) => 
+const StoryItem = ({ item }) => 
 {
     return (
         (item.type=="onWork" ? 
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AttorneysItem;
+export default StoryItem;

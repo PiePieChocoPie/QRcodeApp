@@ -13,15 +13,19 @@ import { getDataAboutDocs } from "src/requests/docs";
 import { usePopupContext } from "src/hooks/popup/PopupContext";
 import useNetworkStatus from "src/hooks/networkStatus/useNetworkStatus";
 import { addToArray, findObjectById } from "src/stores/asyncStorage";
+import CustomModal from "src/components/custom-modal";
 
 const Reader = () => {
     const [scanned, setScanned] = useState(false);
     const [modalVisibleState, setModalVisibleState] = useState(false);
+    const [modalVisibleAD, setModalVisibleAD] = useState(false);
     const [modalText, setModalText] = useState('');
     const [docNumber, setDocNumber] = useState(0);
     const { loading, startLoading, stopLoading } = useLoading();
     const [permission, requestPermission] = useCameraPermissions();
     const { showPopup } = usePopupContext();
+    const [doc, setDoc] = useState(null);
+    const [docId, setDocId] = useState('');
     const isConnected = useNetworkStatus();
 
     useEffect(() => {
@@ -60,19 +64,31 @@ const Reader = () => {
 
     const addObjInStory = async(id) =>{
         let date = new Date();
-        addToArray({id: id, scanTime: date});
+        console.log(`${id}_${date}`);
+        addToArray({id_time: `${id}_${date}`});
     }
 
     const handleBarCodeScanned = async ({ data }) => {
         try {
-            if(data.includes('$')){
-            if(!findObjectById(data))
-            {
-                addObjInStory(data);
-            }
-        }
             setScanned(true);
-            console.log(data);
+            if(data.includes('$')){
+                let obj = findObjectById(data)
+                setDoc(obj)
+                setDocId(data)
+                if(obj==null)
+                {
+                    addObjInStory(data);
+                    return;
+                }
+                else{
+                    setModalVisibleState(true);
+                    setModalText(JSON.stringify(obj));
+                    return;
+                }
+            }else{
+                showPopup('неизвестный тип документа', 'error');
+                    return;
+            }
             const res = await getDataAboutDocs(data); 
             if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
                 const item = res.result.items[0];
@@ -82,9 +98,6 @@ const Reader = () => {
                     if(item.ufCrm6AllUpdAssembled!="N")
                     {
                         showPopup('Не все УПД собраны,\nдокумент не может быть отправлен', 'warning');
-                    setTimeout(() => {
-                        setScanned(false);
-                    }, 500);
                     return;
                     }
                     setDocNumber(2);
@@ -92,10 +105,6 @@ const Reader = () => {
                     setDocNumber(3);
                 } else {
                     showPopup('Неверный тип или этап документа', 'warning');
-                    setTimeout(() => {
-                        setScanned(false);
-                    }, 500);
-                    return;
                 }
                 setModalVisibleState(true);
                 Store.setUpdData(item);
@@ -103,13 +112,12 @@ const Reader = () => {
             } else {
                 console.error(':', res);
                 showPopup('Документ не найден', 'warning');
-                setTimeout(() => {
-                    setScanned(false);
-                }, 500);
             }
         } catch (error) {
-            console.error("Ошибка при сканировании штрихкода:", error);
-            showPopup(`Ошибка: ${error.message}`, 'warning');
+            console.error("Ошибка при сканировании кода:", error);
+            showPopup(`Ошибка сканирования: ${error.message}`, 'error');
+            
+        } finally{
             setTimeout(() => {
                 setScanned(false);
             }, 500);
@@ -121,6 +129,9 @@ const Reader = () => {
         setScanned(false);
     };
 
+    const toggleModalAD = () => {
+        setModalVisibleAD(!modalVisibleAD);
+    };
     return (
         <View style={styles.container}>
             {loading ? (
@@ -138,6 +149,28 @@ const Reader = () => {
                         />
                     </CameraView>
                     <ChooseStateDialog visible={modalVisibleState} onClose={toggleModalState} docData={modalText} docNumber={docNumber} />
+                    <CustomModal
+                visible={modalVisibleAD}
+                onClose={toggleModalAD}
+                marginTOP={0.2} 
+                title={doc.title? doc.title: docId} 
+                content={
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity style={{flex:1, width:'40%'}} onPress={()=>{                                   
+                                        addObjInStory(docId);
+                        }}>
+                            <View style={{ backgroundColor: '#d2ff41', margin: '10%', padding: 10, alignContent: "center", alignItems: "center", borderRadius: 20 }}>                               
+                                <Text style={styles.Title}>ОК</Text>
+                            </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{flex:1, width:'40%'}} onPress={toggleModalAD}>
+                                <View style={{ backgroundColor: '#db6464', margin: '10%', padding: 10, alignContent: "center", alignItems: "center", borderRadius: 20 }}>                                
+                                    <Text style={styles.Title}>Отмена</Text>                                
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                }
+            />
                 </View>
             )}
         </View>
@@ -164,6 +197,14 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    Title: {
+        fontSize: 16,
+        color: projColors.currentVerse.fontAccent,
+      },
+      Text: {
+        fontSize: 16,
+        color: projColors.currentVerse.fontAccent,
+      },
 });
 
 export default Reader;
