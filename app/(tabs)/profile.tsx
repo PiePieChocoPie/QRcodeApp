@@ -32,7 +32,7 @@ function Profile() {
     const {showPopup} = usePopupContext();
     async function getStatus() {
         try {
-          const res = await statusDay('414');
+          const res = await statusDay('670');
           const result = res.data.result.STATUS
           console.log(result);
           setWorkStatusLocal(result);
@@ -111,8 +111,17 @@ function Profile() {
 
     return (
         <View style={styles.container}>
-
                 <View>
+                {
+                    workStatusLocal === 'OPENED' && (
+                        <LottieView
+                        source={asif}
+                        autoPlay
+                        loop
+                        style={styles.active}
+                    />
+                    )
+                }
 
                     <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                         <View style={styles.avatarContainer}>
@@ -128,16 +137,7 @@ function Profile() {
                     <View style={styles.buttonsContainer}>
                         <Button handlePress={toggleModal} title={'QR код сотрудника'} />
                         <Button handlePress={getStatus} title={'Филоним?'} />
-                            {
-                                workStatusLocal === 'EXPIRED' && (
-                                    <LottieView
-                                    source={asif}
-                                    autoPlay
-                                    loop
-                                    style={styles.active}
-                                />
-                                )
-                            }
+    
 
 
                         <Button
@@ -221,9 +221,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'orange',
     },
     active: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        position: 'absolute',
+        right: 0,
+        top: 20,
     },
 
     
