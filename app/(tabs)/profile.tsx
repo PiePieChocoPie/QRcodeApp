@@ -21,6 +21,8 @@ import asif from 'src/asif.json';
 
 
 
+
+
 function Profile() {
     const [userData, setUserData] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
@@ -31,8 +33,9 @@ function Profile() {
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
     async function getStatus() {
+        
         try {
-          const res = await statusDay('670');
+          const res = await statusDay(`${qrValue}`);
           const result = res.data.result.STATUS
           console.log(result);
           setWorkStatusLocal(result);
