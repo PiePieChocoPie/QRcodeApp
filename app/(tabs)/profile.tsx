@@ -33,7 +33,6 @@ function Profile() {
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
     async function getStatus() {
-        
         try {
           const res = await statusDay(`${qrValue}`);
           const result = res.data.result.STATUS
@@ -88,7 +87,7 @@ function Profile() {
                     await getAllStaticData(Store.tokenData, false, true, false, false)
                         .then(async (res) => {
                             if (res.status) {
-                                setUserData(`Имя: ${Store.userData.NAME}\n Фамилия: ${Store.userData.LAST_NAME}\n Должность: ${Store.userData.WORK_POSITION}\n Подразделение: ${Store.depData.NAME && Store.depData.NAME}`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n \n${Store.userData.WORK_POSITION}\n${Store.depData.NAME && Store.depData.NAME}`);
                                 setPhotoUrl(Store.userPhoto);
                                 getStatus();
                             } else {
@@ -159,13 +158,7 @@ function Profile() {
                 content={
                     <View 
                         // style={styles.modalContent}
-                    >
-                        
-   
-    
-
-                      
-                        
+                    >                        
                         {/* <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} /> */}
                     </View>
                 }
