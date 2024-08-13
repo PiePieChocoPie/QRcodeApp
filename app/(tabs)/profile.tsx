@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { router } from "expo-router";
@@ -15,6 +14,12 @@ import { openDay, statusDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
 import { usePopupContext } from "src/PopupContext";
+import React, { useState, useEffect } from 'react';
+import LottieView from 'lottie-react-native';
+import asif from 'src/asif.json';
+
+
+
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -22,8 +27,19 @@ function Profile() {
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [workStatusLocal, setWorkStatusLocal] = React.useState(null);
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
+    async function getStatus() {
+        try {
+          const res = await statusDay('414');
+          const result = res.data.result.STATUS
+          console.log(result);
+          setWorkStatusLocal(result);
+        } catch (error) {
+          console.log('Ошибка:', error);
+        };
+      }
     const handleLogoutConfirmation = async () => {
         try {
           await SecureStore.deleteItemAsync('authToken');
@@ -71,6 +87,7 @@ function Profile() {
                             if (res.status) {
                                 setUserData(`Имя: ${Store.userData.NAME}\n Фамилия: ${Store.userData.LAST_NAME}\n Должность: ${Store.userData.WORK_POSITION}\n Подразделение: ${Store.depData.NAME && Store.depData.NAME}`);
                                 setPhotoUrl(Store.userPhoto);
+                                getStatus();
                             } else {
                                 setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
                                 setPhotoUrl(Store.userPhoto);
@@ -96,6 +113,7 @@ function Profile() {
         <View style={styles.container}>
 
                 <View>
+
                     <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                         <View style={styles.avatarContainer}>
                             {photoUrl ? (
@@ -109,21 +127,26 @@ function Profile() {
                     
                     <View style={styles.buttonsContainer}>
                         <Button handlePress={toggleModal} title={'QR код сотрудника'} />
+                        <Button handlePress={getStatus} title={'Филоним?'} />
+                            {
+                                workStatusLocal === 'EXPIRED' && (
+                                    <LottieView
+                                    source={asif}
+                                    autoPlay
+                                    loop
+                                    style={styles.active}
+                                />
+                                )
+                            }
+
+
                         <Button
                             handlePress={handleLogout}
-                            title={"123"}
-                            icon={"address-card"}
-                        />
+                            title={"Выйти из аккаунта"}
+                            icon={"address-card"}/>
                         
                     </View>
 
-                    {/* {popupVisible && (
-                        <Popup 
-                            type={'info'}
-                            message={'Я люблю печеньки очень сильно!'}
-                            PopVisible={popupVisible}
-                        />
-                    )} */}
                 </View>
             <CustomModal
                 visible={modalVisible}
@@ -134,7 +157,13 @@ function Profile() {
                     <View 
                         // style={styles.modalContent}
                     >
-                        <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />
+                        
+   
+    
+
+                      
+                        
+                        {/* <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} /> */}
                     </View>
                 }
             />
@@ -184,6 +213,20 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 32,
     },
+    nippleContainer: {
+        width: '100%',
+        paddingHorizontal: 32,
+    },
+    pressed: {
+        backgroundColor: 'orange',
+    },
+    active: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+    },
+
+    
 });
 
 export default Profile;
