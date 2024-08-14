@@ -18,11 +18,6 @@ import React, { useState, useEffect } from 'react';
 import LottieView from 'lottie-react-native';
 import asif from 'src/asif.json';
 
-
-
-
-
-
 function Profile() {
     const [userData, setUserData] = React.useState('');
     const [userPosition, setUserPosition] = React.useState('');
@@ -120,72 +115,75 @@ function Profile() {
 
     return (
         <View style={styles.container}>
-                <View>
-                {
-                    workStatusLocal === 'OPENED' && (
-                        <LottieView
-                        source={asif}
-                        autoPlay
-                        loop
-                        style={styles.active}
-                    />
-                    )
-                }
-
-                    <View style={[styles.overlayWithUser, { margin: "7%" }]}>
-                        <View style={styles.avatarContainer}>
-                            {photoUrl ? (
-                                <Image source={{ uri: photoUrl }} style={styles.avatar} />
-                            ) : (
-                                <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
-                            )}
-                        </View>
+            <View>
+            {
+                workStatusLocal === 'OPENED' && (
+                    <LottieView
+                    source={asif}
+                    autoPlay
+                    loop
+                    style={styles.active}
+                />
+                )
+            }
+                <View style={[styles.overlayWithUser, { margin: "7%" }]}>
+                    <View style={styles.avatarContainer}>
+                        {photoUrl ? (
+                            <Image source={{ uri: photoUrl }} style={styles.avatar} />
+                        ) : (
+                            <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
+                        )}
                     </View>
-                    <Text style={styles.userInfo}>{userData}</Text>
-                    <Text style={styles.position}>{userPosition}</Text>
-                    <View style={styles.buttonsContainer}>
-                        <Button 
-                            handlePress={toggleModal} 
-                            title={''}
-                            icon={"qrcode"} />
-                        <Button
-                            handlePress={handleLogout}
-                            title={''}
-                            icon={"address-card"}/>   
-                    </View>
-                    <Text>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                            {'\n\n\n\nГород: '}
-                        </Text>
-                        <Text style={{ fontSize: 15, color: 'black' }}>
-                            {Store.userData.PERSONAL_CITY}
-                        </Text>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                            {'\n\nПодразделение: '}
-                        </Text>
-                        <Text style={{ fontSize: 15, color: 'black' }}>
-                            {Store.depData.NAME}
-                        </Text> 
-                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                            {' \n\nПочта: '}
-                        </Text>
-                        <Text style={{ fontSize: 15, color: 'black' }}>
-                            {Store.userData.EMAIL}
-                        </Text>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                            {' \n\nЛичный номер: '}
-                        </Text>
-                        <Text style={{ fontSize: 15, color: 'black' }}>
-                            {Store.userData.PERSONAL_MOBILE}
-                        </Text>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                            {' \n\nДата Рождения: '}
-                        </Text>
-                        <Text style={{ fontSize: 15, color: 'black' }}>
-                            {Store.userData.PERSONAL_BIRTHDAY}
-                        </Text>
-                    </Text>
                 </View>
+                <Text style={styles.userInfo}>{userData}</Text>
+                <Text style={styles.position}>{userPosition}</Text>
+                <View style={styles.buttonsContainer}>
+                    <Button 
+                        handlePress={toggleModal} 
+                        title={''}
+                        icon={"qrcode"} />
+                    <Button
+                        handlePress={() => console.log('Settings button pressed')} // обработчик события для кнопки настройки
+                        title={''}
+                        icon={"gear"} />
+                    <Button
+                        handlePress={handleLogout}
+                        title={''}
+                        icon={"power-off"}/>   
+                </View>
+                <Text>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                        {'\n\n\n\nГород: '}
+                    </Text>
+                    <Text style={{ fontSize: 15, color: 'black' }}>
+                        {Store.userData.PERSONAL_CITY}
+                    </Text>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                        {'\n\nПодразделение: '}
+                    </Text>
+                    <Text style={{ fontSize: 15, color: 'black' }}>
+                        {Store.depData.NAME}
+                    </Text> 
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                        {' \n\nПочта: '}
+                    </Text>
+                    <Text style={{ fontSize: 15, color: 'black' }}>
+                        {Store.userData.EMAIL}
+                    </Text>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                        {' \n\nЛичный номер: '}
+                    </Text>
+                    <Text style={{ fontSize: 15, color: 'black' }}>
+                        {Store.userData.PERSONAL_MOBILE}
+                    </Text>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                        {' \n\nДата Рождения: '}
+                    </Text>
+                    <Text style={{ fontSize: 15, color: 'black' }}>
+                        {Store.userData.PERSONAL_BIRTHDAY}
+                    </Text>
+                </Text>
+            </View>
             <CustomModal
                 visible={modalVisible}
                 onClose={toggleModal}
@@ -228,6 +226,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         overflow: 'hidden',
         marginBottom: 16,
+        
     },
     avatar: {
         width: 120,
@@ -239,11 +238,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: projColors.currentVerse.text,
         textAlign: 'center',
+        
+
     },
     buttonsContainer: {
         flexDirection: 'row', 
         justifyContent: 'space-between',
-        backgroundColor: '#C0C0C0',
+        backgroundColor: '#F5F5F5',
         borderRadius: 10,
     },
     pressed: {
@@ -273,8 +274,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         opacity: 0.7,
     }
-
-    
 });
 
 export default Profile;
