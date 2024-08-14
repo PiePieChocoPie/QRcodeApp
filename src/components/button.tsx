@@ -16,10 +16,11 @@ const Button = ({ handlePress, title, disabled = false, icon=null }) => {
       ]}
     >
       <View style={styles.buttonContent}>
+        {title && (
         <Text style={styles.buttonText}>{title}</Text>
+        )}
         { icon && (
-          <Icon name={icon} size={30} color={'black'} />
-
+          <Icon name={icon} size={30} color={'#FFFFFF'} />
         )
         }
       </View>
@@ -30,8 +31,9 @@ const Button = ({ handlePress, title, disabled = false, icon=null }) => {
 const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
-    marginVertical: 10,
-    paddingVertical: 12,
+    marginVertical: 2,
+    marginHorizontal:20,
+    paddingVertical: 5,
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   buttonContent: {
-    borderRadius: 10,
+    borderRadius: 0,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',

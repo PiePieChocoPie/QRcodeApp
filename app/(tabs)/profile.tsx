@@ -25,6 +25,8 @@ import asif from 'src/asif.json';
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
+    const [userPosition, setUserPosition] = React.useState('');
+    const [userDep, setUserDep] = React.useState('');
     const [qrValue] = React.useState(Store.userData.ID);
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
@@ -32,16 +34,20 @@ function Profile() {
     const [workStatusLocal, setWorkStatusLocal] = React.useState(null);
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
-    async function getStatus() {
+    
+    useEffect(() => {
+        const intervalId = setInterval(async () => {
         try {
-          const res = await statusDay(`${qrValue}`);
-          const result = res.data.result.STATUS
-          console.log(result);
-          setWorkStatusLocal(result);
+            const res = await statusDay(`${qrValue}`);
+            const result = res.data.result.STATUS;
+        setWorkStatusLocal(result);
         } catch (error) {
-          console.log('Ошибка:', error);
-        };
-      }
+        console.log('Ошибка:', error);
+        }
+        }, 1000); // вызывать каждую секунду
+
+    return () => clearInterval(intervalId); // очистить интервал при размонтировании компонента
+}, [qrValue]);
     const handleLogoutConfirmation = async () => {
         try {
           await SecureStore.deleteItemAsync('authToken');
@@ -87,11 +93,12 @@ function Profile() {
                     await getAllStaticData(Store.tokenData, false, true, false, false)
                         .then(async (res) => {
                             if (res.status) {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n \n${Store.userData.WORK_POSITION}\n${Store.depData.NAME && Store.depData.NAME}`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}`);
+                                setUserPosition(`${Store.userData.WORK_POSITION}`)
                                 setPhotoUrl(Store.userPhoto);
-                                getStatus();
                             } else {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}\n${Store.userData.WORK_POSITION}\n`);
+                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}`);
+                                setUserPosition(`${Store.userData.WORK_POSITION}`);
                                 setPhotoUrl(Store.userPhoto);
                             }
                         })
@@ -135,20 +142,49 @@ function Profile() {
                         </View>
                     </View>
                     <Text style={styles.userInfo}>{userData}</Text>
-                    
+                    <Text style={styles.position}>{userPosition}</Text>
                     <View style={styles.buttonsContainer}>
-                        <Button handlePress={toggleModal} title={'QR код сотрудника'} />
-                        <Button handlePress={getStatus} title={'Филоним?'} />
-    
-
-
+                        <Button 
+                            handlePress={toggleModal} 
+                            title={''}
+                            icon={"qrcode"} />
                         <Button
                             handlePress={handleLogout}
-                            title={"Выйти из аккаунта"}
-                            icon={"address-card"}/>
-                        
+                            title={''}
+                            icon={"address-card"}/>   
                     </View>
-
+                    <Text>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                            {'\n\n\n\nГород: '}
+                        </Text>
+                        <Text style={{ fontSize: 15, color: 'black' }}>
+                            {Store.userData.PERSONAL_CITY}
+                        </Text>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                            {'\n\nПодразделение: '}
+                        </Text>
+                        <Text style={{ fontSize: 15, color: 'black' }}>
+                            {Store.depData.NAME}
+                        </Text> 
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                            {' \n\nПочта: '}
+                        </Text>
+                        <Text style={{ fontSize: 15, color: 'black' }}>
+                            {Store.userData.EMAIL}
+                        </Text>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                            {' \n\nЛичный номер: '}
+                        </Text>
+                        <Text style={{ fontSize: 15, color: 'black' }}>
+                            {Store.userData.PERSONAL_MOBILE}
+                        </Text>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
+                            {' \n\nДата Рождения: '}
+                        </Text>
+                        <Text style={{ fontSize: 15, color: 'black' }}>
+                            {Store.userData.PERSONAL_BIRTHDAY}
+                        </Text>
+                    </Text>
                 </View>
             <CustomModal
                 visible={modalVisible}
@@ -203,15 +239,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: projColors.currentVerse.text,
         textAlign: 'center',
-        marginBottom: 24,
     },
     buttonsContainer: {
-        width: '100%',
-        paddingHorizontal: 32,
-    },
-    nippleContainer: {
-        width: '100%',
-        paddingHorizontal: 32,
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        backgroundColor: '#C0C0C0',
+        borderRadius: 10,
     },
     pressed: {
         backgroundColor: 'orange',
@@ -224,6 +257,22 @@ const styles = StyleSheet.create({
         right: 0,
         top: 20,
     },
+    position: {
+        fontSize: 15,
+        fontWeight: 'normal',
+        color: projColors.currentVerse.text,
+        textAlign: 'center',
+        marginBottom: 50,
+        opacity: 0.7,
+    },
+    department: {
+        fontSize: 15,
+        fontWeight: 'normal',
+        color: projColors.currentVerse.text,
+        textAlign: 'left',
+        marginBottom: 20,
+        opacity: 0.7,
+    }
 
     
 });

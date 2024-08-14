@@ -4,7 +4,7 @@ class Store {
   userData: any = null;
   userStorageData: any = null;
   tokenData: any = null;
-  depData: any = null;
+  depData: any = '';
   statusData: any = null;
   itineraryData: any = null;
   itineraryStatusesData: any = null;
