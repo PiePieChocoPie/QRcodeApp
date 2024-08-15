@@ -22,7 +22,7 @@ function Profile() {
     const [userData, setUserData] = React.useState('');
     const [userPosition, setUserPosition] = React.useState('');
     const [userDep, setUserDep] = React.useState('');
-    const [qrValue] = React.useState(Store.userData.ID);
+    const [idUser] = React.useState(Store.userData.ID);
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -30,19 +30,31 @@ function Profile() {
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
     
-    useEffect(() => {
-        const intervalId = setInterval(async () => {
+    useFocusEffect(
+        React.useCallback(() => {
+            
         try {
-            const res = await statusDay(`${qrValue}`);
-            const result = res.data.result.STATUS;
-        setWorkStatusLocal(result);
-        } catch (error) {
-        console.log('Ошибка:', error);
-        }
-        }, 1000); // вызывать каждую секунду
+            statusDay(idUser);
+            console.log(Store.statusWorkDay)
+            setWorkStatusLocal(Store.statusWorkDay);
 
-    return () => clearInterval(intervalId); // очистить интервал при размонтировании компонента
-}, [qrValue]);
+        } catch (e) {
+          console.log('Ошибка с timeman')
+        }
+        }, [])
+    );
+//     useEffect(() => {
+//         const intervalId = setInterval(async () => {
+//         try {
+
+//         console.log(123123)
+//         } catch (error) {
+//         console.log('Ошибка:', error);
+//         }
+//         }, 1000); // вызывать каждую секунду
+
+//     return () => clearInterval(intervalId); // очистить интервал при размонтировании компонента
+// }, [idUser]);
     const handleLogoutConfirmation = async () => {
         try {
           await SecureStore.deleteItemAsync('authToken');
@@ -193,7 +205,7 @@ function Profile() {
                     <View 
                         // style={styles.modalContent}
                     >                        
-                        {/* <QRCode value={qrValue} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} /> */}
+                        <QRCode value={idUser} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} /> 
                     </View>
                 }
             />
