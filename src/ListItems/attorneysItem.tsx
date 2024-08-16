@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from 'react-native';
-import { formatDate } from "src/func";
+import { formatDate } from "src/scripts/attorneyScripts";
 import { projColors } from "src/stores/styles"; // Импортируем projColors
 
 const AttorneysItem = ({ item }) => {

@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
-import Icon3 from 'react-native-vector-icons/Feather';
 import CustomModal from "src/components/custom-modal";
-import { formatDate } from "src/func";
+import { formatDate } from "src/scripts/attorneyScripts";
 import { projColors } from "src/stores/styles"; // Импортируем projColors
 
 const TaskItem = ({ item }) => {

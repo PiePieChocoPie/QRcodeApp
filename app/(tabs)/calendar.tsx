@@ -3,7 +3,7 @@ import { View, Alert, ActivityIndicator, Text, StyleSheet, Dimensions } from "re
 import CalendarPicker from "react-native-calendar-picker";
 import { projColors } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
-import useLoading from "src/useLoading";
+import useLoading from "src/hooks/useLoading";
 import Store from "src/stores/mobx";
 import CustomModal from "src/components/custom-modal";
 import { getUsersTrafficStatistics } from "src/requests/timeManagement";

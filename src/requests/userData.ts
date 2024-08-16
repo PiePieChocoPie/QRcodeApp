@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import axios from 'axios';
-import { checkRecords } from 'src/func';
+import { checkRecords } from 'src/scripts/attorneyScripts';
 import Store from 'src/stores/mobx';
 import { getDepData } from './hierarchy';
 import { getAttorneyStatusesData, getItineraryStatusesData, getTasksData, getUpdStatusesData } from './docs';

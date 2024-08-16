@@ -5,7 +5,7 @@ import { encode as base64encode } from 'base-64';
 import * as SecureStore from 'expo-secure-store';
 import { observer } from 'mobx-react-lite';
 import Store from 'src/stores/mobx';
-import useLoading from 'src/useLoading';
+import useLoading from 'src/hooks/useLoading';
 import * as Animatable from 'react-native-animatable';
 import { getAllStaticData } from "src/requests/userData";
 import { statusDay } from "src/requests/timeManagement";

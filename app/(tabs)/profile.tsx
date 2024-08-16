@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
-import useLoading from "src/useLoading";
+import useLoading from "src/hooks/useLoading";
 import ModalForm from "src/modals/modal";
 import Button from 'src/components/button';
 import Popup from 'src/components/popup';
