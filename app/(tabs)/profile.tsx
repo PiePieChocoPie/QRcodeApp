@@ -4,19 +4,21 @@ import { router } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
 import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigationState } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import ModalForm from "src/modals/modal";
 import Button from 'src/components/button';
 import Popup from 'src/components/popup';
 import QRCode from "react-native-qrcode-svg";
-import { openDay, statusDay } from "src/requests/timeManagement";
+import { openDay, statusDay, closeDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
 import { usePopupContext } from "src/PopupContext";
 import React, { useState, useEffect } from 'react';
 import LottieView from 'lottie-react-native';
 import asif from 'src/asif.json';
+import { useNavigation } from '@react-navigation/native';
+
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -29,32 +31,67 @@ function Profile() {
     const [workStatusLocal, setWorkStatusLocal] = React.useState(null);
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
+    const navigation = useNavigation();
     
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //     try {
+    //         statusDay(idUser);
+    //         console.log(Store.statusWorkDay)
+    //         setWorkStatusLocal(Store.statusWorkDay);
+    //     } catch (e) {
+    //       console.log('Ошибка с timeman')
+    //     }
+    //     }, [idUser, Store.statusWorkDay])
+    // );
+
+    const handleOpenWorkDay = async () => {
+        try {
+          const response: any = await openDay(idUser);
+          showPopup('Рабочий день открыт', 'success')
+          console.log(response.result.STATUS)
+        } catch (error) {
+        }
+      };
+      const handleCloseWorkDay = async () => {
+        try {
+          const response: any = await closeDay(idUser);
+          showPopup('Рабочий день закрыт', 'info')
+          console.log(response.result.STATUS)
+        } catch (error) {
+        }
+      };
+        
+
     useFocusEffect(
         React.useCallback(() => {
-            
-        try {
-            statusDay(idUser);
-            console.log(Store.statusWorkDay)
-            setWorkStatusLocal(Store.statusWorkDay);
+          const unsubscribe = navigation.addListener('blur', () => {
+            try {
+              statusDay(idUser);
+              console.log(Store.statusWorkDay);
+              setWorkStatusLocal(Store.statusWorkDay);
+            } catch (e) {
+              console.log('Ошибка с timeman');
+            }
+          });
+      
+          const unsubscribe2 = navigation.addListener('focus', () => {
+            try {
+              statusDay(idUser);
+              console.log(Store.statusWorkDay);
+              setWorkStatusLocal(Store.statusWorkDay);
+            } catch (e) {
+              console.log('Ошибка с timeman');
+            }
+          });
+      
+          return () => {
+            unsubscribe();
+            unsubscribe2();
+          };
+        }, [idUser, navigation, Store.statusWorkDay])
+      );
 
-        } catch (e) {
-          console.log('Ошибка с timeman')
-        }
-        }, [])
-    );
-//     useEffect(() => {
-//         const intervalId = setInterval(async () => {
-//         try {
-
-//         console.log(123123)
-//         } catch (error) {
-//         console.log('Ошибка:', error);
-//         }
-//         }, 1000); // вызывать каждую секунду
-
-//     return () => clearInterval(intervalId); // очистить интервал при размонтировании компонента
-// }, [idUser]);
     const handleLogoutConfirmation = async () => {
         try {
           await SecureStore.deleteItemAsync('authToken');
@@ -128,16 +165,6 @@ function Profile() {
     return (
         <View style={styles.container}>
             <View>
-            {
-                workStatusLocal === 'OPENED' && (
-                    <LottieView
-                    source={asif}
-                    autoPlay
-                    loop
-                    style={styles.active}
-                />
-                )
-            }
                 <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                     <View style={styles.avatarContainer}>
                         {photoUrl ? (
@@ -154,10 +181,19 @@ function Profile() {
                         handlePress={toggleModal} 
                         title={''}
                         icon={"qrcode"} />
-                    <Button
-                        handlePress={() => console.log('Settings button pressed')} // обработчик события для кнопки настройки
-                        title={''}
-                        icon={"gear"} />
+                    {
+                        workStatusLocal === 'CLOSED' ? (    
+                            <Button
+                                handlePress={handleOpenWorkDay} // обработчик события для кнопки настройки
+                                title={''}
+                                icon={"lock"} />
+                        ) : (
+                            <Button
+                                handlePress={handleCloseWorkDay} // обработчик события для кнопки настройки
+                                title={''}
+                                icon={"unlock"} />
+                        )
+                    }
                     <Button
                         handlePress={handleLogout}
                         title={''}

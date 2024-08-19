@@ -13,6 +13,18 @@ export async function openDay(ID: string): Promise<string> {
     const response = await axios.request(config);
     return JSON.stringify(response.data);
   }
+  export async function closeDay(ID: string): Promise<string> {
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${process.env.baseUrl}/rest/597/9sxsabntxlt7pa2k/timeman.close?USER_ID=${ID}`,
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: false
+    };
+  
+    const response = await axios.request(config);
+    return JSON.stringify(response.data);
+  }
   
   export async function statusDay(ID: string): Promise<any> {
     let config = {
