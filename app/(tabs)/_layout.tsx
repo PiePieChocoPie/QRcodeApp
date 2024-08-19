@@ -59,7 +59,7 @@ const TabsLayout = () => {
           }}
           
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="calendar"
           options={{
             headerTitle: 'Календарь',
@@ -69,7 +69,7 @@ const TabsLayout = () => {
               <Icons.calendar name="calendar" width={32} height={32} fill={color} />
             ),
           }}
-        />
+        /> */}
       </Tabs>
       
       <PopupComponent />

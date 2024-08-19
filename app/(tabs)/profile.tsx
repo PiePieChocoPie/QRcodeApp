@@ -20,7 +20,7 @@ import work from 'src/work.json';
 const pic = require('./pic.jpg');
 import { useNavigation } from '@react-navigation/native';
 import { ImageBackground } from 'react-native';
-
+import Calendar from '../../src/components/calendar';
 
 function Profile() {
     const [userData, setUserData] = React.useState('');
@@ -30,6 +30,7 @@ function Profile() {
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [calenVisible, setCalendVisible] = React.useState(null);
     const [workStatusLocal, setWorkStatusLocal] = React.useState(null);
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
@@ -96,6 +97,10 @@ function Profile() {
     const toggleModal = () => {
         // const a = "123"
         setModalVisible(!modalVisible);
+    };
+    const toggleCalend = () => {
+        // const a = "123"
+        setCalendVisible(!calenVisible);
     };
 
     useFocusEffect(
@@ -182,7 +187,11 @@ function Profile() {
                     <Button
                         handlePress={handleLogout}
                         title={''}
-                        icon={"power-off"}/>   
+                        icon={"power-off"}/>
+                    <Button 
+                        handlePress={toggleCalend} 
+                        title={''}
+                        icon={"calendar"} />   
                 </View>
                 <Text>
                     <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
@@ -227,6 +236,17 @@ function Profile() {
                         // style={styles.modalContent}
                     >                        
                         <QRCode value={idUser} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} /> 
+                    </View>
+                }
+            />
+            <CustomModal
+                visible={calenVisible}
+                onClose={toggleCalend}
+                marginTOP={0.2} 
+                title={"Calendar"} 
+                content={
+                    <View>
+                        <Calendar />                   
                     </View>
                 }
             />
