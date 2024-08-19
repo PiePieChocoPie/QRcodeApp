@@ -17,7 +17,9 @@ import { usePopupContext } from "src/PopupContext";
 import React, { useState, useEffect } from 'react';
 import LottieView from 'lottie-react-native';
 import work from 'src/work.json';
+const pic = require('./pic.jpg');
 import { useNavigation } from '@react-navigation/native';
+import { ImageBackground } from 'react-native';
 
 
 function Profile() {
@@ -39,6 +41,9 @@ function Profile() {
         setWorkStatusLocal(Store.statusWorkDay);
 
     }
+    useEffect(() => {
+        checkWorkStatus();
+      }, []);
 
     const handleOpenWorkDay = async () => {
         const response: any = await openDay(idUser);
@@ -55,36 +60,6 @@ function Profile() {
             showPopup('Рабочий день закрыт', 'info')
       }
     };
-        
-
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //       const unsubscribe = navigation.addListener('blur', () => {
-    //         try {
-    //           statusDay(idUser);
-    //           console.log(Store.statusWorkDay);
-    //           setWorkStatusLocal(Store.statusWorkDay);
-    //         } catch (e) {
-    //           console.log('Ошибка с timeman');
-    //         }
-    //       });
-      
-    //       const unsubscribe2 = navigation.addListener('focus', () => {
-    //         try {
-    //           statusDay(idUser);
-    //           console.log(Store.statusWorkDay);
-    //           setWorkStatusLocal(Store.statusWorkDay);
-    //         } catch (e) {
-    //           console.log('Ошибка с timeman');
-    //         }
-    //       });
-      
-    //       return () => {
-    //         unsubscribe();
-    //         unsubscribe2();
-    //       };
-    //     }, [idUser, navigation, Store.statusWorkDay])
-    //   );
 
     const handleLogoutConfirmation = async () => {
         try {
@@ -157,7 +132,13 @@ function Profile() {
     );
 
     return (
+    <ImageBackground
+        source={pic}
+        style={{ flex: 1}}
+        imageStyle={{ resizeMode: 'cover' }}
+        >
         <View style={styles.container}>
+            
             {
                 workStatusLocal === 'OPENED' && (
                     <LottieView
@@ -250,6 +231,7 @@ function Profile() {
                 }
             />
         </View>
+    </ImageBackground>
     );
 }
 
