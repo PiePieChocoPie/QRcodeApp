@@ -16,7 +16,7 @@ import CustomModal from "src/components/custom-modal";
 import { usePopupContext } from "src/PopupContext";
 import React, { useState, useEffect } from 'react';
 import LottieView from 'lottie-react-native';
-import asif from 'src/asif.json';
+import work from 'src/work.json';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -32,65 +32,59 @@ function Profile() {
     // const [popupVisible, setPopupVisible] = React.useState(false);
     const {showPopup} = usePopupContext();
     const navigation = useNavigation();
-    
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //     try {
-    //         statusDay(idUser);
-    //         console.log(Store.statusWorkDay)
-    //         setWorkStatusLocal(Store.statusWorkDay);
-    //     } catch (e) {
-    //       console.log('Ошибка с timeman')
-    //     }
-    //     }, [idUser, Store.statusWorkDay])
-    // );
+
+
+    const checkWorkStatus = async () => {
+        const response = await statusDay(idUser);
+        setWorkStatusLocal(Store.statusWorkDay);
+
+    }
 
     const handleOpenWorkDay = async () => {
-        try {
-          const response: any = await openDay(idUser);
-          showPopup('Рабочий день открыт', 'success')
-          console.log(response.result.STATUS)
-        } catch (error) {
+        const response: any = await openDay(idUser);
+        await checkWorkStatus();
+        if (Store.statusWorkDay === 'OPENED') {
+            showPopup('Рабочий день открыт', 'success')
         }
       };
       const handleCloseWorkDay = async () => {
-        try {
-          const response: any = await closeDay(idUser);
-          showPopup('Рабочий день закрыт', 'info')
-          console.log(response.result.STATUS)
-        } catch (error) {
-        }
-      };
+        const response: any = await closeDay(idUser);
+        await checkWorkStatus();
+        if (Store.statusWorkDay === 'CLOSED') {
+
+            showPopup('Рабочий день закрыт', 'info')
+      }
+    };
         
 
-    useFocusEffect(
-        React.useCallback(() => {
-          const unsubscribe = navigation.addListener('blur', () => {
-            try {
-              statusDay(idUser);
-              console.log(Store.statusWorkDay);
-              setWorkStatusLocal(Store.statusWorkDay);
-            } catch (e) {
-              console.log('Ошибка с timeman');
-            }
-          });
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //       const unsubscribe = navigation.addListener('blur', () => {
+    //         try {
+    //           statusDay(idUser);
+    //           console.log(Store.statusWorkDay);
+    //           setWorkStatusLocal(Store.statusWorkDay);
+    //         } catch (e) {
+    //           console.log('Ошибка с timeman');
+    //         }
+    //       });
       
-          const unsubscribe2 = navigation.addListener('focus', () => {
-            try {
-              statusDay(idUser);
-              console.log(Store.statusWorkDay);
-              setWorkStatusLocal(Store.statusWorkDay);
-            } catch (e) {
-              console.log('Ошибка с timeman');
-            }
-          });
+    //       const unsubscribe2 = navigation.addListener('focus', () => {
+    //         try {
+    //           statusDay(idUser);
+    //           console.log(Store.statusWorkDay);
+    //           setWorkStatusLocal(Store.statusWorkDay);
+    //         } catch (e) {
+    //           console.log('Ошибка с timeman');
+    //         }
+    //       });
       
-          return () => {
-            unsubscribe();
-            unsubscribe2();
-          };
-        }, [idUser, navigation, Store.statusWorkDay])
-      );
+    //       return () => {
+    //         unsubscribe();
+    //         unsubscribe2();
+    //       };
+    //     }, [idUser, navigation, Store.statusWorkDay])
+    //   );
 
     const handleLogoutConfirmation = async () => {
         try {
@@ -164,6 +158,16 @@ function Profile() {
 
     return (
         <View style={styles.container}>
+            {
+                workStatusLocal === 'OPENED' && (
+                    <LottieView
+                    source={work}
+                    autoPlay
+                    loop
+                    style={styles.active}
+                />
+                )
+            }
             <View>
                 <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                     <View style={styles.avatarContainer}>
