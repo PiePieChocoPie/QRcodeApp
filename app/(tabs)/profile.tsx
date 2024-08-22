@@ -144,7 +144,7 @@ function Profile() {
         >
         <View style={styles.container}>
             
-            {
+            {/* {
                 workStatusLocal === 'OPENED' && (
                     <LottieView
                     source={work}
@@ -153,7 +153,7 @@ function Profile() {
                     style={styles.active}
                 />
                 )
-            }
+            } */}
             <View>
                 <View style={[styles.overlayWithUser, { margin: "7%" }]}>
                     <View style={styles.avatarContainer}>

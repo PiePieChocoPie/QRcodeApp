@@ -1,15 +1,40 @@
-import React from 'react';
 import { Tabs } from 'expo-router';
 import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
 import Popup from 'src/components/popup';
 import { View, Text, StyleSheet } from 'react-native';
 import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
-
+import { openDay, statusDay, closeDay } from "src/requests/timeManagement";
+import LottieView from 'lottie-react-native';
+import work from 'src/work.json';
+import Store from "src/stores/mobx";
+import React, { useState, useEffect, createContext } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Header = () => {
+  const [workStatusLocal, setWorkStatusLocal] = React.useState(null);
+  const [idUser] = React.useState(Store.userData.ID);
+  const checkWorkStatus = async () => {
+    const response = await statusDay(idUser);
+    setWorkStatusLocal(Store.statusWorkDay);
+  }
+  useFocusEffect(() => {
+      checkWorkStatus();
+    });
+
+  console.log(workStatusLocal)
   return (
     <View style={styles.headerContainer}>
+            {
+              workStatusLocal === 'OPENED' && (
+                  <LottieView
+                  source={work}
+                  autoPlay
+                  loop
+                  style={styles.active}
+              />
+              )
+            }
     </View>
   );
   
@@ -108,6 +133,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 40
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    padding: 16,
+},
+  active: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    position: 'absolute',
+    right: 0,
+    top: -10,
   },
 });
 export default TabsLayout;
