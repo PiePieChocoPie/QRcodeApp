@@ -3,11 +3,22 @@ import { Tabs } from 'expo-router';
 import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
 import Popup from 'src/components/popup';
+import { View, Text, StyleSheet } from 'react-native';
 import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
+
+
+const Header = () => {
+  return (
+    <View style={styles.headerContainer}>
+    </View>
+  );
+  
+}
 
 const TabsLayout = () => {
   return (
     <PopupProvider>
+      <Header />
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: '#DE283B', // Активный цвет иконок - красный
@@ -89,4 +100,14 @@ const PopupComponent = () => {
   );
 };
 
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#DE283B', // Red color
+    height: 40, // Adjust the height as needed
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 40
+  },
+});
 export default TabsLayout;

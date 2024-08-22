@@ -186,7 +186,7 @@ const Calendar = () => {
             <CustomModal
                 visible={modalVisible}
                 onClose={toggleModal}
-                marginTOP={0.2}
+                marginTOP={0.23}
                 title={dayTitle}
                 content={
                     <View>
