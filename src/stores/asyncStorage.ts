@@ -30,7 +30,6 @@ export const getData = async (key) => {
 
 /**
  * Извлекает массив объектов из AsyncStorage.
- * @param {string} key - Ключ для извлечения данных.
  * @returns {Array} - Возвращает массив объектов или пустой массив, если данных нет.
  */
 export async function getArrayFromStorage(key) {
@@ -47,10 +46,10 @@ export async function getArrayFromStorage(key) {
  * Добавляет новый объект в массив, хранящийся в AsyncStorage.
  * @param {Object} newObject - Объект, который нужно добавить.
  */
-export async function addToArray(newObject) {
+export async function addToArray(key, newObject) {
   try {
-    const jsonArray = await AsyncStorage.getItem('scanDocArray');
-    const array = jsonArray != null ? JSON.parse(jsonArray) : [];
+    let array = await getArrayFromStorage(key);
+    array = array != null ? JSON.parse(array) : [];
 
     array.push(newObject);
 
@@ -62,7 +61,6 @@ export async function addToArray(newObject) {
 
 /**
  * Обновляет объект в массиве по его ID в AsyncStorage.
- * @param {string} key - Ключ для извлечения данных.
  * @param {string} objectId - ID объекта для поиска.
  * @param {Object} updatedFields - Поля, которые нужно обновить в найденном объекте.
  */
@@ -87,9 +85,9 @@ export async function updateObjectInArray(key, objectId, updatedFields) {
  * @param {string} id - ID объекта для поиска.
  * @returns {Object|null} - Найденный объект или null, если объект не найден.
  */
-export async function findObjectById(id) {
+export async function findObjectById(key, id) {
   try {
-    const jsonArray = await AsyncStorage.getItem('scanDocArray');
+    const jsonArray = await AsyncStorage.getItem(key);
     const array = jsonArray != null ? JSON.parse(jsonArray) : [];
 
     const foundObject = array.find(item => item.id_time.startsWith(`${id}_`));
@@ -100,3 +98,39 @@ export async function findObjectById(id) {
     return null;
   }
 }
+/**
+ * Возвращает массив объектов, не содержащих поле title, из AsyncStorage.
+ * @returns {Array|null} - Возвращает массив объектов без поля title или null, если таких объектов нет.
+ */
+export async function getItemsWithoutTitle(key) {
+  try {
+    const array = await getArrayFromStorage(key);
+    
+    // Фильтрация объектов без поля title
+    const itemsWithoutTitle = array.filter(item => !item.hasOwnProperty('title'));
+
+    return itemsWithoutTitle.length > 0 ? itemsWithoutTitle : null;
+  } catch (e) {
+    console.error("Ошибка при получении объектов без поля title:", e);
+    return null;
+  }
+}
+
+export async function removeItemFromArray(key, itemToRemove){
+  try {
+    // Шаг 1: Получаем массив из AsyncStorage
+    const jsonValue = await AsyncStorage.getItem(key);
+    let itemsArray = jsonValue != null ? JSON.parse(jsonValue) : [];
+
+    // Шаг 2: Фильтруем массив, удаляя нужный объект
+    itemsArray = itemsArray.filter(item => item !== itemToRemove);
+
+    // Шаг 3: Сохраняем обновленный массив обратно в AsyncStorage
+    await AsyncStorage.setItem(key, JSON.stringify(itemsArray));
+  } catch (e) {
+    // Обработка ошибок
+    console.error("Ошибка при удалении элемента из массива:", e);
+  }
+};
+
+

@@ -63,7 +63,7 @@ const Reader = () => {
     // Добавление объекта в историю (в asyncStorage)
     const addObjInStory = async (id) => {
         let date = new Date();
-        addToArray({ id_time: `${id}_${date}` });
+        addToArray('scanDocArray',{ id_time: `${id}_${date}` });
     };
 
     // Обработка события сканирования QR-кода
@@ -71,7 +71,7 @@ const Reader = () => {
         try {
             setScanned(true); // Устанавливаем состояние "сканировано"
             if (data.includes('$')) {
-                let obj = findObjectById(data); // Ищем объект в хранилище по ID
+                let obj = findObjectById('scanDocArray',data); // Ищем объект в хранилище по ID
                 setDoc(obj);
                 setDocId(data);
                 if (obj == null) {
@@ -122,7 +122,7 @@ const Reader = () => {
                         visible={modalVisibleAD}
                         onClose={toggleModalAD}
                         marginTOP={0.2}
-                        title={doc?.title || docId}
+                        title={`В списке уже есть документ с таким идентификитором,\nвы действительно хотите снова внести - ${doc.title? doc.title : doc.id_time}?`}
                         content={
                             <View style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity

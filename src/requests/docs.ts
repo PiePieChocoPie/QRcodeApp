@@ -84,7 +84,7 @@ export async function getTasksData(ID: string): Promise<any> {
   }
   
   
-  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:any,commentField:string, comment:string): Promise<any> {
+  export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue?:any,commentField?:string, comment?:string): Promise<any> {
     let currentDate = new Date()
     const body = {
       entityTypeId: "168",
@@ -133,16 +133,16 @@ export async function getTasksData(ID: string): Promise<any> {
       }
     };
     const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
-    return await axios.post(url, body);
+    return await axios.post(url, body); 
   }
   
-  export function getUserCurUpds(ID: string): Promise<any> {
+  export async function getUserCurUpds(ID: string): Promise<any> {
     const body = {
       "entityTypeId": "168",
       "filter": { "assignedById": ID }
     };
     const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.list`;
-    return axios.post(url, body);
+    return await axios.post(url, body);
   }
   
   export async function getUpdStatusesData(): Promise<any> {
@@ -288,3 +288,32 @@ export async function getReportsTest(jsonBody: any): Promise<string> {
     }
   }
   
+  export async function getNextStatus(docData:any) {
+    if (!docData) return { error: 'Изменение статуса документа невозможно' };
+    if (!docData.stageId) return { error: 'Изменение статуса документа невозможно' };
+    let statuses;
+    const curStatus = docData.stageId;
+
+    if (docData.typeId == '168'&&((Store.isWarehouse&&(docData.stageId=="DT168_9:NEW"||docData.stageId=="DT168_9:CLIENT")||
+          (docData.ufCrm5Driver==Store.userData.ID&&(docData.stageId=="DT168_9:UC_YAHBD0"||docData.stageId=="DT168_9:UC_9ARBA5"))))) {
+      statuses=Store.updStatusesData;
+      for (let i = 0; i < statuses.updStatuses.length; i++) {
+        if (statuses.updStatuses[i].STATUS_ID === curStatus && i !== statuses.updStatuses.length - 2) {
+          return statuses.updStatuses[i + 1];
+        }
+      }
+    } else if (docData.typeId=='133' && (docData.ufCrm6Driver == Store.userData.ID || Store.isWarehouse && curStatus === 'DT133_10:PREPARATION')) {
+      statuses=Store.itineraryStatusesData;
+      for (let i = 0; i < statuses.itineraryStatuses.length; i++) {
+        if (statuses.itineraryStatuses[i].STATUS_ID === curStatus) {
+          return statuses.itineraryStatuses[i + 1];
+        }
+      }
+    } else if (docData.typeId === '166') {
+      statuses=Store.attorneyStatusesData;
+      let i = statuses.attorneyStatuses.length;
+      return statuses.attorneyStatuses[i - 2];
+    }
+
+    return { error: 'Изменение статуса документа невозможно' };
+  };
