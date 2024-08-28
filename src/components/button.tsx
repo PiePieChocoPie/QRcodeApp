@@ -1,6 +1,9 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const Button = ({ handlePress, title, disabled = false, icon=null }) => {
   return (
@@ -17,7 +20,7 @@ const Button = ({ handlePress, title, disabled = false, icon=null }) => {
     >
       <View style={styles.buttonContent}>
         {title && (
-        <Text style={styles.buttonText}>{title}</Text>
+          <Text style={styles.buttonText}>{title}</Text>
         )}
         { icon && (
           <Icon name={icon} size={30} color={'#FFFFFF'} />
@@ -31,10 +34,10 @@ const Button = ({ handlePress, title, disabled = false, icon=null }) => {
 const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
-    marginVertical: 2,
-    marginHorizontal:20,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
+    marginVertical: '2%',
+    marginHorizontal: '5%',
+    paddingVertical: '2%',
+    paddingHorizontal: '4%',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 5,
