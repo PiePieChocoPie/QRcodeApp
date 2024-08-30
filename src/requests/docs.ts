@@ -10,7 +10,7 @@ export async function getTasksData(ID: string): Promise<any> {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${process.env.baseUrl}${process.env.DanilaToken}tasks.task.list`,
+      url: `${process.env.baseUrl}${process.env.token}tasks.task.list`,
       headers: { 'Content-Type': 'application/json' },
       data: data,
       withCredentials: false
@@ -96,7 +96,7 @@ export async function getTasksData(ID: string): Promise<any> {
     };
     
     // console.log(body)
-    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
+    const url = `${process.env.baseUrl}${process.env.token}crm.item.update`;
     return await axios.post(url, body);
   }
   
@@ -112,7 +112,7 @@ export async function getTasksData(ID: string): Promise<any> {
       }
     };
     // console.log(body)
-    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
+    const url = `${process.env.baseUrl}${process.env.token}crm.item.update`;
     return await axios.post(url, body);
   }
   
@@ -126,7 +126,7 @@ export async function getTasksData(ID: string): Promise<any> {
         "movedBy": userID
       }
     };
-    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.update`;
+    const url = `${process.env.baseUrl}${process.env.token}crm.item.update`;
     return await axios.post(url, body);
   }
   
@@ -135,7 +135,7 @@ export async function getTasksData(ID: string): Promise<any> {
       "entityTypeId": "168",
       "filter": { "assignedById": ID }
     };
-    const url = `${process.env.baseUrl}${process.env.DanilaToken}crm.item.list`;
+    const url = `${process.env.baseUrl}${process.env.token}crm.item.list`;
     return axios.post(url, body);
   }
   
@@ -145,7 +145,7 @@ export async function getTasksData(ID: string): Promise<any> {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${process.env.baseUrl}${process.env.DanilaToken}crm.status.entity.items`,
+      url: `${process.env.baseUrl}${process.env.token}crm.status.entity.items`,
       headers: { 'Content-Type': 'application/json' },
       data: data,
       withCredentials: false
@@ -162,7 +162,7 @@ export async function getTasksData(ID: string): Promise<any> {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${process.env.baseUrl}${process.env.DanilaToken}crm.status.entity.items`,
+      url: `${process.env.baseUrl}${process.env.token}crm.status.entity.items`,
       headers: { 'Content-Type': 'application/json' },
       data: data,
       withCredentials: false
@@ -179,7 +179,7 @@ export async function getTasksData(ID: string): Promise<any> {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${process.env.baseUrl}${process.env.DanilaToken}crm.status.entity.items`,
+      url: `${process.env.baseUrl}${process.env.token}crm.status.entity.items`,
       headers: { 'Content-Type': 'application/json' },
       data: data,
       withCredentials: false

@@ -24,7 +24,7 @@ export async function getDataByToken(authToken: string): Promise<any> {
   let config2 = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${process.env.baseUrl}${process.env.NikitaToken}user.get.json?NAME=${Store.userData.NAME}&LAST_NAME=${Store.userData.LAST_NAME}`,
+    url: `${process.env.baseUrl}${process.env.token}user.get.json?NAME=${Store.userData.NAME}&LAST_NAME=${Store.userData.LAST_NAME}`,
     withCredentials: false
   };
   

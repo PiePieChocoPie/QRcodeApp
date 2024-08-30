@@ -10,7 +10,7 @@ export async function getDepData(ids: string[]): Promise<any> {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${process.env.baseUrl}${process.env.NikitaToken}department.get.json`,
+      url: `${process.env.baseUrl}${process.env.token}department.get.json`,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -42,5 +42,21 @@ export async function getDepData(ids: string[]): Promise<any> {
   
     const response = await axios.request(config);
     return response.data;
+  }
+
+  export async function getPhoneNumbersOfColleagues():Promise<any> {
+      let Body = { "FILTER":
+        {
+            "UF_DEPARTMENT": Store.userData.UF_DEPARTMENT
+        }}
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${process.env.baseUrl}${process.env.token}user.search`,
+        withCredentials: false,
+        body: Body
+      }
+      const response = await axios.request(config);
+      return response.data;    
   }
   

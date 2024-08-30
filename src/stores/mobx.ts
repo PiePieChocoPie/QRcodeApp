@@ -22,7 +22,8 @@ class Store {
   filterItems: any = null;
   attorneys: any = null;
   attorneyStatusesData: any = null;
-  isWarehouse:boolean=false
+  isWarehouse:boolean=false;
+  colleaguesData:any = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -110,6 +111,10 @@ class Store {
 
   setIsWarehouse(isWarehouse:boolean){
     this.setProperty('isWarehouse', isWarehouse);
+  }
+
+  setColleaguesData(colleaguesData:any){
+    this.setProperty('colleaguesData', colleaguesData)
   }
 }
 

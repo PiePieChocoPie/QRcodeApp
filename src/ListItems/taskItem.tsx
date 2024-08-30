@@ -1,16 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
-import Icon3 from 'react-native-vector-icons/Feather';
 import CustomModal from "src/components/custom-modal";
-import { formatDate } from "src/func";
 import { projColors } from "src/stores/styles"; // Импортируем projColors
 
 const TaskItem = ({ item }) => {
-    const [detailVisible, setDetailVisible] = React.useState(false);
     const [depDate, setDepDate] = React.useState('');
     const [depDLDate, setDepDLDate] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
-    const [linkFromTask, setLink] = React.useState('');
 
     React.useEffect(() => {
         const onlyDate = item.createdDate.split('T')[0];
@@ -70,12 +66,6 @@ const TaskItem = ({ item }) => {
                     <Text style={[styles.Text, { color: '#DE283B' }]}>дедлайн: {item.deadline}</Text>
                 ) : (
                     <Text style={styles.Text}>дедлайн: не установлен</Text>
-                )}
-
-                {detailVisible && (
-                    <View>
-                        {/* Дополнительные детали, если необходимо */}
-                    </View>
                 )}
                 <CustomModal
                     visible={modalVisible}

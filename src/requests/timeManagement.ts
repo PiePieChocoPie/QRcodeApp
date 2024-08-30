@@ -59,7 +59,7 @@ export async function openDay(ID: string): Promise<string> {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}${process.env.DanilaToken}timeman.timecontrol.reports.get?MONTH=${Month}&YEAR=${Year}&USER_ID=${Store.userData.ID}`,
+        url: `${process.env.baseUrl}${process.env.token}timeman.timecontrol.reports.get?MONTH=${Month}&YEAR=${Year}&USER_ID=${Store.userData.ID}`,
         headers: { 'Content-Type': 'application/json' },
         withCredentials: false
       };
