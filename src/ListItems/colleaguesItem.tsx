@@ -1,98 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { projColors } from "src/stores/styles"; // Импортируем projColors
-import CustomModal from 'src/components/custom-modal';
-import Icon from 'react-native-vector-icons/FontAwesome6'
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-const colleaguesItem = ({ item }) => {
-    const [availableOptions, setAvailableOptions] = useState([]);
-    const [selectedOption, setSelectedOption] = useState('');
-    const [modalVisible, setModalVisible] = React.useState(false);
+import { View, Text, TouchableOpacity, Linking, StyleSheet, Alert } from 'react-native';
+import { projColors } from "src/stores/styles"; // Импортируем цвета из projColors
+import CustomModal from 'src/components/custom-modal'; // Импортируем пользовательское модальное окно
+import Icon from 'react-native-vector-icons/FontAwesome6'; // Импортируем иконки
+
+const ColleaguesItem = ({ item }) => {
+    const [availableOptions, setAvailableOptions] = useState([]); // Храним доступные опции для звонков/сообщений
+    const [modalVisible, setModalVisible] = useState(false); // Храним состояние видимости модального окна
 
     useEffect(() => {
-        // Проверка доступности приложений для звонков
+        // Проверяем доступность приложений для звонков и сообщений
         const checkAvailability = async () => {
-            const options = [{ label: 'Мобильный звонок', value: 'mobile' }];
+            const options = [{ label: 'Мобильный звонок', value: 'mobile', color: projColors.currentVerse.redro, url: `tel:${item.PERSONAL_MOBILE}` }];
             const messengers = [
-                { name: 'Telegram', url: `tg://msg?text=&to=${item.PERSONAL_MOBILE}`, value: '0', color:'#2c7bf2'},
-                { name: 'VK', url: `vk://vk.com/write${item.PERSONAL_MOBILE}`, value: '1', color:'#0831ff' },
-                { name: 'WhatsApp', url: `whatsapp://send?phone=${item.PERSONAL_MOBILE}`, value: '2', color:'#12ad03' },
-                { name: 'Viber', url: `viber://contact?number=${item.PERSONAL_MOBILE}`, value: '3', color:'#a008ff' },
-                { name: 'Skype', url: `skype:${item.PERSONAL_MOBILE}?call`, value: '4', color:'#1ebbeb' },
+                { label: 'Telegram', url: `tg://msg?text=&to=${item.PERSONAL_MOBILE}`, value: 'telegram', color: '#27a7e7' },
+                { label: 'VK', url: `vk://vk.com/write${item.PERSONAL_MOBILE}`, value: 'vk', color: '#4d7198' },
+                { label: 'WhatsApp', url: `whatsapp://send?phone=${item.PERSONAL_MOBILE}`, value: 'whatsapp', color: '#2cb742' },
+                { label: 'Viber', url: `viber://contact?number=${item.PERSONAL_MOBILE}`, value: 'viber', color: '#8c60c3' },
+                { label: 'Skype', url: `skype:${item.PERSONAL_MOBILE}?call`, value: 'skype', color: '#009EDC' },
             ];
 
+            // Проверяем каждое приложение на доступность
             for (const messenger of messengers) {
                 const supported = await Linking.canOpenURL(messenger.url);
                 if (supported) {
-                    options.push({ label: messenger.name, value: messenger.value });
+                    options.push(messenger); // Добавляем в список опций, если приложение доступно
                 }
             }
 
-            setAvailableOptions(options);
-            setSelectedOption(options[0].value);
+            setAvailableOptions(options); // Обновляем состояние с доступными опциями
         };
 
-        checkAvailability();
-    }, [item.PERSONAL_MOBILE]);
+        checkAvailability(); // Вызываем функцию проверки доступности
+    }, [item.PERSONAL_MOBILE]); // Эффект срабатывает при изменении номера телефона
 
-    const call = () => {
-        const option = availableOptions.find(opt => opt.value === selectedOption);
-
-        if (option && option.value === 'mobile') {
-            Linking.openURL(`tel:${item.PERSONAL_MOBILE}`).catch(err =>
-                console.error('Failed to make mobile call:', err)
-            );
-        } else if (option) {
-            Linking.openURL(option.url).catch(err =>
-                console.error(`Failed to open ${option.label}:`, err)
-            );
-        }
-    };
-     const showPhone = () => {
-        const option = availableOptions.find(opt => opt.value === selectedOption);
-
-        if (option && option.value === 'mobile') {
-            Linking.openURL(`tel:${item.PERSONAL_MOBILE}`).catch(err =>
-                console.error('Failed to make mobile call:', err)
-            );
-        } else if (option) {
-            Linking.openURL(option.url).catch(err =>
-                console.error(`Failed to open ${option.label}:`, err)
-            );
-        }
+    // Функция для открытия нужного приложения или вызова
+    const call = (url) => {
+        Linking.openURL(url).catch(err => console.error('Failed to open URL:', err)); // Открываем URL или логируем ошибку
     };
 
+    // Функция для отображения алерта с подтверждением вызова
+    const showPhone = () => {
+        Alert.alert('Позвонить по номеру:', item.PERSONAL_MOBILE, [
+            { text: 'Отмена', style: 'cancel' }, // Кнопка отмены
+            { text: 'Звонок', onPress: () => call(`tel:${item.PERSONAL_MOBILE}`), style: 'default' } // Кнопка вызова
+        ]);
+    };
+
+    // Функция для переключения видимости модального окна
     const toggleMore = () => {
         setModalVisible(!modalVisible);
     };
 
     return (
-        <TouchableOpacity onPress={call} onLongPress={showPhone}>
-            <View key={item.id} style={[styles.listElementContainer, item.IS_ONLINE == 'Y' && { backgroundColor: "#f7f9f7" }]}>
-                <Text style={styles.Title}>{item.NAME} {item.LAST_NAME}</Text>
+        <TouchableOpacity onPress={toggleMore} onLongPress={showPhone}>
+            <View key={item.id} style={[styles.listElementContainer, item.IS_ONLINE === 'Y' && { backgroundColor: "#f7f9f7" }]}>
+                <Text style={styles.Title}>{item.NAME} {item.LAST_NAME}</Text> {/* Отображаем имя и фамилию */}
                 <View style={{flexDirection: 'row'}}>
-                <Text style={styles.Text}>{item.WORK_POSITION}</Text>
-                <Text style={styles.Text}>{item.PERSONAL_MOBILE}</Text>
+                    <Text style={styles.Text}>{item.WORK_POSITION}</Text> {/* Отображаем должность */}
+                    <Text style={styles.Text}>{item.PERSONAL_MOBILE}</Text> {/* Отображаем мобильный номер */}
                 </View>
                 <CustomModal
                     visible={modalVisible}
                     onClose={toggleMore}
-                    title={item.title}
+                    title={`${item.NAME} ${item.LAST_NAME}`}
                     marginTOP={0.2}
                     content={
                         <View style={styles.containerCentrallityFromUpper}>
-                            <Text style={styles.Title}>{item.NAME} {item.LAST_NAME}</Text>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={styles.Text}>{item.WORK_POSITION}</Text>
-                                <Text style={styles.Text}>{item.PERSONAL_MOBILE}</Text>
-                                <View style={{ flex: 1 }}>
-                                    {availableOptions.map(option => <View style={[styles.listElementContainer,{flexDirection:'row'}]} key = {option.name}>
-                                        <Icon name={option.value} size={20} color={option.color}/>
-                                        <Text style={styles.Title}>{option.name}</Text>
-                                        </View>
-                                        )}
-                                </View>
+                            <Text style={styles.Title}>{item.NAME} {item.LAST_NAME}</Text> {/* Повторное отображение имени и фамилии */}
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.Text}>{item.WORK_POSITION}</Text> {/* Повторное отображение должности */}
+                                <Text style={styles.Text}>{item.PERSONAL_MOBILE}</Text> {/* Повторное отображение мобильного номера */}
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                {/* Отображаем доступные опции для вызова или отправки сообщения */}
+                                {availableOptions.map(option => (
+                                    <TouchableOpacity
+                                        onPress={() => call(option.url)}
+                                        style={[styles.listElementContainer, { flexDirection: 'row' }]}
+                                        key={option.value} // Используем уникальный ключ для каждого элемента
+                                    >
+                                        <Icon name={option.value} size={20} color={option.color} /> {/* Иконка приложения */}
+                                        <Text style={styles.Title}>{option.label}</Text> {/* Название приложения */}
+                                    </TouchableOpacity>
+                                ))}
                             </View>
                         </View>
                     }
@@ -102,6 +93,7 @@ const colleaguesItem = ({ item }) => {
     );
 };
 
+// Стили для компонентов
 const styles = StyleSheet.create({
     listElementContainer: {
         backgroundColor: projColors.currentVerse.extrasecond,
@@ -121,7 +113,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: projColors.currentVerse.font,
         marginVertical: 5,
-    }, 
+    },
     containerCentrallityFromUpper: {
         flex: 1,
         justifyContent: 'center',
@@ -129,4 +121,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default colleaguesItem;
+export default ColleaguesItem; // Экспортируем компонент для использования в других частях приложения
