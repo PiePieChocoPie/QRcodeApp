@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
-import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Pressable, FlatList, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Pressable, FlatList, StyleSheet, Linking, TextInput, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import TaskItem from "src/ListItems/taskItem";
@@ -8,62 +8,136 @@ import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 import Store from "src/stores/mobx";
 import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
 import * as Icons from '../../assets';
+import { getPhoneNumbersOfColleagues } from "src/requests/hierarchy";
+import ColleaguesItem from "src/ListItems/colleaguesItem";
+import * as Contacts from 'expo-contacts';
+import { PermissionsAndroid } from 'react-native';
+import { findAndModifyContact } from "src/contactsHandler";
+import { usePopupContext } from "src/PopupContext";
 
 const phoneDirectory = () => {
     const { loading, startLoading, stopLoading } = useLoading();
-    const [taskCount, setTaskCount] = useState(false);
-    const [selectedList, setSelectedList] = useState('Tasks');
-    const [filterIndex, setFilterIndex] = useState("0");
+    const [colleaguesExist, setColleaguesExist] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [availableOptions, setAvailableOptions] = useState([]);
     const scrollViewRef = useRef(null);
+    const [search, setSearch] = useState('');
+    const { showPopup } = usePopupContext();
 
-    const fetchData = useCallback(async () => {
+    
+      
+
+    const fetchData = useCallback(async (find?: string) => {
         try {
             startLoading();
-            await getAllStaticData(Store.tokenData, false, false, true, false);
-            setTaskCount(Store.taskData && Store.taskData.length > 0);
+            checkAvailability();
+            await getPhoneNumbersOfColleagues(find && find);
+            
+            let failed = 0;
+            let updated = 0;
+            let added = 0;
+            
+            if (!find) {
+                for (let colleague of Store.colleaguesData) {
+                    const result = await findAndModifyContact(colleague);
+                    switch (result) {
+                        case '1':
+                            added++;
+                            break;
+                        case '2':
+                            updated++;
+                            break;
+                        default:
+                            failed++;
+                            break;
+                    }
+                }
+                let message = '';
+                if (added > 0) message += `Добавлено: ${added}\n`;
+                if (updated > 0) message += `Обновлено: ${updated}\n`;
+                if (failed > 0) message += `Не удалось: ${failed}\n`;
+                
+                showPopup(message, 'success');
+            }
+            
+            
+            
+            if (Store.colleaguesData) 
+                setColleaguesExist(true);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
             stopLoading();
         }
-    }, [startLoading, stopLoading]);
+    }, []);
+    
+    const checkAvailability = async () => {
+        const options = [
+            { label: 'Мобильный звонок', value: 'mobile', color: projColors.currentVerse.redro, url: `tel:` },
+            { label: 'Telegram', url: `tg://msg?text=&to=`, value: 'telegram', color: '#27a7e7' },
+            { label: 'Viber', url: `viber://contact?number=`, value: 'viber', color: '#8c60c3' },
+        ];
+        setAvailableOptions(options);
+    };
+    
 
     useFocusEffect(
+
         useCallback(() => {
             fetchData();
             return () => {};
+            
         }, [])
     );
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
         try {
-             await getAllStaticData(Store.tokenData, false, false, true, false);
+            fetchData()
         } catch (error) {
             console.error('Error refreshing data:', error);
         } finally {
             setRefreshing(false);
         }
-    }, [selectedList]);
-
+    }, []);
+    const searchHandler = (value) => {
+        setSearch(value);
+        fetchData(value)
+    };
     return (
+       
             <View style={localStyles.container}>
+                <View>
+                <TextInput
+                            style={localStyles.input}
+                            value={search}
+                            placeholder='Поиск'
+                            onChangeText={searchHandler}
+                        />
+                </View>
+                {loading ? (
+            <View style={localStyles.containerCentrallity}>
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            </View>
+        ) : (
+            <>
                 <ScrollView
                     ref={scrollViewRef}
-                    refreshControl={<RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={[projColors.currentVerse.accent]}
-                    />}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={[projColors.currentVerse.accent]}
+                        />
+                    }
                 >
                     <View style={localStyles.container}>
-                        {taskCount ? (
+                        {colleaguesExist ? (
                             <View style={{ flex: 1 }}>
-                                {Store.colleaguesData.map(item => <TaskItem key={item.id} item={item} />)}
+                                {Store.colleaguesData.map(item => <ColleaguesItem key={item.ID} item={item} availableOptions={availableOptions}/>)}
                             </View>
                         ) : (
-                            <Text style={localStyles.Text}>Задачи не установлены</Text>
+                            <Text style={localStyles.Text}>Коллеги не найдены</Text>
                         )}
                     </View>
                 </ScrollView>
@@ -78,9 +152,13 @@ const phoneDirectory = () => {
                 >
                     <Text style={localStyles.scrollToTopButtonText}>↑</Text>
                 </Pressable>
+                </>
+        )}
             </View>
-    );
+        )
 };
+    
+
 
 const localStyles = StyleSheet.create({
     containerCentrallity: {
@@ -141,6 +219,14 @@ const localStyles = StyleSheet.create({
         color: '#fff',
         fontSize: 32,
         fontWeight: 'bold',
+    },
+    input: {
+        backgroundColor: "#f7f8f9",
+        height: 50,
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        fontSize: 16,
+        width: '100%',
     },
 });
 

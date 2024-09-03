@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
+import Icon from 'react-native-vector-icons/FontAwesome6'; // Импортируем иконки
 import Popup from 'src/components/popup';
 import { View, Text, StyleSheet } from 'react-native';
 import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
@@ -95,6 +96,18 @@ const TabsLayout = () => {
           }}
           
         />
+        <Tabs.Screen
+          name="colleagues"
+          options={{
+            headerTitle: 'Справочник',
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color }) => (
+              <Icons.colleagues  width={32} height={32} fill={color} />
+            ),
+          }}
+          
+        />
         {/* <Tabs.Screen
           name="calendar"
           options={{
@@ -129,10 +142,10 @@ const PopupComponent = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#DE283B', // Red color
-    height: 40, // Adjust the height as needed
+    height: 30, // Adjust the height as needed
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 40
+    // marginVertical: 40
   },
   container: {
     flex: 1,

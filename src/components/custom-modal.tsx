@@ -71,7 +71,7 @@
                             {...panResponder.panHandlers}
                         >
                             {title && (
-                                <Text style={styles.modalTitle}>{title.substr(0, 24) + '...'}</Text>
+                                <Text style={styles.modalTitle}>{title.substr(0, 24)} {title.length>24&&'...'}</Text>
                             )}
                             <View style={{ height: '0.5%', width: '15%', marginTop: "3%", marginBottom: "3%" }} />
                         </View>

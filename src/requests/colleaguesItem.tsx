@@ -21,10 +21,9 @@ const ColleaguesItem = ({ item, availableOptions }) => {
     };
 
     const call = (url,number) => {
-        // console.log(url, number)
+        // //console.log(url, number)
         Linking.openURL(`${url}${number}`)
-        // .catch(err => 
-            // console.error('Failed to open URL:', err)
+        // .catch(err => console.error('Failed to open URL:', err)
         // );
     };
 

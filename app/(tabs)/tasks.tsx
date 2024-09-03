@@ -87,9 +87,9 @@ const Tasks = () => {
         await setSelectedList(selectedData);
         console.log(selectedList);
     };
-
+   
     return (
-            <View style={localStyles.container}>
+            <View style={localStyles.container}>    
                 <ScrollView
                     ref={scrollViewRef}
                     refreshControl={<RefreshControl
@@ -98,7 +98,7 @@ const Tasks = () => {
                         colors={[projColors.currentVerse.accent]}
                     />}
                 >
-                    <View style={[localStyles.expanderContainer, { backgroundColor: "transparent", marginTop: '10%' }]}>
+                    <View style={[localStyles.expanderContainer, { backgroundColor: "transparent" }]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Pressable onPress={() => focusChange('Tasks')} 
                             style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Tasks' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>

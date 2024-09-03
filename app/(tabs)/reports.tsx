@@ -61,7 +61,6 @@ const Home = () => {
   return (
     <View style={localStyles.container}>
       <FlatList
-        style={{ marginTop: "12%" }}
         data={Object.values(reports)}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}

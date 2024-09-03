@@ -155,7 +155,7 @@ function Profile() {
                 )
             } */}
             <View>
-                <View style={[styles.overlayWithUser, { margin: "7%" }]}>
+                <View style={styles.overlayWithUser}>
                     <View style={styles.avatarContainer}>
                         {photoUrl ? (
                             <Image source={{ uri: photoUrl }} style={styles.avatar} />
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         flexDirection: 'row', 
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         backgroundColor: '#F5F5F5',
         borderRadius: 10,
     },

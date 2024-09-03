@@ -9,3 +9,4 @@ export { default as sale_tp_nomenclature } from './sale_tp_nomenclature.svg';
 export { default as settlementsStatement } from './settlementsStatement.svg';
 export { default as storage } from './storage.svg';
 export { default as storage_desk } from './storage_desk.svg';
+export { default as merchandising } from './merchandising.svg' 

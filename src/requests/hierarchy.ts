@@ -44,19 +44,38 @@ export async function getDepData(ids: string[]): Promise<any> {
     return response.data;
   }
 
-  export async function getPhoneNumbersOfColleagues():Promise<any> {
-      let Body = { "FILTER":
+  export async function getPhoneNumbersOfColleagues(find?:string):Promise<any> {
+    let Body;  
+    if(find&&find!=''){
+      Body = { "FILTER":
         {
-            "UF_DEPARTMENT": Store.userData.UF_DEPARTMENT
+            "FIND": find,
+            ">PERSONAL_MOBILE": "",
+            "ACTIVE":true
         }}
+    }else{
+        Body = { "FILTER":
+        {
+            "UF_DEPARTMENT": Store.userData.UF_DEPARTMENT,
+            ">PERSONAL_MOBILE": "",
+            "ACTIVE":true
+        }}
+      }
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
         url: `${process.env.baseUrl}${process.env.token}user.search`,
         withCredentials: false,
-        body: Body
+        data: Body
       }
+      let sortedData = [];
       const response = await axios.request(config);
-      return response.data;    
+      sortedData = response.data.result.sort(function(c1,c2){
+        if (c1.LAST_NAME < c2.LAST_NAME) return -1;
+        if (c1.LAST_NAME > c2.LAST_NAME) return 1;
+        return 0;
+      });
+      for(let i=0;i<sortedData.length;i++)
+      Store.setColleaguesData(sortedData);    
   }
   
