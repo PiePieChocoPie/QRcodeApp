@@ -103,7 +103,7 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarShowLabel: false,
             tabBarIcon: ({ color }) => (
-              <Icons.colleagues  width={32} height={32} fill={color} />
+              <Icons.colleagues  width={32} height={32} stroke={color} />
             ),
           }}
           
