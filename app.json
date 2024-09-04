@@ -5,7 +5,7 @@
     "scheme": "app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpg",
     "userInterfaceStyle": "light",
     "plugins": [
       [
@@ -40,7 +40,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "upd.scanner",
-      "versionCode": 4,
+      "versionCode": 8,
       "publishBundlePath": "app.aab"
     },
     "web": {
