@@ -14,6 +14,7 @@ import * as Contacts from 'expo-contacts';
 import { PermissionsAndroid } from 'react-native';
 import { findAndModifyContact } from "src/contactsHandler";
 import { usePopupContext } from "src/PopupContext";
+import Button from 'src/components/button';
 
 const phoneDirectory = () => {
     const { loading, startLoading, stopLoading } = useLoading();
@@ -32,36 +33,6 @@ const phoneDirectory = () => {
             startLoading();
             checkAvailability();
             await getPhoneNumbersOfColleagues(find && find);
-            
-            let failed = 0;
-            let updated = 0;
-            let added = 0;
-            
-            if (!find) {
-                for (let colleague of Store.colleaguesData) {
-                    const result = await findAndModifyContact(colleague);
-                    switch (result) {
-                        case '1':
-                            added++;
-                            break;
-                        case '2':
-                            updated++;
-                            break;
-                        default:
-                            failed++;
-                            break;
-                    }
-                }
-                let message = '';
-                if (added > 0) message += `Добавлено: ${added}\n`;
-                if (updated > 0) message += `Обновлено: ${updated}\n`;
-                if (failed > 0) message += `Не удалось: ${failed}\n`;
-                
-                showPopup(message, 'success');
-            }
-            
-            
-            
             if (Store.colleaguesData) 
                 setColleaguesExist(true);
         } catch (error) {
@@ -104,6 +75,36 @@ const phoneDirectory = () => {
         setSearch(value);
         fetchData(value)
     };
+
+    const importHandle = async()=>{
+        let failed = 0;
+            let updated = 0;
+            let added = 0;
+            
+            if (!search) {
+                for (let colleague of Store.colleaguesData) {
+                    const result = await findAndModifyContact(colleague);
+                    switch (result) {
+                        case '1':
+                            added++;
+                            break;
+                        case '2':
+                            updated++;
+                            break;
+                        default:
+                            failed++;
+                            break;
+                    }
+                }
+                let message = '';
+                if (added > 0) message += `Добавлено: ${added}\n`;
+                if (updated > 0) message += `Обновлено: ${updated}\n`;
+                if (failed > 0) message += `Не удалось: ${failed}\n`;
+                
+                showPopup(message, 'success');
+            }
+    }
+
     return (
        
             <View style={localStyles.container}>
@@ -114,6 +115,7 @@ const phoneDirectory = () => {
                             placeholder='Поиск'
                             onChangeText={searchHandler}
                         />
+                <Button handlePress={importHandle} title='Импорт контактов'/>
                 </View>
                 {loading ? (
             <View style={localStyles.containerCentrallity}>
@@ -227,6 +229,8 @@ const localStyles = StyleSheet.create({
         paddingHorizontal: 10,
         fontSize: 16,
         width: '100%',
+        margin:5,
+        alignSelf:"center"
     },
 });
 

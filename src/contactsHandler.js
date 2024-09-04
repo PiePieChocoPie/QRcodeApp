@@ -68,7 +68,7 @@ async function requestContactsPermission() {
         console.log('Contact added:', contactId);
         return '1'
       } catch (error) {
-        console.error('Error adding contact:', error);
+        console.log('Error adding contact:', error);
         return '0'
       }
   }
@@ -115,7 +115,7 @@ async function requestContactsPermission() {
       console.log('Contact updated:', contactId);
       return '2'
     } catch (error) {
-      console.error('Error updating contact:', error);
+      console.log('Error updating contact:', error);
       return '0'
 
     }
