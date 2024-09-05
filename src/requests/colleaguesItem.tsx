@@ -77,7 +77,7 @@ const ColleaguesItem = ({ item, availableOptions }) => {
                         </TouchableOpacity>
                         <Text style={styles.TextOnModal}>{item.WORK_POSITION}</Text>
                         {item.UF_PHONE_INNER && 
-                        item.ID!='1'&& <TouchableOpacity
+                         <TouchableOpacity
                         onPress={() => call(`tel:`,MUPhone)}
                         style={[styles.socialContainer, { backgroundColor: projColors.currentVerse.redro }]}
                     >
@@ -88,18 +88,7 @@ const ColleaguesItem = ({ item, availableOptions }) => {
                     </TouchableOpacity>}
                         
                        <View style={{ flex: 1 }}>
-                            {item.ID=='1'?(
-                                <TouchableOpacity
-                                onPress={() => call(`viber://contact?number=`,item.PERSONAL_MOBILE)}
-                                style={[styles.socialContainer, { backgroundColor: '#8c60c3' }]}
-                            >
-                                 <View style={{ flexDirection: 'row' }}>
-                                    <socialIcons.viber height={30} width={40} color={projColors.currentVerse.extrasecond} />
-                                    <Text style={[styles.TitleSocialOnModal,{color:projColors.currentVerse.main}]}>Viber</Text>
-                                </View>
-                            </TouchableOpacity>
-                            ):(
-                                 availableOptions.map(option => {
+                                 {availableOptions.map(option => {
                                 const IconComponent = iconMap[option.value];
                                 return (
                                     <TouchableOpacity
@@ -113,7 +102,7 @@ const ColleaguesItem = ({ item, availableOptions }) => {
                                         </View>
                                     </TouchableOpacity>
                                 );
-                            }))}
+                            })}
                         </View>
                     </View>
                 }

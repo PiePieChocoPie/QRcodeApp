@@ -1,4 +1,4 @@
-import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet } from 'react-native';
+import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { router } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
@@ -193,6 +193,11 @@ function Profile() {
                         title={''}
                         icon={"calendar"} />   
                 </View>
+                {/* <Button 
+                        handlePress={()=>Linking.openURL("https://yandex.ru/maps/?rtext=~currentLocation~55.7558,37.6176~56.8584,35.9006~58.5215,31.2710~59.9343,30.3351&rtt=auto"
+                        )} 
+                        title={''}
+                        icon={"calendar"} />   */}
                 <Text>
                     <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
                         {'\n\n\n\nГород: '}
