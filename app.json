@@ -11,7 +11,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+          "cameraPermission": "Разрешите доступ к камере, чтобы сканировать QR-коды."
         }
       ],
       "expo-router",
@@ -31,7 +31,11 @@
       "bundleIdentifier": "upd.scanner",
       "entitlements": {
         "aps-environment": "production"
-      }
+      },
+    "infoPlist": {
+      "NSCameraUsageDescription": "Мы используем вашу камеру для сканирования QR-кодов.",
+      "NSContactsUsageDescription": "Мы запрашиваем доступ к вашим контактам для того, чтобы обновлять существующие контакты коллег."
+    }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,7 +44,7 @@
       },
       "permissions": [
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.READ_CONTACTS"
       ],
       "package": "upd.scanner",
       "versionCode": 8,
