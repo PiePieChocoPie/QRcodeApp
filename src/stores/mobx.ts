@@ -21,6 +21,7 @@ class Store {
   extraDate: any = null;
   filterItems: any = null;
   attorneys: any = null;
+  itineraries: any = null;
   attorneyStatusesData: any = null;
   isWarehouse:boolean=false;
   colleaguesData:any = null;
@@ -107,6 +108,10 @@ class Store {
 
   setAttorneys(attorneys: any) {
     this.setProperty('attorneys', attorneys);
+  }
+
+  setItineraries(itineraries: any) {
+    this.setProperty('itineraries', itineraries);
   }
 
   setIsWarehouse(isWarehouse:boolean){

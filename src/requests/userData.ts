@@ -96,6 +96,65 @@ export async function getUserAttorney(onAuthorize:boolean): Promise<boolean> {
     return false;
 }
 
+export async function getUserItinerary(): Promise<boolean> {
+  try {
+    let data = JSON.stringify({
+      "entityTypeId": "133",
+      "filter": {
+        "ufCrm6Driver": Store.userData.ID
+      },
+      "select": [
+          "id",
+          "title",
+          "createdBy",
+          "opportunity",
+          "currencyId",
+          "ufCrm6Upd",
+          "ufCrm6Driver",
+          "createdTime",
+          "opened",
+          "stageId",
+          "ufCrm6RoutingRouteYandex"
+        ]
+      });
+  
+      let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: false,
+          data: data
+      };
+
+      // Запрос данных
+    const response = await axios.request(config);
+    let items = response.data.result.items;
+
+    // Проход по каждому элементу для добавления полей
+    for (let item of items) {
+      // console.log(item)
+      // Добавляем поле cost
+      item.cost = `${item.opportunity} ${item.currencyId}`;
+
+      // Запрашиваем ответственного (responsibleData)
+      const responsibleResponse = await axios.post(
+        `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/user.get.json?ID=${item.createdBy}`
+      );
+
+      // Добавляем поле responsibleData
+      item.responsibleData = responsibleResponse.data.result[0]; // Предполагается, что данные по ответственному в result[0]
+    }
+    console.log(items)
+    // Обновляем данные в Store
+     Store.setItineraries(items);
+    return true; // Возвращаем true, если все прошло успешно
+  } catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+}
+
 export async function getAllStaticData(authToken: string, userData: boolean, depData: boolean, TaskData: boolean, docsStatuses: boolean): Promise<{status: boolean, curError: string}> {
     try {
       let status = true;

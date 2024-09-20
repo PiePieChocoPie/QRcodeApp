@@ -1,13 +1,14 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Pressable, FlatList, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import TaskItem from "src/ListItems/taskItem";
 import AttorneysItem from "src/ListItems/attorneysItem";
-import { getAllStaticData, getUserAttorney } from "src/requests/userData";
+import { getAllStaticData, getUserAttorney, getUserItinerary } from "src/requests/userData";
 import Store from "src/stores/mobx";
 import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
 import * as Icons from '../../assets';
+import ItineraryItems from "src/ListItems/itineraryItems";
 
 const Tasks = () => {
     const { loading, startLoading, stopLoading } = useLoading();
@@ -24,7 +25,7 @@ const Tasks = () => {
         { id: '3', status: 'на этой неделе', colors: ['#83AD00', '#FFFFFF'] },
         { id: '4', status: 'на следующей неделе', colors: ['#83AD00', '#FFFFFF'] },  
         { id: '5', status: 'без срока', colors: ['#83AD00', '#FFFFFF'] },  
-        { id: '6', статус: 'больше двух недель', colors: ['#83AD00', '#FFFFFF'] },  
+        { id: '6', status: 'больше двух недель', colors: ['#83AD00', '#FFFFFF'] },  
     ], []);
 
     const fetchData = useCallback(async () => {
@@ -71,21 +72,33 @@ const Tasks = () => {
         }
     }, [filterIndex, Store.taskData]);
 
+    
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
+        console.log('Selected List:', selectedList);  // Логируем выбранный список
         try {
-            if (selectedList === 'Tasks') await getAllStaticData(Store.tokenData, false, false, true, false);
-            else if (selectedList === 'Attorney') await getUserAttorney(false);
+            if (selectedList === 'Tasks') {
+                await getAllStaticData(Store.tokenData, false, false, true, false);
+                console.log('Loaded Tasks');
+            } else if (selectedList === 'Attorney') {
+                await getUserAttorney(false);
+                console.log('Loaded Attorney');
+            } else if (selectedList === 'Itinerary') {
+                await getUserItinerary();
+                console.log('Loaded Itinerary');
+            }
         } catch (error) {
             console.error('Error refreshing data:', error);
         } finally {
             setRefreshing(false);
+            stopLoading();
         }
     }, [selectedList]);
 
-    const focusChange = async (selectedData) => {
-        await setSelectedList(selectedData);
-        console.log(selectedList);
+    const focusChange = (selectedData) => {
+        startLoading();
+        console.log('Changing selected list to:', selectedData);
+        setSelectedList(selectedData);
     };
    
     return (
@@ -115,6 +128,12 @@ const Tasks = () => {
                                    fill={selectedList == 'Attorney' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
                                 <Text style={[localStyles.buttonTitle, selectedList == 'Attorney' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>Доверенность</Text>
                             </Pressable>
+                            <Pressable onPress={() => focusChange('Itinerary')} 
+                            style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Itinerary' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
+                                <Icons.route_list width={35} height={35} 
+                                   fill={selectedList == 'Itinerary' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
+                                <Text style={[localStyles.buttonTitle, selectedList == 'Itinerary' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>маршрутные листы</Text>
+                            </Pressable>
                         </View>
                         {selectedList === "Tasks" && (
                             <FlatList
@@ -142,10 +161,16 @@ const Tasks = () => {
                         )}
                     </View>
                     <View style={localStyles.container}>
-                        {taskCount ? (
+                        {loading?(
+                            <View style={localStyles.containerCentrallity}>
+                            <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                            </View>
+                        ):
+                        taskCount ? (
                             <View style={{ flex: 1 }}>
                                 {selectedList === 'Tasks' && filterTaskList.map(item => <TaskItem key={item.id} item={item} />)}
                                 {selectedList === 'Attorney' && Store.attorneys.map(item => <AttorneysItem key={item.ufCrm10ProxyNumber} item={item} />)}
+                                {selectedList === 'Itinerary' && Store.itineraries.map(item => <ItineraryItems key={item.id} item={item} />)}
                             </View>
                         ) : (
                             <Text style={localStyles.Text}>Задачи не установлены</Text>
