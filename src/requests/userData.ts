@@ -136,14 +136,6 @@ export async function getUserItinerary(): Promise<boolean> {
       // console.log(item)
       // Добавляем поле cost
       item.cost = `${item.opportunity} ${item.currencyId}`;
-
-      // Запрашиваем ответственного (responsibleData)
-      const responsibleResponse = await axios.post(
-        `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/user.get.json?ID=${item.createdBy}`
-      );
-
-      // Добавляем поле responsibleData
-      item.responsibleData = responsibleResponse.data.result[0]; // Предполагается, что данные по ответственному в result[0]
     }
     console.log(items)
     // Обновляем данные в Store
@@ -153,6 +145,18 @@ export async function getUserItinerary(): Promise<boolean> {
     console.error('Error:', error);
     return false;
   }
+}
+
+export async function getUserById(id:string){
+  // Запрашиваем ответственного (responsibleData)
+  const responsibleResponse = await axios.post(
+    `https://bitrix24.martinural.ru/rest/578/extp02nu56oz6zhn/user.get.json?ID=${id}`
+  );
+
+  // Добавляем поле responsibleData
+  console.log(responsibleResponse.data.result)
+
+  return responsibleResponse.data.result; // Предполагается, что данные по ответственному в result[0]
 }
 
 export async function getAllStaticData(authToken: string, userData: boolean, depData: boolean, TaskData: boolean, docsStatuses: boolean): Promise<{status: boolean, curError: string}> {

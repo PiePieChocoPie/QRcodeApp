@@ -99,6 +99,7 @@ const Tasks = () => {
         startLoading();
         console.log('Changing selected list to:', selectedData);
         setSelectedList(selectedData);
+        onRefresh();
     };
    
     return (
