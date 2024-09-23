@@ -31,7 +31,15 @@ const Tasks = () => {
     const fetchData = useCallback(async () => {
         try {
             startLoading();
-            await getAllStaticData(Store.tokenData, false, false, true, false);
+            switch(selectedList){
+                case "Tasks":
+                    await getAllStaticData(Store.tokenData, false, false, true, false);
+                case "Attorneys":
+                    await getUserAttorney(false);
+                case "Itinerary":
+                    await getUserItinerary();
+
+            }
             setTaskCount(Store.taskData && Store.taskData.length > 0);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -99,7 +107,7 @@ const Tasks = () => {
         startLoading();
         console.log('Changing selected list to:', selectedData);
         setSelectedList(selectedData);
-        onRefresh();
+        fetchData()
     };
    
     return (

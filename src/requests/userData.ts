@@ -140,7 +140,7 @@ export async function getUserItinerary(): Promise<boolean> {
     console.log(items)
     // Обновляем данные в Store
      Store.setItineraries(items);
-    return true; // Возвращаем true, если все прошло успешно
+    return items; // Возвращаем true, если все прошло успешно
   } catch (error) {
     console.error('Error:', error);
     return false;

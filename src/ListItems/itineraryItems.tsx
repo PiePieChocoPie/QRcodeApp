@@ -68,7 +68,7 @@ const ItineraryItems = ({ item }) => {
                             >
                                  <View style={{ flexDirection: 'row' }}>
                                     <Icons.mobile height={30} width={40}/>
-                                    <Text style={[styles.TitleSocialOnModal,{color:projColors.currentVerse.main}]}>позвонить </Text>
+                                    <Text style={[styles.TitleSocialOnModal,{color:projColors.currentVerse.border}]}>позвонить </Text>
                                 </View>
                             </TouchableOpacity>}
                             {item.ufCrm6RoutingRouteYandex&&<TouchableOpacity
@@ -77,7 +77,7 @@ const ItineraryItems = ({ item }) => {
                             >
                                  <View style={{ flexDirection: 'row' }}>
                                     <Icons.yandex height={30} width={40}/>
-                                    <Text style={[styles.TitleSocialOnModal,{color:projColors.currentVerse.main}]}>открыть маршрут</Text>
+                                    <Text style={[styles.TitleSocialOnModal,{color:projColors.currentVerse.fontAccent}]}>открыть маршрут</Text>
                                 </View>
                             </TouchableOpacity>}
                         </View>)
