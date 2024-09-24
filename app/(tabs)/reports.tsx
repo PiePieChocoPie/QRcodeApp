@@ -40,23 +40,33 @@ const Home = () => {
   };
 
   const renderItem = ({ item, index }) => {
-    const key = Object.keys(reports)[index];
-    const Icon = Icons[key];
-    if (!Icon) {
-      console.warn(`Icon for key "${key}" not found`);
-      return null;
-    }
+  const key = Object.keys(reports)[index];
+  const Icon = Icons[key];
+  
+  // Если иконка не найдена
+  if (!Icon) {
+    console.warn(`Icon for key "${key}" not found`);
     return (
-      <TouchableOpacity
-        key={key}
-        style={[localStyles.listElementContainer, { width: "45%", alignContent: "center", alignItems: "center" }]}
-        onPress={() => onPressReport(key)}
-      >
-        <Icon width={50} height={50} />
+      <View style={[localStyles.listElementContainer, { width: "45%", alignContent: "center", alignItems: "center" }]}>
+        {/* Вместо "Иконка не найдена" выводим название отчёта */}
         <Text style={[localStyles.Text, { textAlign: "center" }]}>{item.name}</Text>
-      </TouchableOpacity>
+      </View>
     );
-  };
+  }
+
+  return (
+    <TouchableOpacity
+      key={key}
+      style={[localStyles.listElementContainer, { width: "45%", alignContent: "center", alignItems: "center" }]}
+      onPress={() => onPressReport(key)}
+    >
+      <Icon width={50} height={50} />
+      <Text style={[localStyles.Text, { textAlign: "center" }]}>{item.name}</Text>
+    </TouchableOpacity>
+  );
+};
+
+  
 
   return (
     <View style={localStyles.container}>

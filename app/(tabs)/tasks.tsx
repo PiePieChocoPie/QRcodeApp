@@ -137,11 +137,26 @@ const Tasks = () => {
                                    fill={selectedList == 'Attorney' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
                                 <Text style={[localStyles.buttonTitle, selectedList == 'Attorney' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>Доверенность</Text>
                             </Pressable>
-                            <Pressable onPress={() => focusChange('Itinerary')} 
-                            style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Itinerary' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
-                                <Icons.route_list width={35} height={35} 
-                                   fill={selectedList == 'Itinerary' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
-                                <Text style={[localStyles.buttonTitle, selectedList == 'Itinerary' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>маршрутные листы</Text>
+                            <Pressable
+                                onPress={() => focusChange('Itinerary')}
+                                style={[
+                                    localStyles.buttonContainer,
+                                    { width: '35%', alignItems: "center", flex: 1 },
+                                    selectedList === 'Itinerary' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }
+                                ]}
+                                >
+                                <Icons.route_list
+                                    width={35}
+                                    height={35}
+                                    stroke={selectedList === 'Itinerary' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} // Контур
+                                    fill="none" 
+                                />
+                                <Text style={[
+                                    localStyles.buttonTitle,
+                                    selectedList === 'Itinerary' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }
+                                ]}>
+                                    Маршрутные листы
+                                </Text>
                             </Pressable>
                         </View>
                         {selectedList === "Tasks" && (

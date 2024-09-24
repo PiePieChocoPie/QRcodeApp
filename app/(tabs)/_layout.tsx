@@ -103,7 +103,7 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarShowLabel: false,
             tabBarIcon: ({ color }) => (
-              <Icons.colleagues  width={32} height={32} stroke={color} />
+              <Icons.colleagues name="colleagues" width={32} height={32} fill={color} />
             ),
           }}
           
@@ -141,8 +141,8 @@ const PopupComponent = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#DE283B', // Red color
-    height: 30, // Adjust the height as needed
+    // backgroundColor: '#DE283B', // Red color
+    height: '5%', // Adjust the height as needed
     justifyContent: 'center',
     alignItems: 'center',
     // marginVertical: 40
