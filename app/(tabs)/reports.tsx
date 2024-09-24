@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, FlatList, View } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ScrollView, View } from 'react-native';
 import ModalForm from "src/modals/newModal";
 import { projColors } from 'src/stores/styles'; // Цвета из общего файла стилей
 import { getReports } from 'src/requests/timeManagement';
@@ -38,13 +38,12 @@ const Home = () => {
     setModalVisible(!modalVisible);
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = (item, index) => {
     const key = Object.keys(reports)[index];
-
     return (
       <TouchableOpacity
         key={key}
-        style={localStyles.listElementContainer} // Используем стандартный стиль
+        style={localStyles.listElementContainer}
         onPress={() => onPressReport(key)}
       >
         <Text style={[localStyles.Text, { textAlign: "center" }]}>{item.name}</Text>
@@ -53,13 +52,8 @@ const Home = () => {
   };
 
   return (
-    <View style={localStyles.container}>
-      <FlatList
-        data={Object.values(reports)}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        numColumns={1} // Изменяем на 1 столбец для списка
-      />
+    <ScrollView contentContainerStyle={localStyles.container}>
+      {Object.values(reports).map((item, index) => renderItem(item, index))}
       <ModalForm
         modalVisible={modalVisible}
         toggleModal={toggleModal}
@@ -67,13 +61,13 @@ const Home = () => {
         reportKey={reportKey}
         reports={reports}
       />
-    </View>
+    </ScrollView>
   );
 };
 
 const localStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1, // Используем flexGrow для растяжения содержимого
     backgroundColor: projColors.currentVerse.main,
     padding: 10,
   },
