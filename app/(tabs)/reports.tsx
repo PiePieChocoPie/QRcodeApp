@@ -3,7 +3,6 @@ import { Text, TouchableOpacity, StyleSheet, FlatList, View } from 'react-native
 import ModalForm from "src/modals/newModal";
 import { projColors } from 'src/stores/styles'; // Цвета из общего файла стилей
 import { getReports } from 'src/requests/timeManagement';
-import * as Icons from '../../assets/icons'; 
 import { usePopupContext } from "src/PopupContext";
 
 const Home = () => {
@@ -40,33 +39,18 @@ const Home = () => {
   };
 
   const renderItem = ({ item, index }) => {
-  const key = Object.keys(reports)[index];
-  const Icon = Icons[key];
-  
-  // Если иконка не найдена
-  if (!Icon) {
-    console.warn(`Icon for key "${key}" not found`);
+    const key = Object.keys(reports)[index];
+
     return (
-      <View style={[localStyles.listElementContainer, { width: "45%", alignContent: "center", alignItems: "center" }]}>
-        {/* Вместо "Иконка не найдена" выводим название отчёта */}
+      <TouchableOpacity
+        key={key}
+        style={localStyles.listElementContainer} // Используем стандартный стиль
+        onPress={() => onPressReport(key)}
+      >
         <Text style={[localStyles.Text, { textAlign: "center" }]}>{item.name}</Text>
-      </View>
+      </TouchableOpacity>
     );
-  }
-
-  return (
-    <TouchableOpacity
-      key={key}
-      style={[localStyles.listElementContainer, { width: "45%", alignContent: "center", alignItems: "center" }]}
-      onPress={() => onPressReport(key)}
-    >
-      <Icon width={50} height={50} />
-      <Text style={[localStyles.Text, { textAlign: "center" }]}>{item.name}</Text>
-    </TouchableOpacity>
-  );
-};
-
-  
+  };
 
   return (
     <View style={localStyles.container}>
@@ -74,7 +58,7 @@ const Home = () => {
         data={Object.values(reports)}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
-        numColumns={2}
+        numColumns={1} // Изменяем на 1 столбец для списка
       />
       <ModalForm
         modalVisible={modalVisible}
@@ -91,20 +75,20 @@ const localStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: projColors.currentVerse.main,
-    padding: 10
+    padding: 10,
   },
   listElementContainer: {
     backgroundColor: projColors.currentVerse.listElementBackground,
     borderRadius: 10,
-    margin: 10, // Увеличение отступов между контейнерами
-    padding: 20, // Увеличение внутреннего отступа
+    marginVertical: 5, // Уменьшаем отступы между элементами
+    padding: 15, // Уменьшаем внутренний отступ
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 120, // Увеличение минимальной высоты контейнера
-    minWidth: 120, // Увеличение минимальной ширины контейнера
+    minHeight: 60, // Уменьшаем минимальную высоту контейнера
   },
   Text: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: projColors.currentVerse.font,
   },
 });
