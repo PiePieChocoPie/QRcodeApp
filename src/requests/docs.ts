@@ -79,6 +79,45 @@ export async function getTasksData(ID: string): Promise<any> {
           throw error;
       }
   }
+
+  export async function getUpdById(id: string): Promise<any> {
+    try {
+
+        const data = JSON.stringify({
+            "entityTypeId": 168,
+            "filter": {
+                "id": id
+            }
+        });
+
+        const config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://bitrix24.martinural.ru/rest/597/9sxsabntxlt7pa2k/crm.item.list',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: false,
+            data: data
+        };
+
+        // console.log("Request data:", data);
+
+        const response = await axios.request(config);
+        // console.log("Response data:", response.data); // Лог ответа
+
+        if (response.data && response.data.result && response.data.result.items) {
+            // console.log("First item:", response.data.result.items[0]);
+        } else {
+            console.error('Invalid response structure:', response.data);
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
   
   
   export async function updUpdStatus(IDUpd: string, IDStatus: string, userID: string, commentValue:any,commentField:string, comment:string): Promise<any> {

@@ -140,7 +140,10 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
                             <Text style={[styles.Title, { textAlign: "center" }]}>{isRejected?updStatuses[updStatuses.length - 1].NAME:nextStatus.NAME}</Text>
                         </View>
                     <View style={styles.RBView}>
-                        {docData.stageId === "DT168_9:UC_YAHBD0" && (
+                    {docData.entityTypeId === "168"&&docData.ufCrm5DriverTask&& 
+                    <Text style={[styles.Title, { textAlign: "center" }]}>Задание для водителя {docData.ufCrm5DriverTask}</Text>
+                    }
+                    {docData.stageId === "DT168_9:UC_YAHBD0" && (
                             <>
                                 <Dropdown
                                     style={styles.dropdown}
