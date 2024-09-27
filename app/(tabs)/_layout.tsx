@@ -142,7 +142,7 @@ const PopupComponent = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     // backgroundColor: '#DE283B', // Red color
-    height: '5%', // Adjust the height as needed
+    height: '6%', // Adjust the height as needed
     justifyContent: 'center',
     alignItems: 'center',
     // marginVertical: 40
