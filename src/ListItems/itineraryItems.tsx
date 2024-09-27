@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Linking, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Linking, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { ActivityIndicator } from "react-native-paper";
 import CustomModal from "src/components/custom-modal";
 import { getUserById } from "src/requests/userData";
@@ -60,10 +60,10 @@ const ItineraryItems = ({ item }) => {
     const renderItem = (upd, index) => (
         <TouchableOpacity
             key={index}
-            style={styles.listElementContainer}
+            style={[styles.listElementContainer,{width:'70%'}]}
             onPress={() => setActiveUpdIndex(index)} // Устанавливаем индекс активного upd
         >
-            <Text style={[styles.Text, { textAlign: "center" }]}>{upd.title}</Text>
+            <Text style={[styles.Text, { textAlign: "center" }]}>{upd.ufCrm5ShortName}</Text>
             <CustomModal
                 visible={activeUpdIndex === index} // Проверяем, открыт ли именно этот upd
                 onClose={() => setActiveUpdIndex(null)} // Закрываем модальное окно
@@ -72,10 +72,7 @@ const ItineraryItems = ({ item }) => {
                 content={
                     <View style={styles.containerCentrallityFromUpper}>
                         {upd.ufCrm5DriverTask&&<Text style={styles.Title}>Задание для водителя: {upd.ufCrm5DriverTask}</Text>}
-                        <Text style={styles.Text}>Дата создания: {formatDate(upd.createdTime)}</Text>
-                        <Text style={styles.Text}>Дата изменения: {formatDate(upd.updatedTime)}</Text>
                         {upd.ufCrm5DeliveryAddress && <Text style={styles.Title}>Адрес доставки: {upd.ufCrm5DeliveryAddress}</Text>}
-                        {upd.ufCrm5OrderComment && <Text style={styles.Title}>Комментарий: {upd.ufCrm5OrderComment}</Text>}
                     </View>
                 }
             />
@@ -109,13 +106,16 @@ const ItineraryItems = ({ item }) => {
                                     {updates.length > 0 &&
                                         updates.map((upd, index) => renderItem(upd, index))}
 
-                                    {creator && (
+                                    
+                                </ScrollView>
+                                <View style={styles.crop}>
+                                {creator && (
                                         <TouchableOpacity
                                             onPress={call}
-                                            style={[styles.socialContainer, { backgroundColor: '#8c60c3' }]}
+                                            style={[styles.socialContainer, { backgroundColor: '#009900', width:'90%' }]}
                                         >
                                             <View style={{ flexDirection: 'row' }}>
-                                                <Icons.mobile height={30} width={40} />
+                                                <Icons.stat_phone height={30} width={40} color={projColors.currentVerse.border}/>
                                                 <Text style={[styles.TitleSocialOnModal, { color: projColors.currentVerse.border }]}>Позвонить</Text>
                                             </View>
                                         </TouchableOpacity>
@@ -124,7 +124,7 @@ const ItineraryItems = ({ item }) => {
                                     {item.ufCrm6RoutingRouteYandex && (
                                         <TouchableOpacity
                                             onPress={openMaps}
-                                            style={[styles.socialContainer, { backgroundColor: 'white' }]}
+                                            style={[styles.socialContainer, { backgroundColor: 'white' , width:'90%'}]}
                                         >
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Icons.yandex height={30} width={40} />
@@ -132,7 +132,7 @@ const ItineraryItems = ({ item }) => {
                                             </View>
                                         </TouchableOpacity>
                                     )}
-                                </ScrollView>
+                                    </View>
                             </View>
                         )
                     }
@@ -143,6 +143,14 @@ const ItineraryItems = ({ item }) => {
 };
 
 const styles = StyleSheet.create({
+    crop:{
+        backgroundColor:projColors.currentVerse.extrasecond,
+        width:'100%',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: projColors.currentVerse.border,
+        marginBottom:10
+    },
     container: {
         flexGrow: 1, // Используем flexGrow для растяжения содержимого
         padding: 10,
@@ -193,7 +201,7 @@ const styles = StyleSheet.create({
     containerCentrallityFromUpper: {
         flex: 1,
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'stretch',
     },
 });
 
