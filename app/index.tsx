@@ -64,12 +64,14 @@ const PinInput = ({ pin, setPin, isError }) => {
                         <Text style={styles.numButtonText}>{num}</Text>
                     </TouchableOpacity>
                 ))}
-                <TouchableOpacity style={styles.numButton} onPress={handleDelete}>
-                    <Text style={styles.numButtonText}>⌫</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.numButton} onPress={() => handlePress('0')}>
-                    <Text style={styles.numButtonText}>0</Text>
-                </TouchableOpacity>
+                <View style={styles.underNumPad}>
+                    <TouchableOpacity style={styles.numButton} onPress={() => handlePress('0')}>
+                        <Text style={styles.numButtonText}>0</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.numButton} onPress={handleDelete}>
+                        <Text style={styles.numButtonText}>⌫</Text>
+                    </TouchableOpacity>                    
+                </View>
             </View>
         </View>
     );
@@ -386,6 +388,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
+        width: 250,
+        alignSelf: 'center',
+    },
+    underNumPad:{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-end',
         width: 250,
         alignSelf: 'center',
     },

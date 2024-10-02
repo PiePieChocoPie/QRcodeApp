@@ -44,38 +44,52 @@ export async function getDepData(ids: string[]): Promise<any> {
     return response.data;
   }
 
-  export async function getPhoneNumbersOfColleagues(find?:string):Promise<any> {
-    let Body;  
-    if(find&&find!=''){
-      Body = { "FILTER":
-        {
-            "FIND": find,
-            ">PERSONAL_MOBILE": "",
-            "ACTIVE":true
-        }}
-    }else{
-        Body = { "FILTER":
-        {
-            "UF_DEPARTMENT": Store.userData.UF_DEPARTMENT,
-            ">PERSONAL_MOBILE": "",
-            "ACTIVE":true
-        }}
-      }
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `${process.env.baseUrl}${process.env.token}user.search`,
-        withCredentials: false,
-        data: Body
-      }
-      let sortedData = [];
-      const response = await axios.request(config);
-      sortedData = response.data.result.sort(function(c1,c2){
-        if (c1.LAST_NAME < c2.LAST_NAME) return -1;
-        if (c1.LAST_NAME > c2.LAST_NAME) return 1;
-        return 0;
-      });
-      for(let i=0;i<sortedData.length;i++)
-      Store.setColleaguesData(sortedData);    
-  }
-  
+  export async function getPhoneNumbersOfColleagues(): Promise<void> {
+    // Формируем тело запроса. Если есть параметр "find", добавляем его в фильтр, иначе используем стандартный фильтр с "start"
+    const Body = {
+        'start':0,
+        FILTER: {
+            ">PERSONAL_MOBILE": "", // Фильтр по наличию мобильного номера
+            "ACTIVE": true // Только активные пользователи
+        }
+    };
+    
+    // Конфигурация для запроса с использованием axios
+    const config = {
+        method: 'post', // Метод запроса POST
+        maxBodyLength: Infinity, // Максимальная длина тела запроса (без ограничений)
+        url: `${process.env.baseUrl}${process.env.token}user.search`, // URL для API с подставлением токена и baseUrl из окружения
+        withCredentials: false, // Не используем креденшалы
+        data: Body // Тело запроса
+    };
+
+    let sortedData = []; // Массив для хранения отсортированных данных
+    let total = 1; // Общее количество записей (по умолчанию 1)
+
+    try {
+        // Выполняем первый запрос для получения данных
+        const response = await axios.request(config);
+        total = response.data.total; // Получаем общее количество записей
+        sortedData = [...response.data.result]; // Сохраняем полученные записи
+
+        // Если данных больше, чем мы получили за один запрос, продолжаем запрашивать остальные данные
+        while (sortedData.length < total) {
+            Body.start = sortedData.length;  // Обновляем значение "start" на основе текущей длины массива
+            const responseOnCycle = await axios.request(config); // Выполняем следующий запрос
+            total = responseOnCycle.data.total; // Обновляем общее количество записей (на случай, если оно изменилось)
+            sortedData.push(...responseOnCycle.data.result); // Добавляем новые данные в массив
+        }
+
+        // Сортируем данные по фамилии (LAST_NAME) с использованием localeCompare для корректной сортировки строк
+        sortedData.sort((c1, c2) => c1.LAST_NAME.localeCompare(c2.LAST_NAME));
+
+        // Сохраняем данные в Store после того, как все данные были собраны и отсортированы
+        Store.setColleaguesData(sortedData);
+        console.log('кол-во',Store.colleaguesData.length); // Выводим количество сотрудников для проверки
+        
+    } catch (error) {
+        // Обрабатываем ошибку, если произошел сбой при выполнении запроса
+        console.error('Ошибка при получении номеров телефонов коллег:', error);
+        // При необходимости можно дополнительно обработать ошибку или повторно выбросить её
+    }
+}

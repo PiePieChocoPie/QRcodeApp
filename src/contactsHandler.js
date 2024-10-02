@@ -30,28 +30,15 @@ async function requestContactsPermission() {
 
    // Функция для добавления контакта
    async function addContact(colleague) {
-    // const localImageUri = await downloadImageToFile(colleague.PERSONAL_PHOTO);
-
-    // if (!localImageUri) {
-    //   throw new Error('Failed to download image');
-    // }
-
     const contact = {
         [Contacts.Fields.FirstName]: `${colleague.NAME} ${colleague.SECOND_NAME}`,
         [Contacts.Fields.LastName]: colleague.LAST_NAME,
-        // [Contacts.Fields.MiddleName]: colleague.SECOND_NAME,
         [Contacts.Fields.Emails]: [{ label: 'work', email: colleague.EMAIL }],
         [Contacts.Fields.PhoneNumbers]: [
           { label: 'mobile', number: colleague.PERSONAL_MOBILE },
           { label: colleague.UF_PHONE_INNER, number: '+79292692259' }
         ],
         [Contacts.Fields.JobTitle]: colleague.WORK_POSITION,
-        // [Contacts.Fields.Company]: 'Мартин Урал', // если доступно
-        [Contacts.Fields.Birthday]: { 
-            day: new Date(colleague.PERSONAL_BIRTHDAY).getDate(),
-            month: new Date(colleague.PERSONAL_BIRTHDAY).getMonth() + 1,
-            year: new Date(colleague.PERSONAL_BIRTHDAY).getFullYear()
-        },
         [Contacts.Fields.Addresses]: [{
           street: colleague.PERSONAL_STREET,
           city: colleague.PERSONAL_CITY,
@@ -59,46 +46,42 @@ async function requestContactsPermission() {
           country: colleague.PERSONAL_COUNTRY,
           postalCode: colleague.PERSONAL_ZIP
         }],
-        [Contacts.Fields.UrlAddresses]: [{ label: 'web', url: colleague.PERSONAL_WWW }],
-        // [Contacts.Fields.Image]: { uri: localImageUri }
-      };
-    
-      try {
+        [Contacts.Fields.UrlAddresses]: [{ label: 'web', url: colleague.PERSONAL_WWW }]
+    };
+
+    // Проверяем корректность даты рождения
+    const birthDate = new Date(colleague.PERSONAL_BIRTHDAY);
+    if (!isNaN(birthDate.getTime())) { // Проверяем, что дата валидна
+        contact[Contacts.Fields.Birthday] = {
+            day: birthDate.getDate(),
+            month: birthDate.getMonth() + 1, // Месяцы отсчитываются с 0, поэтому +1
+            year: birthDate.getFullYear()
+        };
+    }
+
+    try {
         const contactId = await Contacts.addContactAsync(contact);
         console.log('Contact added:', contactId);
-        return '1'
-      } catch (error) {
+        return '1';
+    } catch (error) {
         console.log('Error adding contact:', error);
-        return '0'
-      }
-  }
+        return '0';
+    }
+}
+
   
   // Функция для изменения контакта
   async function updateContact(contactId, colleague) {
-    const permissionGranted = await requestContactsPermission();
-    if (!permissionGranted) return;
-    // const localImageUri = await downloadImageToFile(colleague.PERSONAL_PHOTO);
-
-    // if (!localImageUri) {
-    //   throw new Error('Failed to download image');
-    // }
     const updatedContact = {
-      id: contactId, // ID контакта, который нужно обновить
-      [Contacts.Fields.FirstName]: `${colleague.NAME} ${colleague.SECOND_NAME}`,
+        id: contactId,
+        [Contacts.Fields.FirstName]: `${colleague.NAME} ${colleague.SECOND_NAME}`,
         [Contacts.Fields.LastName]: colleague.LAST_NAME,
-        [Contacts.Fields.MiddleName]: ``,
         [Contacts.Fields.Emails]: [{ label: 'work', email: colleague.EMAIL }],
         [Contacts.Fields.PhoneNumbers]: [
           { label: 'mobile', number: colleague.PERSONAL_MOBILE },
           { label: colleague.UF_PHONE_INNER, number: '+79292692259' }
         ],
         [Contacts.Fields.JobTitle]: colleague.WORK_POSITION,
-        // [Contacts.Fields.Company]: 'Мартин Урал', // если доступно
-        [Contacts.Fields.Birthday]: {
-            day: isNaN(new Date(colleague.PERSONAL_BIRTHDAY).getDate()) ? undefined : new Date(colleague.PERSONAL_BIRTHDAY).getDate(),
-            month: isNaN(new Date(colleague.PERSONAL_BIRTHDAY).getMonth() + 1) ? undefined : new Date(colleague.PERSONAL_BIRTHDAY).getMonth() + 1,
-            year: isNaN(new Date(colleague.PERSONAL_BIRTHDAY).getFullYear()) ? undefined : new Date(colleague.PERSONAL_BIRTHDAY).getFullYear()
-        },
         [Contacts.Fields.Addresses]: [{
           street: colleague.PERSONAL_STREET,
           city: colleague.PERSONAL_CITY,
@@ -106,21 +89,29 @@ async function requestContactsPermission() {
           country: colleague.PERSONAL_COUNTRY,
           postalCode: colleague.PERSONAL_ZIP
         }],
-        [Contacts.Fields.UrlAddresses]: [{ label: 'web', url: colleague.PERSONAL_WWW }],
-        // [Contacts.Fields.Image]: { uri: localImageUri }
+        [Contacts.Fields.UrlAddresses]: [{ label: 'web', url: colleague.PERSONAL_WWW }]
     };
-  
-    try {
-      await Contacts.updateContactAsync(updatedContact);
-      console.log('Contact updated:', contactId);
-      return '2'
-    } catch (error) {
-      console.log('Error updating contact:', error);
-      return '0'
 
+    // Проверяем корректность даты рождения
+    const birthDate = new Date(colleague.PERSONAL_BIRTHDAY);
+    if (!isNaN(birthDate.getTime())) { // Проверяем, что дата валидна
+        updatedContact[Contacts.Fields.Birthday] = {
+            day: birthDate.getDate(),
+            month: birthDate.getMonth() + 1,
+            year: birthDate.getFullYear()
+        };
     }
-  }
-  
+
+    try {
+        await Contacts.updateContactAsync(updatedContact);
+        console.log('Contact updated:', contactId);
+        return '2';
+    } catch (error) {
+        console.log('Error updating contact:', error);
+        return '0';
+    }
+}
+
 
   export async function findAndModifyContact(colleague) {
     const permissionGranted = await requestContactsPermission();

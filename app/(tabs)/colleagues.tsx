@@ -21,6 +21,7 @@ const phoneDirectory = () => {
     const [colleaguesExist, setColleaguesExist] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [availableOptions, setAvailableOptions] = useState([]);
+    const [colleaguesList, setColleaguesList] = useState([]);
     const scrollViewRef = useRef(null);
     const [search, setSearch] = useState('');
     const { showPopup } = usePopupContext();
@@ -28,13 +29,15 @@ const phoneDirectory = () => {
     
       
 
-    const fetchData = useCallback(async (find?: string) => {
+    const fetchData = useCallback(async () => {
         try {
             startLoading();
             checkAvailability();
-            await getPhoneNumbersOfColleagues(find && find);
-            if (Store.colleaguesData) 
+            await getPhoneNumbersOfColleagues();
+            if (Store.colleaguesData){
                 setColleaguesExist(true);
+                setColleaguesList(Store.colleaguesData);
+        }
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -53,7 +56,6 @@ const phoneDirectory = () => {
     
 
     useFocusEffect(
-
         useCallback(() => {
             fetchData();
             return () => {};
@@ -72,9 +74,40 @@ const phoneDirectory = () => {
         }
     }, []);
     const searchHandler = (value) => {
-        setSearch(value);
-        fetchData(value)
+        setSearch(value); // Обновляем строку поиска
+    
+        if (!value || value.trim() === "") {
+            // Если строка поиска пуста, возвращаем полный список
+            setColleaguesList(Store.colleaguesData);
+        } else {
+            const searchTerms = value.toLowerCase().trim().split(/\s+/); // Разделяем строку поиска на слова
+    
+            // Фильтруем список коллег, проверяя каждое слово в каждом из полей
+            setColleaguesList(Store.colleaguesData.filter(colleague => {
+                return searchTerms.every(term => 
+                    colleague.LAST_NAME?.toLowerCase().includes(term) ||
+                    colleague.SECOND_NAME?.toLowerCase().includes(term) ||
+                    colleague.NAME?.toLowerCase().includes(term) ||
+                    colleague.UF_USR_EMPLOYEE_DEPARTMENT_1C?.toLowerCase().includes(term) ||
+                    colleague.WORK_CITY?.toLowerCase().includes(term) ||
+                    colleague.WORK_POSITION?.toLowerCase().includes(term) ||
+                    colleague.UF_USR_EMPLOYEE_JOB_FUNCTION_1C?.toLowerCase().includes(term) ||
+                    colleague.EMAIL?.toLowerCase().includes(term) ||
+                    colleague.PERSONAL_MOBILE?.toLowerCase().includes(term)
+                );
+            }));
+        }
+    
+        // Проверяем наличие результатов
+        if (colleaguesList.length > 0) {
+            setColleaguesExist(true);
+        } else {
+            setColleaguesExist(false);
+        }
+    
+        console.log(colleaguesList[0]);
     };
+    
 
     const importHandle = async()=>{
         let failed = 0;
@@ -136,7 +169,7 @@ const phoneDirectory = () => {
                     <View style={localStyles.container}>
                         {colleaguesExist ? (
                             <View style={{ flex: 1 }}>
-                                {Store.colleaguesData.map(item => <ColleaguesItem key={item.ID} item={item} availableOptions={availableOptions}/>)}
+                                {colleaguesList.map(item => <ColleaguesItem key={item.ID} item={item} availableOptions={availableOptions}/>)}
                             </View>
                         ) : (
                             <Text style={localStyles.Text}>Коллеги не найдены</Text>
