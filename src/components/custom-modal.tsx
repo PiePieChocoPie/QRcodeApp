@@ -59,11 +59,11 @@
                     visible={visible}
                     onRequestClose={onClose}
                 >
-                    {/* <View style={styles.closeButtonContainer}>
+                    <View style={styles.closeButtonContainer}>
                         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
-                    </View> */}
+                    </View>
 
                     <View style={[styles.modalContainer, { marginTop: modalPos, height: modalHeight }]}>
                         <View

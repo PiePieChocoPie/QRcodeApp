@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
         margin: 10,
         gap: 5,
         padding: 13,
+        width:'95%',
     },
     socialContainer: {
         backgroundColor: projColors.currentVerse.redro,
@@ -177,7 +178,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: projColors.currentVerse.extra,
         marginVertical: 5,
-        textAlign:'center'
+        textAlign:'center',
+        width:'95%',
     },
     containerCentrallityFromUpper: {
         flex: 1,
