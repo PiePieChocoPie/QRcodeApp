@@ -121,7 +121,7 @@ const Tasks = () => {
                     />}
                 >
                     <View style={[localStyles.expanderContainer, { backgroundColor: "transparent" }]}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <ScrollView style={{flexDirection:"row"}} horizontal>
                             <Pressable onPress={() => focusChange('Tasks')} 
                             style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Tasks' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
                                 <Icons.tasks width={35} height={35} 
@@ -158,7 +158,7 @@ const Tasks = () => {
                                     Маршрутные листы
                                 </Text>
                             </Pressable>
-                        </View>
+                        </ScrollView>
                         {selectedList === "Tasks" && (
                             <FlatList
                             data={data}

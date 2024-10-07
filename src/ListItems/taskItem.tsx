@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Linking, StyleSheet, FlatList, ScrollView } from 'react-native';
 import CustomModal from "src/components/custom-modal";
 import { projColors } from "src/stores/styles"; // Импортируем projColors
 
@@ -74,6 +74,7 @@ const TaskItem = ({ item }) => {
                     marginTOP={0.2}
                     content={
                         <View style={styles.containerCentrallityFromUpper}>
+                            <ScrollView>
                             <Text style={styles.Text}></Text>
                             <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
                             <Text style={styles.Text}></Text>
@@ -90,6 +91,7 @@ const TaskItem = ({ item }) => {
                             ) : (
                                 <Text style={styles.Text}>Дополнительная информация отсутствует</Text>
                             )}
+                            </ScrollView>
                         </View>
                     }
                 />
