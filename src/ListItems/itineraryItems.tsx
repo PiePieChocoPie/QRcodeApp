@@ -63,16 +63,16 @@ const ItineraryItems = ({ item }) => {
             style={[styles.listElementContainer,{width:'70%'}]}
             onPress={() => setActiveUpdIndex(index)} // Устанавливаем индекс активного upd
         >
-            <Text style={[styles.Text, { textAlign: "center" }]}>{upd.ufCrm5ShortName}</Text>
+            <Text style={[styles.Text, { textAlign: "center" }]}>{upd?upd.ufCrm5ShortName:'УПД не найдено'}</Text>
             <CustomModal
                 visible={activeUpdIndex === index} // Проверяем, открыт ли именно этот upd
                 onClose={() => setActiveUpdIndex(null)} // Закрываем модальное окно
-                title={upd.title}
+                title={upd?upd.title:'УПД не найдено'}
                 marginTOP={0.2}
                 content={
                     <View style={styles.containerCentrallityFromUpper}>
-                        {upd.ufCrm5DriverTask&&<Text style={styles.Title}>Задание для водителя: {upd.ufCrm5DriverTask}</Text>}
-                        {upd.ufCrm5DeliveryAddress && <Text style={styles.Title}>Адрес доставки: {upd.ufCrm5DeliveryAddress}</Text>}
+                        {upd&&upd.ufCrm5DriverTask&&<Text style={styles.Title}>Задание для водителя: {upd.ufCrm5DriverTask}</Text>}
+                        {upd&&upd.ufCrm5DeliveryAddress && <Text style={styles.Title}>Адрес доставки: {upd.ufCrm5DeliveryAddress}</Text>}
                     </View>
                 }
             />
