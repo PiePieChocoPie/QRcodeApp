@@ -7,7 +7,7 @@ import { projColors } from "src/stores/styles";
 import useLoading from "src/useLoading";
 import * as Icons from '../../assets';
 import { getUpdById } from "src/requests/docs";
-import { formatDate } from "src/func";
+import { formatDate } from "src/func/func";
 
 const ItineraryItems = ({ item }) => {
     const [depDate, setDepDate] = useState('');

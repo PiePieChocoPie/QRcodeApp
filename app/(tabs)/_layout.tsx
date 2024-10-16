@@ -108,6 +108,20 @@ const TabsLayout = () => {
           }}
           
         />
+        {Store.userData.ID==578
+        &&
+          <Tabs.Screen
+            name="client_add"
+            options={{
+              headerTitle:'Добавление клиента',
+              headerShown:false,
+              tabBarShowLabel:false,
+              tabBarIcon:({color}) => (
+                <Icons.arrow name="arrow" width={32} height={32} fill={color}/>
+              ),
+            }}
+            />
+        }
         {/* <Tabs.Screen
           name="calendar"
           options={{

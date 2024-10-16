@@ -17,6 +17,7 @@ const TaskItem = ({ item }) => {
 
     const toggleMore = () => {
         setModalVisible(!modalVisible);
+        console.log(item)
     };
 
     const renderDescription = (description) => {

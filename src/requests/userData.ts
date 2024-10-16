@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { checkRecords } from 'src/func';
+import { checkRecords } from 'src/func/func';
 import Store from "src/stores/mobx";
 import { getDepData } from './hierarchy';
 import { getAttorneyStatusesData, getItineraryStatusesData, getTasksData, getUpdStatusesData } from './docs';
