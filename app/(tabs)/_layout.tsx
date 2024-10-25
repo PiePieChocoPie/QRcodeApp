@@ -8,7 +8,8 @@ import Store from "src/stores/mobx";
 import React, { useState, useEffect } from 'react';
 
 const TabsLayout = () => {
-  const isIt = Store.userData.UF_DEPARTMENT[0] != 11 ? null : 'clientAdd'
+  const isRegUser = Store.userData? true:false;
+  const isIt = Store.userData&&Store.userData.UF_DEPARTMENT[0] != 11 ? null : 'clientAdd'
   return (
         <Tabs
           screenOptions={{ 
@@ -20,8 +21,8 @@ const TabsLayout = () => {
             name="tasks"
             options={{
               headerTitle: 'Задачи',
-              headerShown: false,
               tabBarShowLabel: false,
+              href: isRegUser?'tasks':null,
               tabBarIcon: ({ color }) => (
                 <Icons.tasks name="tasks" width={32} height={32} fill={color} />
               ),
@@ -31,8 +32,8 @@ const TabsLayout = () => {
             name="reader"
             options={{
               headerTitle: 'Сканер QR',
-              headerShown: false,
               tabBarShowLabel: false,
+              // href: isRegUser?'reader':null,
               tabBarIcon: ({ color }) => (
                 <Icons.qr name="qrcode" width={32} height={32} fill={color} />
               ),
@@ -42,8 +43,8 @@ const TabsLayout = () => {
             name="profile"
             options={{
               headerTitle: 'Профиль',
-              headerShown: false,
               tabBarShowLabel: false,
+              href: isRegUser?'profile':null,
               tabBarIcon: ({ color }) => (
                 <Icons.profile name="user" width={32} height={32} fill={color} />
               ),
@@ -53,8 +54,8 @@ const TabsLayout = () => {
             name="reports"
             options={{
               headerTitle: 'Отчеты',
-              headerShown: false,
               tabBarShowLabel: false,
+              href: isRegUser?'reports':null,
               tabBarIcon: ({ color }) => (
                 <Icons.list name="document-outline" width={32} height={32} fill={color} />
               ),
@@ -64,8 +65,8 @@ const TabsLayout = () => {
             name="colleagues"
             options={{
               headerTitle: 'Справочник',
-              headerShown: false,
               tabBarShowLabel: false,
+              href: isRegUser?'colleagues':null,
               tabBarIcon: ({ color }) => (
                 <Icons.colleagues name="colleagues" width={32} height={32} fill={color} />
               ),
@@ -76,7 +77,6 @@ const TabsLayout = () => {
             name="clientAdd"
             options={{
               headerTitle: 'Добавление клиента',
-              headerShown: false,
               tabBarShowLabel: false,
               href: isIt,
               tabBarIcon: ({ color }) => (

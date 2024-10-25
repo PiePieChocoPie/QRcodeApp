@@ -36,6 +36,12 @@ const RootLayout = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name={'registration'}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </RootSiblingParent>
     <PopupComponent />

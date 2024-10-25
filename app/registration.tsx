@@ -1,174 +1,187 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';  // Для иконки глаз (показать/скрыть пароль)
+import React, { useState, useEffect } from 'react';
+import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
+import { encode as base64encode } from 'base-64';
+import * as SecureStore from 'expo-secure-store';
+import { observer } from 'mobx-react-lite';
+import Store from 'src/stores/mobx';
+import useLoading from 'src/useLoading';
+import * as Animatable from 'react-native-animatable';
+import { getAllStaticData } from "src/requests/userData";
+import { statusDay } from "src/requests/timeManagement";
+import * as Icons from '../assets';
+import { router } from "expo-router";
+import Button from 'src/components/button';
+import { projColors } from 'src/stores/styles';
 
-const RegistrationForm = () => {
-  // State для полей ввода
-  const [phone, setPhone] = useState('');  // Номер телефона
-  const [lastName, setLastName] = useState('');  // Фамилия
-  const [firstName, setFirstName] = useState('');  // Имя
-  const [password, setPassword] = useState('');  // Пароль
 
-  // State для видимости пароля
-  const [showPassword, setShowPassword] = useState(false);  // Флаг для показа/скрытия пароля
+const registration = observer(() => {
+    const [login, setLogin] = useState('');
+    const [mail, setMail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordCopy, setPasswordCopy] = useState('');
+    const [isInvalidLogin, setIsInvalidLogin] = useState(false);
+    const [showPassword, setShowPassword] = useState(true);
+    const { loading, startLoading, stopLoading } = useLoading();
 
-  // State для управления отправкой формы
-  const [isSubmitting, setIsSubmitting] = useState(false);  // Флаг отправки формы
+    const buttonHandler = async () => {
+        startLoading();
+        
+        stopLoading();
+    };
 
-  // Функция для переключения видимости пароля
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    const buttonNewHandler = async () => {
+        router.replace("./")
+    };
 
-  // Обработка отправки формы
-  const handleSubmit = () => {
-    setIsSubmitting(true);  // Отметим, что форма отправляется
-    // Здесь можно добавить валидацию и логику отправки данных на сервер
-    console.log({ phone, lastName, firstName, password });
-    // После завершения процесса можно сбросить состояние
-    setIsSubmitting(false);
-  };
 
-  return (
-    <View style={styles.container}>
-      {/* Логотип */}
-      <View style={styles.logoContainer}>
-        <Ionicons name="qr-code-outline" size={48} color="#A6210F" />
-        <Text style={styles.logoText}>Mu Tools</Text>
-      </View>
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
-      {/* Заголовок */}
-      <Text style={styles.title}>Зарегистрироваться</Text>
-
-      {/* Поле ввода телефона */}
-      <TextInput
-        style={styles.input}
-        placeholder="Номер телефона"
-        value={phone}
-        onChangeText={(text) => setPhone(text)}  // Обновляем state при изменении текста
-        keyboardType="email-address"
-        placeholderTextColor="#BFBFBF"
-      />
-
-      {/* Поле ввода фамилии */}
-      <TextInput
-        style={styles.input}
-        placeholder="Введите вашу фамилию"
-        value={lastName}
-        onChangeText={(text) => setLastName(text)}
-        placeholderTextColor="#BFBFBF"
-      />
-
-      {/* Поле ввода имени */}
-      <TextInput
-        style={styles.input}
-        placeholder="Введите ваше имя"
-        value={firstName}
-        onChangeText={(text) => setFirstName(text)}
-        placeholderTextColor="#BFBFBF"
-      />
-
-      {/* Поле ввода пароля с кнопкой для показа/скрытия */}
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Пароль"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry={!showPassword}  // Показываем пароль или нет в зависимости от флага
-          placeholderTextColor="#BFBFBF"
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility}>
-          <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="gray" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Кнопка регистрации */}
-      <TouchableOpacity
-        style={styles.registerButton}
-        onPress={handleSubmit}
-        disabled={isSubmitting}  // Отключаем кнопку, если форма отправляется
-      >
-        <Text style={styles.registerButtonText}>Зарегистрироваться</Text>
-        <Ionicons name="arrow-forward" size={24} color="white" />
-      </TouchableOpacity>
-
-      {/* Ссылка на логин */}
-      <TouchableOpacity>
-        <Text style={styles.linkText}>Есть аккаунт?</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  logoText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#A6210F',
-    marginLeft: 8,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 48,
-    borderWidth: 1,
-    borderColor: '#E1E1E1',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    marginBottom: 16,
-    color: '#333333',
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 48,
-    borderWidth: 1,
-    borderColor: '#E1E1E1',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  registerButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 48,
-    backgroundColor: '#A6210F',
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  registerButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 8,
-  },
-  linkText: {
-    color: '#A6210F',
-    fontSize: 14,
-    textDecorationLine: 'underline',
-  },
+    return (
+        <View style={styles.Registration}>
+          <View style={styles.frameParent}>
+            <Text style={styles.welcomeText}>
+              <Text style={styles.welcomeTextRegular}>Регистрация</Text>
+            </Text>
+            
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                value={login}
+                placeholder='Придумайте логин'
+                onChangeText={setLogin}
+                keyboardType={"ascii-capable"}
+              />
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  value={mail}
+                  placeholder='Введите почту'
+                  onChangeText={setMail}
+                  keyboardType={"ascii-capable"}
+                />
+              </View>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.input}
+                  value={password}
+                  placeholder='Придумайте пароль'
+                  secureTextEntry={showPassword}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  onPress={togglePasswordVisibility}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  size={24}
+                  color={projColors.currentVerse.fontAccent}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.input}
+                  value={passwordCopy}
+                  placeholder='Повторите пароль'
+                  secureTextEntry={showPassword}
+                  onChangeText={setPasswordCopy}
+                />
+                <TouchableOpacity
+                  onPress={togglePasswordVisibility}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={24}
+                    color={projColors.currentVerse.fontAccent}
+                  />
+                </TouchableOpacity>
+              </View>
+    
+            <Button handlePress={buttonHandler} title={'Зарегистрироваться'} disabled={loading} />
+            <Text style={styles.underButtonText}>
+              Нажимая <Text style={styles.linkText}>Зарегистрироваться</Text>, вы соглашаетесь с нашими условиями использования и политикой конфиденциальности.
+            </Text>            
+            <Button handlePress={buttonNewHandler} title={'Уже есть аккаунт'} disabled={loading} backgroundColor={projColors.currentVerse.main} fontColor={projColors.currentVerse.font} />
+    
+            {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
+          </View>
+        </View>
+      );
 });
 
-export default RegistrationForm;
+const styles = StyleSheet.create({
+    Registration: {
+      backgroundColor: projColors.currentVerse.main, // Основной фон экрана
+      flex: 1,
+      justifyContent: 'flex-start',
+      paddingTop: 160, // Пространство сверху
+    },
+    frameParent: {
+      width: '90%',
+      alignSelf: 'center',
+      justifyContent: 'flex-start',
+    },
+    inputContainer: {
+      width: '100%',
+      marginTop: '5%',
+    },
+    passwordContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: '5%',
+    },
+    input: {
+      backgroundColor: projColors.currentVerse.listElementBackground, // Фон полей ввода
+      height: 50,
+      borderRadius: 40,
+      paddingHorizontal: 10,
+      fontSize: 16,
+      width: '100%',
+    //   borderColor: projColors.currentVerse.border, // Граница полей
+    //   borderWidth: 1,
+      color: projColors.currentVerse.font, // Цвет текста
+    },
+    eyeIcon: {
+      position: "absolute",
+      right: 15,
+      top: '50%',
+      transform: [{ translateY: -12 }],
+    },
+    welcomeText: {
+      fontSize: 32,
+      lineHeight: 42,
+      fontWeight: "600",
+      textAlign: "left",
+      marginTop: '5%',
+    },
+    welcomeTextRegular: {
+      color: projColors.currentVerse.font, // Цвет текста
+      textAlign:'left'
+    },
+    welcomeTextBold: {
+      color: projColors.currentVerse.redro, // Цвет "Martin Tools!"
+    },
+    errorText: {
+      color: projColors.currentVerse.redro, // Цвет ошибки
+      marginTop: 10,
+      textAlign: "center",
+    },
+    underButtonText:{
+      color: projColors.currentVerse.border, // Цвет текста
+      fontSize: 13,
+      textAlign:'center'
+    },
+    linkText:{
+      color: projColors.currentVerse.redro, // Цвет текста
+      fontSize: 13,
+      textAlign:'center'
+    },
+  });
+
+export default registration;
