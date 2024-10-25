@@ -87,7 +87,7 @@ const Reader = () => {
             }
         } catch (error) {
             console.error("Ошибка при сканировании штрихкода:", error);
-            showPopup(`Ошибка: ${error.message}`, 'warning');
+            // showPopup(`Ошибка: ${error.message}`, 'warning');
             setTimeout(() => {
                 setScanned(false);
             }, 500);

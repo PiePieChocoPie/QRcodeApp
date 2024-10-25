@@ -6,3 +6,4 @@ export {default as route_list} from './route_list.svg';
 export {default as yandex} from './yandex.svg';
 export {default as mobile} from './mobile.svg';
 export {default as stat_phone} from './stat_phone.svg';
+export {default as logoWithName} from './logoWithName.svg';

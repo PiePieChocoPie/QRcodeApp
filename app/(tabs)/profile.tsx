@@ -26,7 +26,7 @@ function Profile() {
     const [userData, setUserData] = React.useState('');
     const [userPosition, setUserPosition] = React.useState('');
     const [userDep, setUserDep] = React.useState('');
-    const [idUser] = React.useState(Store.userData.ID);
+    const [idUser] = React.useState(Store.userData?Store.userData.ID:1);
     const { loading, startLoading, stopLoading } = useLoading();
     const [photoUrl, setPhotoUrl] = React.useState('');
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -142,6 +142,9 @@ function Profile() {
         style={{ flex: 1}}
         imageStyle={{ resizeMode: 'cover' }}
         >
+            {loading?(<View style={styles.container}>
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            </View>):(
         <View style={styles.container}>
             
             {/* {
@@ -154,6 +157,7 @@ function Profile() {
                 />
                 )
             } */}
+            
             <View>
                 <View style={styles.overlayWithUser}>
                     <View style={styles.avatarContainer}>
@@ -255,7 +259,9 @@ function Profile() {
                     </View>
                 }
             />
+        
         </View>
+    )}
     </ImageBackground>
     );
 }

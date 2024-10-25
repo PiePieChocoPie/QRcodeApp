@@ -1,9 +1,8 @@
 import * as Location from 'expo-location';
 import axios from 'axios';
-import { store } from 'expo-router/build/global-state/router-store';
 import Store from "src/stores/mobx";
 
-export const sendDataWithLocation = async (inputValue) => {
+export const sendDataWithLocation = async (clientNameValue, innValue) => {
   try {
     // Запрос разрешения на доступ к геолокации
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -14,20 +13,41 @@ export const sendDataWithLocation = async (inputValue) => {
     // Получение текущей геолокации
     let location = await Location.getCurrentPositionAsync({});
 
-    const dataToSend = {
-      input: inputValue,
-      delegate_id: Store.userData.ID,
-      location: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+    const data = JSON.stringify({
+      fields:{
+      TITLE: clientNameValue,
+      UF_CRM_COMPANY_INN: innValue,
+      ASSIGNED_BY_ID: Store.userData.ID,
+      CREATED_BY_ID: Store.userData.ID,
+      UF_CRM_COMPANY_LATITUDE: location.coords.latitude,
+      UF_CRM_COMPANY_LONGITUDE: location.coords.longitude,
+      }
+    });
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://bitrix24.martinural.ru/rest/597/9nbjvw8amko6th3q/crm.company.add',
+      headers: { 
+        'Content-Type': 'application/json'
       },
+      withCredentials: false,
+      data : data
     };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      return 0;
+    })
+    .catch((error) => {
+      console.log(error);
+      return 1;
+    });
 
-    // Пример отправки данных на сервер
-    // await axios.post('https://your-server-url.com/api/send', dataToSend);
-
-    console.log('Данные успешно отправлены:', dataToSend);
+    console.log('Данные успешно отправлены:', data);
   } catch (error) {
     console.error('Ошибка при отправке данных:', error.message);
+    return 2;
   }
 };

@@ -243,33 +243,33 @@ const authorize = observer(() => {
                     <Text style={styles.welcomeTextBold}>Martin Tools!</Text>
                 </Text>
                 <View style={styles.inputContainer}>
-                    <TextInput
-                        style={styles.input}
-                        value={login}
+                <TextInput
+                    style={styles.input}
+                    value={login}
                         placeholder='Введите логин'
-                        onChangeText={loginHandler}
+                    onChangeText={loginHandler}
                         keyboardType={"ascii-capable"}
-                    />
-                    <View style={styles.passwordContainer}>
-                        <TextInput
+                />
+                 <View style={styles.passwordContainer}>
+                    <TextInput
                             style={styles.input}
-                            value={password}
+                        value={password}
                             placeholder='Введите пароль'
-                            secureTextEntry={showPassword}
-                            onChangeText={passwordHandler}
+                        secureTextEntry={showPassword}
+                        onChangeText={passwordHandler}
+                    />
+                    <TouchableOpacity
+                        onPress={togglePasswordVisibility}
+                        style={styles.eyeIcon}
+                    >
+                        <Ionicons
+                            name={showPassword ? 'eye-off' : 'eye'}
+                            size={24}
+                            color="gray"
                         />
-                        <TouchableOpacity
-                            onPress={togglePasswordVisibility}
-                            style={styles.eyeIcon}
-                        >
-                            <Ionicons
-                                name={showPassword ? 'eye-off' : 'eye'}
-                                size={24}
-                                color="gray"
-                            />
-                        </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                 </View>
+                    </View>
                 <Button handlePress={buttonHandler} title={'Войти'} disabled={loading} />
                 {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
             </View>

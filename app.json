@@ -32,10 +32,11 @@
       "entitlements": {
         "aps-environment": "production"
       },
-    "infoPlist": {
-      "NSCameraUsageDescription": "Мы используем вашу камеру для сканирования QR-кодов.",
-      "NSContactsUsageDescription": "Мы запрашиваем доступ к вашим контактам для того, чтобы обновлять существующие контакты коллег."
-    }
+      "infoPlist": {
+        "NSCameraUsageDescription": "Мы используем вашу камеру для сканирования QR-кодов.",
+        "NSContactsUsageDescription": "Мы запрашиваем доступ к вашим контактам для того, чтобы обновлять существующие контакты коллег.",
+        "NSLocationWhenInUseUsageDescription": "Мы используем вашу геолокацию для предоставления функционала, связанного с местоположением."
+      }
     },
     "android": {
       "icon": "./assets/icon.png",
@@ -45,7 +46,9 @@
       },
       "permissions": [
         "android.permission.CAMERA",
-        "android.permission.READ_CONTACTS"
+        "android.permission.READ_CONTACTS",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
       ],
       "package": "upd.scanner",
       "versionCode": 8,
