@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { usePopupContext } from 'src/PopupContext';
 
 class Store {
   userData: any = null;
@@ -25,11 +26,42 @@ class Store {
   attorneyStatusesData: any = null;
   isWarehouse:boolean=false;
   colleaguesData:any = null;
-
+  userCodes: any[] = [];
   constructor() {
     makeAutoObservable(this);
   }
+  
+  // Метод для добавления кода в массив
+  addUserCode(code: any) {
+    const { showPopup } = usePopupContext();
+    const index = this.userCodes.findIndex(item => item.id === code.id && (item.data === code.data));
+    console.log(index);
+    if (index === -1) {
+        this.userCodes.push(code);
+        // console.log('Code added:', code);
+        showPopup(`код - ${code.data} сохранен в историю`, 'success')
+    } else {
+        console.log('Code already exists:', code);
+    }
+  }
 
+    // Метод для удаления кода по индексу
+    removeUserCode(id: number, code: string) {
+    const { showPopup } = usePopupContext();
+
+      const index = this.userCodes.findIndex(item => item.id === id && (item.data === code));
+    // console.log(index,this.userCodes);
+    showPopup(`код - ${code} удален из истории`, 'success')
+
+    if (index !== -1) {
+          this.userCodes.splice(index, 1);
+      }
+    }
+
+    // Метод для очистки массива кодов
+    clearUserCodes() {
+        this.userCodes = [];
+    }
   setProperty(key: string, value: any) {
     (this as any)[key] = value;
   }

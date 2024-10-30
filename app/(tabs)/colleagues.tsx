@@ -2,16 +2,10 @@ import React, { useState, useRef, useCallback, useMemo } from "react";
 import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Pressable, FlatList, StyleSheet, Linking, TextInput, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import TaskItem from "src/ListItems/taskItem";
-import AttorneysItem from "src/ListItems/attorneysItem";
-import { getAllStaticData, getUserAttorney } from "src/requests/userData";
 import Store from "src/stores/mobx";
 import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
-import * as Icons from '../../assets';
 import { getPhoneNumbersOfColleagues } from "src/requests/hierarchy";
 import ColleaguesItem from "src/ListItems/colleaguesItem";
-import * as Contacts from 'expo-contacts';
-import { PermissionsAndroid } from 'react-native';
 import { findAndModifyContact } from "src/contactsHandler";
 import { usePopupContext } from "src/PopupContext";
 import Button from 'src/components/button';

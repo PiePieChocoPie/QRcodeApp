@@ -6,21 +6,26 @@ import { getAttorneyStatusesData, getItineraryStatusesData, getTasksData, getUpd
 import { getUsersTrafficStatistics } from './timeManagement';
 
 export async function getDataByToken(authToken: string): Promise<any> {
+  let data = JSON.stringify({
+    "token": authToken
+    });
   let config = {
-    method: 'get',
+    method: 'post',
     maxBodyLength: Infinity,
-    url: `${process.env.baseUrl}/mobileControllers/dataByToken.php/?token=${authToken}`,
+    url: `${process.env.baseUrl}/MuTools/login`,
     headers: {
-      'Authorization': `Basic ${authToken}`,
+      'Authorization': `Basic cG52OjEyM1F3ZTEyMw==`,
     },
+    data:data,
     withCredentials: false
   };
 
   const response = await axios.request(config);
     // console.log(response.data.WORK_POSITION);
-    console.log(response.data);
+    console.log('response -',response.data)
+    // console.log(response.data);
   Store.setUserData(response.data);
-  
+  if(Store.userData.NAME){
   let config2 = {
     method: 'get',
     maxBodyLength: Infinity,
@@ -30,8 +35,8 @@ export async function getDataByToken(authToken: string): Promise<any> {
   
   const dataForPhoto = await axios.request(config2);
   Store.setUserPhoto(dataForPhoto.data.result[0].PERSONAL_PHOTO);
-  
-  return response;
+}
+  return response.data;
 }
 
 export async function getUserAttorney(onAuthorize:boolean): Promise<boolean> {
@@ -167,7 +172,8 @@ export async function getAllStaticData(authToken: string, userData: boolean, dep
       if (userData) {
         await getDataByToken(authToken)
           .then(async () => {
-            await getUserAttorney(true)
+            console.log(Store.userData)
+            Store.userData.ID&&await getUserAttorney(true)
               .then(res => {
                   if(res){
                       curError="Необходимо сдать доверенность!";

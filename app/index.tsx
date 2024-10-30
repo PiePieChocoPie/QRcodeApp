@@ -182,6 +182,7 @@ const authorize = observer(() => {
         if (login.length > 1 && password.length > 1) {
             const token = base64encode(`${login}:${password}`);
             const res = await getAllStaticData(token, true, false, false, false);
+            console.log(token)
             if (res.status) {
                 await SecureStore.setItemAsync('authToken', token);
                 Store.setTokenData(token);
@@ -210,7 +211,7 @@ const authorize = observer(() => {
         const res = await getAllStaticData(token, true, false, false, false);
         if (res.status) {
             Store.setTokenData(token);
-            router.push({ pathname: "/(tabs)/profile" });
+            router.push({ pathname: "/(tabs)/reader" });
             statusDay(Store.userData.ID);
         } else {
             Alert.alert("Ошибка", "Не удалось загрузить данные пользователя");

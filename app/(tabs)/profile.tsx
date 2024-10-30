@@ -6,17 +6,13 @@ import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
 import { useFocusEffect, useNavigationState } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import ModalForm from "src/modals/modal";
 import Button from 'src/components/button';
-import Popup from 'src/components/popup';
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay, closeDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
 import { usePopupContext } from "src/PopupContext";
 import React, { useState, useEffect } from 'react';
-import LottieView from 'lottie-react-native';
-import work from 'src/work.json';
 const pic = require('./pic.jpg');
 import { useNavigation } from '@react-navigation/native';
 import { ImageBackground } from 'react-native';
@@ -272,7 +268,7 @@ const styles = StyleSheet.create({
       },
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        // backgroundColor: '#F5F5F5',
         padding: 16,
     },
     loader: {
@@ -286,7 +282,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     avatarContainer: {
-        borderWidth: 4,
+        // borderWidth: 4,
         borderColor: projColors.currentVerse.border,
         borderRadius: 100,
         overflow: 'hidden',

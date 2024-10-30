@@ -1,15 +1,17 @@
-import { Tabs, useFocusEffect } from 'expo-router';
+import { Link, Tabs, useFocusEffect, useNavigation } from 'expo-router';
 import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
 import Popup from 'src/components/popup';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
 import Store from "src/stores/mobx";
 import React, { useState, useEffect } from 'react';
+import clientAdd from './clientAdd';
 
 const TabsLayout = () => {
-  const isRegUser = Store.userData? true:false;
-  const isIt = Store.userData&&Store.userData.UF_DEPARTMENT[0] != 11 ? null : 'clientAdd'
+  const navigation = useNavigation();
+  const isBitrixUser = Store.userData.NAME ? true : false;
+  const isIt = isBitrixUser?Store.userData.UF_DEPARTMENT[0] != 11 ? false : true : false;
   return (
         <Tabs
           screenOptions={{ 
@@ -18,21 +20,15 @@ const TabsLayout = () => {
           }}
         >
           <Tabs.Screen
-            name="tasks"
-            options={{
-              headerTitle: 'Задачи',
-              tabBarShowLabel: false,
-              href: isRegUser?'tasks':null,
-              tabBarIcon: ({ color }) => (
-                <Icons.tasks name="tasks" width={32} height={32} fill={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
             name="reader"
             options={{
               headerTitle: 'Сканер QR',
               tabBarShowLabel: false,
+              headerRight: () =>(
+                <Link href={'scanStory'}>
+                  <Icons.list name="scan" width={32} height={32} fill={projColors.currentVerse.font}/>
+                  </Link>
+              ),
               // href: isRegUser?'reader':null,
               tabBarIcon: ({ color }) => (
                 <Icons.qr name="qrcode" width={32} height={32} fill={color} />
@@ -40,11 +36,22 @@ const TabsLayout = () => {
             }}
           />
           <Tabs.Screen
+            name="tasks"
+            options={{
+              headerTitle: 'Задачи',
+              tabBarShowLabel: false,
+              href: isBitrixUser?'tasks':null,
+              tabBarIcon: ({ color }) => (
+                <Icons.tasks name="tasks" width={32} height={32} fill={color} />
+              ),
+            }}
+          />          
+          <Tabs.Screen
             name="profile"
             options={{
               headerTitle: 'Профиль',
               tabBarShowLabel: false,
-              href: isRegUser?'profile':null,
+              href: isBitrixUser?'profile':null,
               tabBarIcon: ({ color }) => (
                 <Icons.profile name="user" width={32} height={32} fill={color} />
               ),
@@ -55,7 +62,7 @@ const TabsLayout = () => {
             options={{
               headerTitle: 'Отчеты',
               tabBarShowLabel: false,
-              href: isRegUser?'reports':null,
+              href: isBitrixUser?'reports':null,
               tabBarIcon: ({ color }) => (
                 <Icons.list name="document-outline" width={32} height={32} fill={color} />
               ),
@@ -66,7 +73,7 @@ const TabsLayout = () => {
             options={{
               headerTitle: 'Справочник',
               tabBarShowLabel: false,
-              href: isRegUser?'colleagues':null,
+              href: isBitrixUser?'colleagues':null,
               tabBarIcon: ({ color }) => (
                 <Icons.colleagues name="colleagues" width={32} height={32} fill={color} />
               ),
@@ -78,13 +85,20 @@ const TabsLayout = () => {
             options={{
               headerTitle: 'Добавление клиента',
               tabBarShowLabel: false,
-              href: isIt,
+              href: isIt?'clientAdd':null,
               tabBarIcon: ({ color }) => (
                 <Icons.client_Add name="clientAdd" width={32} height={32} fill={color} />
               ),
             }}
           />
-
+          <Tabs.Screen
+            name="scanStory"
+            options={{
+              headerTitle: 'История сканирования',
+              tabBarShowLabel: false,
+              href: null,
+            }}
+          />
         </Tabs>
   );
 };

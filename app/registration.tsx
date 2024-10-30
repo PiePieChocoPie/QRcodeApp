@@ -13,6 +13,8 @@ import * as Icons from '../assets';
 import { router } from "expo-router";
 import Button from 'src/components/button';
 import { projColors } from 'src/stores/styles';
+import axios from 'axios';
+import { usePopupContext } from 'src/PopupContext';
 
 
 const registration = observer(() => {
@@ -22,10 +24,55 @@ const registration = observer(() => {
     const [passwordCopy, setPasswordCopy] = useState('');
     const [isInvalidLogin, setIsInvalidLogin] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
+    const [isInvalid, setIsInvalid] = useState('');
     const { loading, startLoading, stopLoading } = useLoading();
-
+    const { showPopup } = usePopupContext();
     const buttonHandler = async () => {
         startLoading();
+        if(!login){
+          setIsInvalid('login')
+          return;
+        }
+        if(!mail.includes('@')){
+          setIsInvalid('mail')
+          return;
+        }
+        if(password.length<6){
+          setIsInvalid('password')
+          return;
+        }
+        if(password!==passwordCopy){
+          setIsInvalid('passwordCopy')
+          return;
+        }
+        let data = { 
+          "username": login,
+          "email": mail,
+          "password": password };
+
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: `https://bitrix24.martinural.ru/MuTools/register`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic cG52OjEyM1F3ZTEyMw==`
+          },
+          data: data,
+          withCredentials: false
+        };
+    
+        const response = await axios.request(config).then((res)=>
+        {if(res.data.message = 'Пользователь зарегистрирован, пожалуйста, проверьте вашу почту для подтверждения')
+        {
+          showPopup('Пользователь зарегистрирован', 'success')
+          router.replace('./')
+        }
+        }).catch((err) =>{
+          showPopup('Проблема регистрации', 'error')
+          console.log(err)
+        })
+        console.log(response)
         
         stopLoading();
     };
@@ -103,13 +150,19 @@ const registration = observer(() => {
                 </TouchableOpacity>
               </View>
     
-            <Button handlePress={buttonHandler} title={'Зарегистрироваться'} disabled={loading} />
-            <Text style={styles.underButtonText}>
-              Нажимая <Text style={styles.linkText}>Зарегистрироваться</Text>, вы соглашаетесь с нашими условиями использования и политикой конфиденциальности.
-            </Text>            
+            <Button handlePress={buttonHandler} title={'Зарегистрироваться'} disabled={loading} />          
             <Button handlePress={buttonNewHandler} title={'Уже есть аккаунт'} disabled={loading} backgroundColor={projColors.currentVerse.main} fontColor={projColors.currentVerse.font} />
     
-            {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
+            {(()=>{switch(isInvalid) {
+            case 'login':
+            return <Text style={styles.errorText}>некорректный логин</Text>
+            case 'mail':
+            return <Text style={styles.errorText}>некорректный адрес электронной почты</Text>
+            case 'password':
+            return <Text style={styles.errorText}>проверьте пароль</Text>
+            case 'passwordCopy':
+            return <Text style={styles.errorText}>проверьте повтор пароля</Text>
+            }})()}
           </View>
         </View>
       );

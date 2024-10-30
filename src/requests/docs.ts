@@ -75,7 +75,7 @@ export async function getTasksData(ID: string): Promise<any> {
   
           return response.data;
       } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error('Error fetching doc data:', error);
           throw error;
       }
   }

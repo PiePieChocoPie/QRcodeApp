@@ -36,6 +36,10 @@ const Reader = () => {
         }, [])
     );
 
+    useEffect(() => {
+        console.log(scanned)
+    }, []);
+
     const fetchData = async () => {
         try {
             startLoading();
@@ -59,7 +63,7 @@ const Reader = () => {
     const handleBarCodeScanned = async ({ data }) => {
         try {
             setScanned(true);
-            if(Store.userData){
+            if(Store.userData.NAME){
                 const res = await getDataAboutDocs(data); 
                 if (res && res.result && Array.isArray(res.result.items) && res.result.items.length > 0) {
                     const item = res.result.items[0];
@@ -87,10 +91,20 @@ const Reader = () => {
                     }, 500);
                 }
             } else {
+                setTimeout(() => {
+                    setScanned(false);
+                }, 500);
                 Linking.openURL(data).catch(() => {
                     showPopup(`Содержимое кода не ссылка: ${data}`, 'warning')          
                 }); 
+                
             }
+            let dataToSave = {
+                id: Store.userData.NAME ? Store.userData.ID : Store.userData.user.id,
+                data: data
+            };            
+            Store.addUserCode(dataToSave)
+            console.log(Store.userCodes)
         } catch (error) {
             console.error("Ошибка при сканировании штрихкода:", error);
             // showPopup(`Ошибка: ${error.message}`, 'warning');
