@@ -1,5 +1,7 @@
     import React, { useState, useEffect, useRef } from 'react';
-    import { Modal, View, Text, TouchableOpacity, Dimensions, PanResponder, StyleSheet } from 'react-native';
+    import { Modal, View, Text, TouchableOpacity, Dimensions, PanResponder, StyleSheet, ActivityIndicator } from 'react-native';
+import { projColors } from 'src/stores/styles';
+import useFonts from 'src/useFonts';
 
     const CustomModal = ({ visible, onClose, content, marginTOP, title }) => {
         const [modalYPosition, setModalYPosition] = useState(0);
@@ -8,7 +10,7 @@
         const minModalHeight = screenHeight * 0.3;
         const [modalPos, setModalPos] = useState(0);
         const [modifyPOS, setModifyPOS] = useState(0.2);
-
+        const fontsLoaded = useFonts();
         useEffect(() => {
             if (!visible) {
                 setModalYPosition(0);
@@ -50,16 +52,22 @@
         const resize = () => {
             setModifyPOS(marginTOP);
         };
-
-        return (
-            <View>
+        return <View>
                 <Modal
                     animationType="slide"
                     transparent={true}
                     visible={visible}
                     onRequestClose={onClose}
                 >
+                    <>
+                    {! fontsLoaded ? (
+            <View style={styles.modalContainer}>
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            </View>
+        ) : (
+            <>
                     <View style={styles.closeButtonContainer}>
+                        
                         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
@@ -79,9 +87,11 @@
                             {content}
                         </View>
                     </View>
+                    </>
+        )}</>
                 </Modal>
             </View>
-        );
+        ;
     };
 
     const styles = StyleSheet.create({
@@ -101,14 +111,14 @@
         closeButtonText: {
             color: 'black',
             fontSize: 20,
-            fontWeight: 'bold',
-        },
+            fontFamily: 'boldFont',
+    },
         modalTitle: {
             fontSize: 20,
-            fontWeight: 'bold',
             marginBottom: 10,
             textAlign: 'center',
-        },
+            fontFamily: 'boldFont',
+    },
         modalContainer: {
             width: '100%',
             backgroundColor: 'white',

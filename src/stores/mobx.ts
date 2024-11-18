@@ -45,6 +45,20 @@ class Store {
     }
   }
 
+  // Метод для добавления кода в массив
+  addTask(code: any) {
+    const { showPopup } = usePopupContext();
+    const index = this.userCodes.findIndex(item => item.id === code.id && (item.data === code.data));
+    console.log(index);
+    if (index === -1) {
+        this.userCodes.push(code);
+        // console.log('Code added:', code);
+        showPopup(`код - ${code.data} сохранен в историю`, 'success')
+    } else {
+        console.log('Code already exists:', code);
+    }
+  }
+
     // Метод для удаления кода по индексу
     removeUserCode(id: number, code: string) {
     const { showPopup } = usePopupContext();

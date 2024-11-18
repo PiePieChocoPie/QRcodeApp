@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert} from 'react-native';
-import { projColors, styles } from "src/stores/styles";
+import {Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, StyleSheet} from 'react-native';
+import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 import CustomModal from "src/components/custom-modal";
@@ -211,5 +211,49 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
         />
     );
 };
+
+const styles =  StyleSheet.create({
+    containerCentrallity: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        },
+    containerCentrallityFromUpper: {
+        flex: 1,
+        width: '80%',
+        },
+    Title: {
+        fontSize: 16,
+        color: projColors.currentVerse.fontAccent,
+        },
+    Text: {
+        fontSize: 16,
+        color: projColors.currentVerse.fontAccent,
+        },
+    RBView: {
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        },
+    dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        marginVertical: 10,
+        width: '80%',
+        },
+        input: {
+            marginTop: 20,
+            width: 300,
+            height: 50,
+            borderStyle: 'solid',
+            borderTopColor: 'red',
+            borderTopWidth: 2,
+            borderBottomColor: 'red',
+            borderBottomWidth: 2,
+        },
+    })
 
 export default ChooseStateDialog;

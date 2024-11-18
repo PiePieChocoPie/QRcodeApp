@@ -1,126 +1,44 @@
-import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Linking } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Linking, ImageBackground } from 'react-native';
 import { router } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
 import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
-import { useFocusEffect, useNavigationState } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import Button from 'src/components/button';
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay, closeDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
 import CustomModal from "src/components/custom-modal";
-import { usePopupContext } from "src/PopupContext";
-import React, { useState, useEffect } from 'react';
-const pic = require('./pic.jpg');
-import { useNavigation } from '@react-navigation/native';
-import { ImageBackground } from 'react-native';
 import Calendar from '../../src/components/calendar';
+import { usePopupContext } from "src/PopupContext";
+import * as Icon from 'assets/icons/profileIcons';
+import useFonts from 'src/useFonts';
+const pic = require('./pic.jpg');
 
 function Profile() {
-    const [userData, setUserData] = React.useState('');
-    const [userPosition, setUserPosition] = React.useState('');
-    const [userDep, setUserDep] = React.useState('');
-    const [idUser] = React.useState(Store.userData?Store.userData.ID:1);
+    const [userData, setUserData] = useState('');
+    const [userPosition, setUserPosition] = useState('');
+    const [photoUrl, setPhotoUrl] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [calenVisible, setCalendVisible] = useState(false);
+    const [workStatusLocal, setWorkStatusLocal] = useState(null);
     const { loading, startLoading, stopLoading } = useLoading();
-    const [photoUrl, setPhotoUrl] = React.useState('');
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [calenVisible, setCalendVisible] = React.useState(null);
-    const [workStatusLocal, setWorkStatusLocal] = React.useState(null);
-    // const [popupVisible, setPopupVisible] = React.useState(false);
-    const {showPopup} = usePopupContext();
-    const navigation = useNavigation();
-
-
-    const checkWorkStatus = async () => {
-        const response = await statusDay(idUser);
-        setWorkStatusLocal(Store.statusWorkDay);
-
-    }
-    useEffect(() => {
-        checkWorkStatus();
-      }, []);
-
-    const handleOpenWorkDay = async () => {
-        const response: any = await openDay(idUser);
-        await checkWorkStatus();
-        if (Store.statusWorkDay === 'OPENED') {
-            showPopup('Рабочий день открыт', 'success')
-        }
-      };
-      const handleCloseWorkDay = async () => {
-        const response: any = await closeDay(idUser);
-        await checkWorkStatus();
-        if (Store.statusWorkDay === 'CLOSED') {
-
-            showPopup('Рабочий день закрыт', 'info')
-      }
-    };
-
-    const handleLogoutConfirmation = async () => {
-        try {
-          await SecureStore.deleteItemAsync('authToken');
-          Store.setTokenData(null);
-          Store.setUserData(null);
-          Store.setUserPhoto(null);
-          router.push('/');
-        } catch (error) {
-          console.error('Ошибка при выходе:', error);
-        }
-      };
-      
-      const handleLogout = async () => {
-        Alert.alert(
-          'Подтверждение',
-          'Вы уверены, что хотите выйти из аккаунта?',
-          [
-            {
-              text: 'Отмена',
-              style: 'cancel',
-            },
-            {
-              text: 'Выйти из аккаунта',
-              style: 'destructive',
-              onPress: handleLogoutConfirmation,
-            },
-          ],
-          { cancelable: false }
-        );
-      };
-
-
-    const toggleModal = () => {
-        // const a = "123"
-        setModalVisible(!modalVisible);
-    };
-    const toggleCalend = () => {
-        // const a = "123"
-        setCalendVisible(!calenVisible);
-    };
-
+    const { showPopup } = usePopupContext();
+    const idUser = Store.userData ? Store.userData.ID : 1;
+    const fontsLoaded = useFonts();
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
+                startLoading();
                 try {
-                    startLoading();
-                    await getAllStaticData(Store.tokenData, false, true, false, false)
-                        .then(async (res) => {
-                            if (res.status) {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}`);
-                                setUserPosition(`${Store.userData.WORK_POSITION}`)
-                                setPhotoUrl(Store.userPhoto);
-                            } else {
-                                setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}`);
-                                setUserPosition(`${Store.userData.WORK_POSITION}`);
-                                setPhotoUrl(Store.userPhoto);
-                            }
-                        })
-                        .catch(err => {
-                            showPopup(`Ошибка:\n${err}`, "error");
-                            console.error('Ошибка:', err);
-
-                        });
+                    const res = await getAllStaticData(Store.tokenData, false, true, false, false);
+                    if (res.status) {
+                        setUserData(`${Store.userData.NAME} ${Store.userData.LAST_NAME}`);
+                        setUserPosition(`${Store.userData.WORK_POSITION}`);
+                        setPhotoUrl(Store.userPhoto);
+                    }
                 } catch (error) {
                     showPopup(`Ошибка:\n${error}`, "error");
                     console.error('Ошибка:', error);
@@ -132,208 +50,173 @@ function Profile() {
         }, [])
     );
 
+    const checkWorkStatus = async () => {
+        const response = await statusDay(idUser);
+        setWorkStatusLocal(Store.statusWorkDay);
+
+    }
+
+    const handleLogout = async () => {
+        Alert.alert(
+            'Подтверждение',
+            'Вы уверены, что хотите выйти из аккаунта?',
+            [
+                { text: 'Отмена', style: 'cancel' },
+                { text: 'Выйти из аккаунта', style: 'destructive', onPress: async () => {
+                    await SecureStore.deleteItemAsync('authToken');
+                    Store.setTokenData(null);
+                    Store.setUserData(null);
+                    Store.setUserPhoto(null);
+                    router.push('/');
+                }}
+            ]
+        );
+    };
+
+    const handleOpenWorkDay = async () => {
+        await openDay(idUser);
+        await checkWorkStatus();
+        if (Store.statusWorkDay === 'OPENED') showPopup('Рабочий день открыт', 'success');
+    };
+
+    const handleCloseWorkDay = async () => {
+        await closeDay(idUser);
+        await checkWorkStatus();
+        if (Store.statusWorkDay === 'CLOSED') showPopup('Рабочий день закрыт', 'info');
+    };
+
     return (
-    <ImageBackground
-        source={pic}
-        style={{ flex: 1}}
-        imageStyle={{ resizeMode: 'cover' }}
-        >
-            {loading?(<View style={styles.container}>
-                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-            </View>):(
-        <View style={styles.container}>
-            
-            {/* {
-                workStatusLocal === 'OPENED' && (
-                    <LottieView
-                    source={work}
-                    autoPlay
-                    loop
-                    style={styles.active}
-                />
-                )
-            } */}
-            
-            <View>
-                <View style={styles.overlayWithUser}>
-                    <View style={styles.avatarContainer}>
-                        {photoUrl ? (
-                            <Image source={{ uri: photoUrl }} style={styles.avatar} />
-                        ) : (
-                            <Icon name="user-o" size={40} color={projColors.currentVerse.font} />
-                        )}
-                    </View>
+        <ImageBackground source={pic} style={{ flex: 1 }} imageStyle={{ resizeMode: 'cover' }}>
+            {loading||!fontsLoaded ? (
+                <View style={styles.container}>
+                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
                 </View>
-                <Text style={styles.userInfo}>{userData}</Text>
-                <Text style={styles.position}>{userPosition}</Text>
-                <View style={styles.buttonsContainer}>
-                    <Button 
-                        handlePress={toggleModal} 
-                        title={''}
-                        icon={"qrcode"} />
-                    {
-                        workStatusLocal === 'CLOSED' ? (    
-                            <Button
-                                handlePress={handleOpenWorkDay} // обработчик события для кнопки настройки
-                                title={''}
-                                icon={"lock"} />
-                        ) : (
-                            <Button
-                                handlePress={handleCloseWorkDay} // обработчик события для кнопки настройки
-                                title={''}
-                                icon={"unlock"} />
-                        )
-                    }
-                    <Button
-                        handlePress={handleLogout}
-                        title={''}
-                        icon={"power-off"}/>
-                    <Button 
-                        handlePress={toggleCalend} 
-                        title={''}
-                        icon={"calendar"} />   
+            ) : (
+                <View style={styles.container}>
+                    <View style={styles.overlayWithUser}>
+                        <View style={styles.avatarContainer}>
+                            {photoUrl ? (
+                                <Image source={{ uri: photoUrl }} style={styles.avatar} />
+                            ) : (
+                                <Icon.plug size={40} color={projColors.currentVerse.font} />
+                            )}
+                        </View>
+                        <Text style={styles.userInfo}>{userData}</Text>
+                        <Text style={styles.position}>{userPosition}</Text>
+                    </View>
+                    <View style={styles.buttonsContainer}>
+                        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.touchableComponent}>
+                            <Icon.calendar size={24} color={projColors.currentVerse.font} />
+                            <Text style={styles.Text}>QR-код</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={workStatusLocal === 'CLOSED' ? handleOpenWorkDay : handleCloseWorkDay} style={styles.touchableComponent}>
+                            <Icon.workStatus size={24} color={projColors.currentVerse.font} />
+                            <Text style={styles.Text}>Рабочий статус</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleLogout} style={styles.touchableComponent}>
+                            <Icon.logOut size={24} color={projColors.currentVerse.font} />
+                            <Text style={styles.Text}>Выход</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setCalendVisible(true)} style={styles.touchableComponent}>
+                            <Icon.calendar size={24} color={projColors.currentVerse.font} />
+                            <Text style={styles.Text}>Календарь</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.contactContainer}>
+                        <Icon.mail size={16} color={projColors.currentVerse.fontAccent} style={styles.icon} />
+                        <Text style={styles.contactText}>Email: {Store.userData.EMAIL}</Text>
+                    </View>
+                    <View style={styles.contactContainer}>
+                        <Icon.phone size={16} color={projColors.currentVerse.fontAccent} style={styles.icon} />
+                        <Text style={styles.contactText}>Телефон: {Store.userData.PERSONAL_MOBILE}</Text>
+                    </View>
+                    <View style={styles.contactContainer}>
+                        <Icon.birth size={16} color={projColors.currentVerse.fontAccent} style={styles.icon} />
+                        <Text style={styles.contactText}>Дата рождения: {Store.userData.PERSONAL_BIRTHDAY}</Text>
+                    </View>
+                    <CustomModal
+                        visible={modalVisible}
+                        marginTOP={0.2}
+                        onClose={() => setModalVisible(false)}
+                        title={"QR - Code"}
+                        content={<QRCode value={idUser} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} />}
+                    />
+                    <CustomModal
+                        visible={calenVisible}
+                        marginTOP={0.2}
+                        onClose={() => setCalendVisible(false)}
+                        title={"Календарь"}
+                        content={<Calendar />}
+                    />
                 </View>
-                {/* <Button 
-                        handlePress={()=>Linking.openURL("https://yandex.ru/maps/?rtext=~currentLocation~55.7558,37.6176~56.8584,35.9006~58.5215,31.2710~59.9343,30.3351&rtt=auto"
-                        )} 
-                        title={''}
-                        icon={"calendar"} />   */}
-                <Text>
-                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                        {'\n\n\n\nГород: '}
-                    </Text>
-                    <Text style={{ fontSize: 15, color: 'black' }}>
-                        {Store.userData.PERSONAL_CITY}
-                    </Text>
-                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                        {'\n\nПодразделение: '}
-                    </Text>
-                    <Text style={{ fontSize: 15, color: 'black' }}>
-                        {Store.depData.NAME}
-                    </Text> 
-                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                        {' \n\nПочта: '}
-                    </Text>
-                    <Text style={{ fontSize: 15, color: 'black' }}>
-                        {Store.userData.EMAIL}
-                    </Text>
-                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                        {' \n\nЛичный номер: '}
-                    </Text>
-                    <Text style={{ fontSize: 15, color: 'black' }}>
-                        {Store.userData.PERSONAL_MOBILE}
-                    </Text>
-                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
-                        {' \n\nДата Рождения: '}
-                    </Text>
-                    <Text style={{ fontSize: 15, color: 'black' }}>
-                        {Store.userData.PERSONAL_BIRTHDAY}
-                    </Text>
-                </Text>
-            </View>
-            <CustomModal
-                visible={modalVisible}
-                onClose={toggleModal}
-                marginTOP={0.2} 
-                title={"QR - Code"} 
-                content={
-                    <View 
-                        // style={styles.modalContent}
-                    >                        
-                        <QRCode value={idUser} size={Dimensions.get('window').width - 100} color={projColors.currentVerse.font} /> 
-                    </View>
-                }
-            />
-            <CustomModal
-                visible={calenVisible}
-                onClose={toggleCalend}
-                marginTOP={0.2} 
-                title={"Calendar"} 
-                content={
-                    <View>
-                        <Calendar />                   
-                    </View>
-                }
-            />
-        
-        </View>
-    )}
-    </ImageBackground>
+            )}
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
-    overlayWithUser: {
-        alignItems: "center",
-      },
     container: {
         flex: 1,
-        // backgroundColor: '#F5F5F5',
-        padding: 16,
+        padding: 20,
+        backgroundColor: projColors.currentVerse.main,
     },
-    loader: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    profileContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    overlayWithUser: {
+        alignItems: "center",
+        marginBottom: 20,
     },
     avatarContainer: {
-        // borderWidth: 4,
         borderColor: projColors.currentVerse.border,
-        borderRadius: 100,
+        borderRadius: 60,
         overflow: 'hidden',
-        marginBottom: 16,
-        
+        marginBottom: 10,
     },
     avatar: {
         width: 120,
         height: 120,
-        borderRadius: 60,
     },
     userInfo: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: projColors.currentVerse.text,
+        fontSize: 22,
+        color: projColors.currentVerse.redro,
         textAlign: 'center',
-        
+        fontFamily: "boldFont"
+    },
+    position: {
+        fontSize: 16,
+        color: projColors.currentVerse.redro,
+        textAlign: 'center',
+        fontFamily: "baseFont"
 
     },
     buttonsContainer: {
-        flexDirection: 'row', 
-        justifyContent: 'center',
-        backgroundColor: '#F5F5F5',
-        borderRadius: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 15,
     },
-    pressed: {
-        backgroundColor: 'orange',
+    contactContainer: {
+        backgroundColor: projColors.currentVerse.listElementBackground,
+        borderRadius: 8,
+        padding: 10,
+        marginVertical: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    active: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        position: 'absolute',
-        right: 0,
-        top: 20,
+    icon: {
+        marginRight: 10,
+        color: projColors.currentVerse.fontAccent,
     },
-    position: {
-        fontSize: 15,
-        fontWeight: 'normal',
-        color: projColors.currentVerse.text,
-        textAlign: 'center',
-        marginBottom: 50,
-        opacity: 0.7,
+    contactText: {
+        fontSize: 16,
+        color: projColors.currentVerse.font,
+        fontFamily: "baseFont"
     },
-    department: {
-        fontSize: 15,
-        fontWeight: 'normal',
-        color: projColors.currentVerse.text,
-        textAlign: 'left',
-        marginBottom: 20,
-        opacity: 0.7,
+    Text:{
+        fontSize: 16,
+        color: projColors.currentVerse.font,
+        fontFamily: "baseFont"
+
+    },
+    touchableComponent:{
+        alignItems:'center'
     }
 });
 

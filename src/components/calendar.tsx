@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Alert, ActivityIndicator, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Alert, ActivityIndicator, Text, StyleSheet } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { projColors } from "src/stores/styles";
 import { useFocusEffect } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import useLoading from "src/useLoading";
 import Store from "src/stores/mobx";
 import CustomModal from "src/components/custom-modal";
 import { getUsersTrafficStatistics } from "src/requests/timeManagement";
+import useFonts from "src/useFonts";
 
 const Calendar = () => {
     const { loading, startLoading, stopLoading } = useLoading();
@@ -19,15 +20,14 @@ const Calendar = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [dayData, setDayData] = useState('');
     const [dayTitle, setDayTitle] = useState('');
+    const fontsLoaded = useFonts();
 
     useFocusEffect(
         React.useCallback(() => {
             const currentDate = new Date();
-            const currentYear = currentDate.getFullYear();
-            setYear(currentYear);
-            const currentMonth = currentDate.getMonth() + 1; // Adding 1 because months are zero-indexed
-            setMonth(currentMonth);
-            fetchData(currentYear, currentMonth);
+            setYear(currentDate.getFullYear());
+            setMonth(currentDate.getMonth() + 1);
+            fetchData(currentDate.getFullYear(), currentDate.getMonth() + 1);
         }, [])
     );
 
@@ -42,33 +42,61 @@ const Calendar = () => {
                     let dayStatus = 0;
                     const startTime = new Date(day.workday_date_start).getHours() * 60 + new Date(day.workday_date_start).getMinutes();
                     dayStatus = startTime < 9 * 60 + 15 ? 0 : 1;
+
                     if (day.workday_complete) {
                         const endTime = new Date(day.workday_date_finish).getHours() * 60 + new Date(day.workday_date_finish).getMinutes();
                         dayStatus = endTime < 17 * 60 + 45 ? dayStatus + 1 : dayStatus;
-                        fullTimeCounter = fullTimeCounter + endTime - startTime;
+                        fullTimeCounter += endTime - startTime;
                         days++;
-                    }
-                    let color = '';
-                    switch (dayStatus) {
-                        case 0:
-                            color = '#33ff00';
-                            break;
-                        case 1:
-                            color = '#ffc400';
-                            break;
-                        case 2:
-                            color = '#ff0000';
-                            break;
+                    } else {
+                        // Обычный день, когда ничего не происходило
+                        dayStatus = -1; // Используем -1 для обозначения обычного дня
                     }
 
+                    let backgroundColor = projColors.currentVerse.extra; // Цвет по умолчанию
+                    let borderColor = 'transparent';
+
+                    switch (dayStatus) {
+                        case -1: // Обычный день
+                            backgroundColor = projColors.currentVerse.listElementContainer; // Цвет для обычного дня
+                            borderColor = 'transparent'; // Можно оставить прозрачным
+                            break;
+                        case 0:
+                            backgroundColor = '#33ff00'; // Цвет для неполного рабочего дня
+                            borderColor = '#28a745';
+                            break;
+                        case 1:
+                            backgroundColor = '#ffc400'; // Цвет для завершенного рабочего дня
+                            borderColor = '#ff9900';
+                            break;
+                        case 2:
+                            backgroundColor = '#ff0000'; // Цвет для переработки
+                            borderColor = '#DE283B';
+                            break;
+                    }
+                    
                     return {
                         date: new Date(day.day_title.split('.').reverse().join('-')),
-                        style: { backgroundColor: color },
-                        textStyle: {},
-                        containerStyle: [],
+                        style: {
+                            borderColor: borderColor,
+                            borderWidth: borderColor === 'transparent' ? 0 : 1,
+                            borderRadius: 3,
+                        },
+                        textStyle: { 
+                            // borderRadius: 8,
+                            color: projColors.currentVerse.font,
+                            fontFamily: 'baseFont',
+                        },
+                        containerStyle: {
+                            borderRadius: 8,
+                            backgroundColor: projColors.currentVerse.listElementBackground,
+                            width:50,
+                            height:50,
+                        },
                         allowDisabled: true,
                     };
                 });
+
                 let hours = Math.floor(fullTimeCounter / 60);
                 let minutes = fullTimeCounter % 60;
                 const middleMin = fullTimeCounter / days;
@@ -88,6 +116,17 @@ const Calendar = () => {
             stopLoading();
         }
     };
+
+    const customDatesStylesCallback = date => {
+        return {
+            style: {
+            },
+            textStyle: {
+              fontSize: 13,
+              fontFamily: 'baseFont'
+            }
+          };
+      }
 
     const handleMonthChange = async (date) => {
         startLoading();
@@ -139,50 +178,39 @@ const Calendar = () => {
         setDayTitle(dayTitle);
         setModalVisible(!modalVisible);
     };
-
+    
     return (
         <View style={localStyles.container}>
-            <View style={localStyles.calendarContainer}>
-                <CalendarPicker
-                    previousTitle="Предыдущий"
-                    nextTitle="Следующий"
-                    startFromMonday
-                    weekdays={["пн", "вт", "ср", "чт", "пт", "сб", "вс"]}
-                    months={['янв', 'фев', 'март', 'апр', 'май', 'июнь', 'июль', 'авг', 'сент', 'окт', 'нояб', 'дек']}
-                    onMonthChange={handleMonthChange}
-                    customDatesStyles={customDatesStyles}
-                    onDateChange={onDateChange}
-                    textStyle={localStyles.calendarText}
-                    todayBackgroundColor={projColors.currentVerse.main}
-                    selectedDayColor={projColors.currentVerse.fontAccent}
-                    selectedDayTextColor={projColors.currentVerse.main}
-                    dayShape="square"
-                    customDayHeaderStyles={() => ({
-                        textStyle: {
-                            color: projColors.currentVerse.font,
-                        },
-                    })}
-                />
-                {loading ? (
-                    <View style={localStyles.centered}>
-                        <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
-                    </View>
-                ) : (
-                    <View>
-                        {Store.trafficData ? (
-                            <View>
-                                <Text style={localStyles.infoText}>Закрыто дней - {daysCount}</Text>
-                                <Text style={localStyles.infoText}>Времени на работе - {fullTime}</Text>
-                                <Text style={localStyles.infoText}>Среднее время - {middleTime}</Text>
-                            </View>
-                        ) : (
-                            <View style={localStyles.centered}>
-                                <Text style={localStyles.infoText}>Записи о времени отсутствуют</Text>
-                            </View>
-                        )}
-                    </View>
-                )}
+            <CalendarPicker
+                onDateChange={onDateChange}
+                previousTitle="Предыдущий"
+                nextTitle="Следующий"
+                startFromMonday
+                weekdays={["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]}
+                months={['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']}
+                onMonthChange={handleMonthChange}
+                textStyle={localStyles.calendarText}
+                todayBackgroundColor="transparent"
+                selectedDayStyle={localStyles.selectedDayStyle}
+                selectedDayColor={projColors.currentVerse.extra} // Цвет фона для выбранного дня
+                selectedDayTextColor={projColors.currentVerse.font}
+                dayLabelsWrapper={localStyles.dayLabelsWrapper}
+                monthTitleStyle={localStyles.monthTitleStyle}
+                yearTitleStyle={localStyles.yearTitleStyle}
+                customDatesStyles={customDatesStyles}
+                customDayHeaderStyles={customDatesStylesCallback}
+            />
+            {loading || !fontsLoaded ? (
+        <View style={localStyles.centered}>
+            <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+        </View>
+    ) : (
+            <View>
+                <Text style={localStyles.infoText}>Закрыто дней - {daysCount}</Text>
+                <Text style={localStyles.infoText}>Времени на работе - {fullTime}</Text>
+                <Text style={localStyles.infoText}>Среднее время - {middleTime}</Text>
             </View>
+    )}
             <CustomModal
                 visible={modalVisible}
                 onClose={toggleModal}
@@ -194,37 +222,64 @@ const Calendar = () => {
                     </View>
                 }
             />
+
+
         </View>
-    );
-};
+    
+)};
 
 const localStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: projColors.currentVerse.main,
     },
-    calendarContainer: {
-        marginTop: "7%",
+    calendarText: {
+        color: '#0A1629',
+        fontFamily: 'baseFont',
+    },
+    selectedDayStyle: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#DE283B',
+        borderRadius: 8,
+        fontFamily: 'baseFont'
+    },
+    dayLabelsWrapper: {
+        borderBottomWidth: 0,
+        borderTopWidth: 0,
+    },
+    monthTitleStyle: {
+        fontSize: 20,
+        color: '#0A1629',
+        fontFamily: 'baseFont',
+    },
+    yearTitleStyle: {
+        fontSize: 20,
+        color: '#0A1629',
+        fontFamily: 'baseFont',
     },
     centered: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: projColors.currentVerse.main,
     },
     infoText: {
-        textAlign: "center",
-        marginVertical: 10,
+        backgroundColor: projColors.currentVerse.listElementBackground,
+        borderRadius: 8,
+        padding: 10,
+        marginVertical: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
         color: projColors.currentVerse.fontAccent,
+        fontFamily: 'baseFont',
+        marginTop: 5,
         fontSize: 16,
     },
     modalText: {
-        textAlign: "center",
-        color: projColors.currentVerse.fontAccent,
-        fontSize: 16,
-    },
-    calendarText: {
-        color: projColors.currentVerse.fontAccent,
-        fontSize: 16,
+        color: projColors.currentVerse.font,
+        fontFamily: 'baseFont',
+        textAlign: 'center',
     },
 });
 

@@ -1,0 +1,8 @@
+export { default as logOut } from './logOut.svg' 
+export { default as workStatus } from './workStatus.svg' 
+export { default as calendar } from './calendar.svg' 
+export { default as qrModal } from './qrModal.svg' 
+export { default as mail } from './mail.svg' 
+export { default as phone } from './phone.svg' 
+export { default as birth } from './birth.svg' 
+export { default as plug } from './plug.svg' 

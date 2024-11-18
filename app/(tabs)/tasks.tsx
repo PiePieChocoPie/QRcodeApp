@@ -9,6 +9,7 @@ import Store from "src/stores/mobx";
 import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
 import * as Icons from '../../assets';
 import ItineraryItems from "src/ListItems/itineraryItems";
+import useFonts from "src/useFonts";
 
 const Tasks = () => {
     const { loading, startLoading, stopLoading } = useLoading();
@@ -17,7 +18,7 @@ const Tasks = () => {
     const [filterIndex, setFilterIndex] = useState("0");
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef(null);
-
+    const fontsLoaded = useFonts();
     const data = useMemo(() => [
         { id: '0', status: 'все', colors: ['#83AD00', '#FFFFFF'] },  
         { id: '1', status: 'просрочены', colors: ['#83AD00', '#FFFFFF'] },  
@@ -185,7 +186,7 @@ const Tasks = () => {
                         )}
                     </View>
                     <View style={localStyles.container}>
-                        {loading?(
+                        {loading&&fontsLoaded?(
                             <View style={localStyles.containerCentrallity}>
                             <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
                             </View>
@@ -245,6 +246,7 @@ const localStyles = StyleSheet.create({
         fontSize: 16,
         color: projColors.currentVerse.font,
         marginTop: 10,
+        fontFamily: "boldFont"
     },
     listElementContainer: {
         backgroundColor: projColors.currentVerse.listElementBackground,
@@ -255,12 +257,14 @@ const localStyles = StyleSheet.create({
     Title: {
         fontSize: 16,
         color: projColors.currentVerse.font,
+        fontFamily: "boldFont"
     },
     Text: {
         fontSize: 16,
         color: projColors.currentVerse.fontAccent,
         textAlign: 'center',
         marginTop: 20,
+        fontFamily: "baseFont"
     },
     scrollToTopButton: {
         position: 'absolute',
@@ -277,6 +281,7 @@ const localStyles = StyleSheet.create({
         color: '#fff',
         fontSize: 32,
         fontWeight: 'bold',
+        fontFamily: "baseFont"
     },
 });
 

@@ -61,8 +61,6 @@ const TaskItem = ({ item }) => {
         <TouchableOpacity onPress={toggleMore}>
             <View key={item.id} style={styles.listElementContainer}>
                 <Text style={styles.Title}>{item.title}</Text>
-                <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
-                <Text style={styles.Text}>дата постановки: {item.createdDate}</Text>
                 {item.deadline ? (
                     <Text style={[styles.Text, { color: '#DE283B' }]}>дедлайн: {item.deadline}</Text>
                 ) : (
@@ -75,7 +73,7 @@ const TaskItem = ({ item }) => {
                     marginTOP={0.2}
                     content={
                         <View style={styles.containerCentrallityFromUpper}>
-                            <ScrollView>
+                            <ScrollView style={styles.container}>
                             <Text style={styles.Text}></Text>
                             <Text style={styles.Text}>постановщик: {item.creator.name}</Text>
                             <Text style={styles.Text}></Text>
@@ -103,33 +101,36 @@ const TaskItem = ({ item }) => {
 
 const styles = StyleSheet.create({
     listElementContainer: {
-        backgroundColor: projColors.currentVerse.extrasecond,
-        borderColor: projColors.currentVerse.border,
-        borderWidth: 1,
-        borderRadius: 10,
+        borderColor: projColors.currentVerse.fontAccent,
+        borderBottomWidth: 1,
         margin: 10,
         gap: 5,
         padding: 23,
     },
     Title: {
         fontSize: 18,
-        fontWeight: 'bold',
         color: projColors.currentVerse.font,
+        fontFamily: "boldFont"
     },
     Text: {
         fontSize: 16,
-        color: projColors.currentVerse.font,
-        marginVertical: 5,
+        color: projColors.currentVerse.fontAccent,
+        marginVertical: 1,
+        fontFamily: "boldFont",
     },
     link: {
         fontSize: 16,
         color: 'blue',
         textDecorationLine: 'underline',
+        fontFamily: "boldFont"
     },
     containerCentrallityFromUpper: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    container: {
+        flex: 1,
     },
 });
 

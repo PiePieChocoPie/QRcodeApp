@@ -1,13 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading'; // Используйте, если хотите показать индикатор загрузки
+import TabsLayout from 'app/(tabs)/_layout';
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const loadFonts = useCallback(async () => {
+      await Font.loadAsync({
+          'RegularFont': require('./assets/fonts/Nunito-Regular.ttf'),
+          'BoldFont': require('./assets/fonts/Nunito-Bold.ttf'),
+      });
+      setFontsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+      loadFonts();
+  }, [loadFonts]);
+
+  if (!fontsLoaded) {
+    return (
+       <AppLoading /> // Показывает экран загрузки, пока шрифты не будут загружены
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <TabsLayout/>
+  )
 }
 
 const styles = StyleSheet.create({

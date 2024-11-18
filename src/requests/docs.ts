@@ -18,6 +18,7 @@ export async function getTasksData(ID: string): Promise<any> {
   
     const response = await axios.request(config);
     Store.setTaskData(response.data.result.tasks);
+    console.log('задач получено - ',response.data.result.tasks.length)
     return response;
   }
   
