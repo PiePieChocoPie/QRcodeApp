@@ -7,18 +7,35 @@ import AttorneysItem from "src/ListItems/attorneysItem";
 import { getAllStaticData, getUserAttorney, getUserItinerary } from "src/requests/userData";
 import Store from "src/stores/mobx";
 import { projColors } from 'src/stores/styles'; // Assuming projColors are imported from styles.ts
-import * as Icons from '../../assets';
+import * as Icons from 'assets/icons/taskPageIcons';
 import ItineraryItems from "src/ListItems/itineraryItems";
 import useFonts from "src/useFonts";
+import TaskPageTabSelector from "src/components/taskPageTabsSelector";
+import TaskPageTaskFilter from "src/components/taskPageTaskFilter";
+import ToggleTaskRoleButton from "src/components/toggleTaskRoleButton";
 
 const Tasks = () => {
     const { loading, startLoading, stopLoading } = useLoading();
     const [taskCount, setTaskCount] = useState(false);
-    const [selectedList, setSelectedList] = useState('Tasks');
     const [filterIndex, setFilterIndex] = useState("0");
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef(null);
     const fontsLoaded = useFonts();
+    const [activeTab, setActiveTab] = useState<'tasks' | 'attorney' | 'routes'>('tasks');
+    const [activeFilter, setActiveFilter] = useState<'all' | 'overdue' | 'today' | 'thisWeek' | 'nextWeek' | 'withoutDeadline' | 'moreThanTwoWeek'>('all');
+
+    const handleTabChange = (newTab: 'tasks' | 'attorney' | 'routes') => {
+        setActiveTab(newTab);
+      };
+
+    const handleFilterChange = (newFilter: 'all' | 'overdue' | 'today' | 'thisWeek' | 'nextWeek' | 'withoutDeadline' | 'moreThanTwoWeek') => {
+        setActiveFilter(newFilter);
+      };
+      
+      const handleToggleChange = (states: { [key: string]: boolean }) => {
+        console.log("Current states:", states); // Log current toggle states
+      };
+
     const data = useMemo(() => [
         { id: '0', status: 'все', colors: ['#83AD00', '#FFFFFF'] },  
         { id: '1', status: 'просрочены', colors: ['#83AD00', '#FFFFFF'] },  
@@ -32,12 +49,12 @@ const Tasks = () => {
     const fetchData = useCallback(async () => {
         try {
             startLoading();
-            switch(selectedList){
-                case "Tasks":
+            switch(activeTab){
+                case "tasks":
                     await getAllStaticData(Store.tokenData, false, false, true, false);
-                case "Attorneys":
+                case "attorney":
                     await getUserAttorney(false);
-                case "Itinerary":
+                case "routes":
                     await getUserItinerary();
 
             }
@@ -62,37 +79,36 @@ const Tasks = () => {
         const endOfWeek = new Date(today.setDate(startOfWeek.getDate() + 6));
         const startOfNextWeek = new Date(today.setDate(endOfWeek.getDate() + 1));
         const endOfNextWeek = new Date(today.setDate(startOfNextWeek.getDate() + 6));
-
-        switch (filterIndex) {
-            case '1':
+        switch (activeFilter) {
+            case 'overdue':
                 return Store.taskData.filter(item => item.deadline && new Date(item.deadline) < new Date());
-            case '2':
+            case 'today':
                 return Store.taskData.filter(item => new Date(item.deadline).toDateString() === new Date().toDateString());
-            case '3':
+            case 'thisWeek':
                 return Store.taskData.filter(item => new Date(item.deadline) >= startOfWeek && new Date(item.deadline) <= endOfWeek);
-            case '4':
+            case 'nextWeek':
                 return Store.taskData.filter(item => new Date(item.deadline) >= startOfNextWeek && new Date(item.deadline) <= endOfNextWeek);
-            case '5':
+            case 'withoutDeadline':
                 return Store.taskData.filter(item => !item.deadline);
-            case '6':
+            case 'moreThanTwoWeek':
                 return Store.taskData.filter(item => new Date(item.deadline) > endOfNextWeek);
             default:
                 return Store.taskData;
         }
-    }, [filterIndex, Store.taskData]);
+    }, [activeFilter, Store.taskData]);
 
     
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
-        console.log('Selected List:', selectedList);  // Логируем выбранный список
+        console.log('Selected List:', activeTab);  // Логируем выбранный список
         try {
-            if (selectedList === 'Tasks') {
+            if (activeTab === 'tasks') {
                 await getAllStaticData(Store.tokenData, false, false, true, false);
                 console.log('Loaded Tasks');
-            } else if (selectedList === 'Attorney') {
+            } else if (activeTab === 'attorney') {
                 await getUserAttorney(false);
                 console.log('Loaded Attorney');
-            } else if (selectedList === 'Itinerary') {
+            } else if (activeTab === 'routes') {
                 await getUserItinerary();
                 console.log('Loaded Itinerary');
             }
@@ -102,17 +118,20 @@ const Tasks = () => {
             setRefreshing(false);
             stopLoading();
         }
-    }, [selectedList]);
-
-    const focusChange = (selectedData) => {
-        startLoading();
-        console.log('Changing selected list to:', selectedData);
-        setSelectedList(selectedData);
-        fetchData()
-    };
+    }, [activeTab]);
    
     return (
-            <View style={localStyles.container}>    
+            <View style={localStyles.container}>   
+                            <TaskPageTabSelector activeTab={activeTab} onTabChange={handleTabChange} />
+                            {activeTab === "tasks" && (
+                            <>
+                            <ToggleTaskRoleButton
+                                buttons={["Исполнитель", "Наблюдатель", "Постановщик"]}
+                                onChange={handleToggleChange}
+                              />
+                        <TaskPageTaskFilter activeFilter={activeFilter} onFilterChange={handleFilterChange}/>
+                        </>
+                        )}
                 <ScrollView
                     ref={scrollViewRef}
                     refreshControl={<RefreshControl
@@ -121,81 +140,17 @@ const Tasks = () => {
                         colors={[projColors.currentVerse.accent]}
                     />}
                 >
-                    <View style={[localStyles.expanderContainer, { backgroundColor: "transparent" }]}>
-                        <ScrollView style={{flexDirection:"row"}} horizontal>
-                            <Pressable onPress={() => focusChange('Tasks')} 
-                            style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Tasks' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
-                                <Icons.tasks width={35} height={35} 
-                                fill={selectedList == 'Tasks' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
-                                <Text 
-                                style={[localStyles.buttonTitle, selectedList == 'Tasks' ? { color: projColors.currentVerse.extrasecond  } : { color: projColors.currentVerse.extra}]}>
-                                    Задачи
-                                </Text>
-                            </Pressable>
-                            <Pressable onPress={() => focusChange('Attorney')} 
-                            style={[localStyles.buttonContainer, { width: '35%', alignItems: "center", flex: 1 }, selectedList == 'Attorney' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }]}>
-                                <Icons.attorney width={35} height={35} 
-                                   fill={selectedList == 'Attorney' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} />
-                                <Text style={[localStyles.buttonTitle, selectedList == 'Attorney' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }]}>Доверенность</Text>
-                            </Pressable>
-                            <Pressable
-                                onPress={() => focusChange('Itinerary')}
-                                style={[
-                                    localStyles.buttonContainer,
-                                    { width: '35%', alignItems: "center", flex: 1 },
-                                    selectedList === 'Itinerary' ? { backgroundColor: projColors.currentVerse.extra } : { backgroundColor: projColors.currentVerse.extrasecond }
-                                ]}
-                                >
-                                <Icons.route_list
-                                    width={35}
-                                    height={35}
-                                    stroke={selectedList === 'Itinerary' ? projColors.currentVerse.extrasecond : projColors.currentVerse.extra} // Контур
-                                    fill="none" 
-                                />
-                                <Text style={[
-                                    localStyles.buttonTitle,
-                                    selectedList === 'Itinerary' ? { color: projColors.currentVerse.extrasecond } : { color: projColors.currentVerse.extra }
-                                ]}>
-                                    Маршрутные листы
-                                </Text>
-                            </Pressable>
-                        </ScrollView>
-                        {selectedList === "Tasks" && (
-                            <FlatList
-                            data={data}
-                            keyExtractor={item => item.id}
-                            horizontal
-                            renderItem={({ item }) =>
-                                <Pressable onPress={() => setFilterIndex(item.id)}>
-                                    <View style={[
-                                        localStyles.listElementContainer,
-                                        { backgroundColor: filterIndex === item.id ? item.colors[0] : '#FFFFFF' }, // Установка цвета по умолчанию, белый
-                                        { padding: 15, margin: 7 }
-                                    ]}>
-                                        <Text style={[
-                                            localStyles.Title,
-                                            { color: filterIndex === item.id ? item.colors[1] : '#000000' } // Установка цвета текста по умолчанию, черный
-                                        ]}>
-                                            {item.status}
-                                        </Text>
-                                    </View>
-                                </Pressable>
-                            }
-                            showsHorizontalScrollIndicator={false}
-                        />
-                        )}
-                    </View>
                     <View style={localStyles.container}>
                         {loading&&fontsLoaded?(
                             <View style={localStyles.containerCentrallity}>
-                            <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                            <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
                             </View>
                         ):
                         taskCount ? (
                             <View style={{ flex: 1 }}>
-                                {selectedList === 'Tasks' && filterTaskList.map(item => <TaskItem key={item.id} item={item} />)}
-                                {selectedList === 'Attorney' && Store.attorneys.map(item => <AttorneysItem key={item.ufCrm10ProxyNumber} item={item} />)}
-                                {selectedList === 'Itinerary' && Store.itineraries.map(item => <ItineraryItems key={item.id} item={item} />)}
+                                {activeTab === 'tasks' && filterTaskList.map(item => <TaskItem key={item.id} item={item} />)}
+                                {activeTab === 'attorney' && Store.attorneys.map(item => <AttorneysItem key={item.ufCrm10ProxyNumber} item={item} />)}
+                                {activeTab === 'routes' && Store.itineraries.map(item => <ItineraryItems key={item.id} item={item} />)}
                             </View>
                         ) : (
                             <Text style={localStyles.Text}>Задачи не установлены</Text>
@@ -212,7 +167,7 @@ const Tasks = () => {
                         },
                     ]}
                 >
-                    <Text style={localStyles.scrollToTopButtonText}>↑</Text>
+                    <Icons.upArrow/>
                 </Pressable>
 
             </View>
@@ -261,7 +216,7 @@ const localStyles = StyleSheet.create({
     },
     Text: {
         fontSize: 16,
-        color: projColors.currentVerse.fontAccent,
+        color: projColors.currentVerse.fontAlter,
         textAlign: 'center',
         marginTop: 20,
         fontFamily: "baseFont"

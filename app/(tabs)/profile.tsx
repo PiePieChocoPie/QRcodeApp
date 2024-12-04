@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Linking, ImageBackground } from 'react-native';
+import React, { useState } from 'react';
+import { View, Alert, Dimensions, TouchableOpacity, ActivityIndicator, Image, StyleSheet, ImageBackground } from 'react-native';
 import { router } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
 import Store from "src/stores/mobx";
 import { projColors } from "src/stores/styles";
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
-import Button from 'src/components/button';
 import QRCode from "react-native-qrcode-svg";
 import { openDay, statusDay, closeDay } from "src/requests/timeManagement";
 import { getAllStaticData } from "src/requests/userData";
@@ -14,7 +13,7 @@ import CustomModal from "src/components/custom-modal";
 import Calendar from '../../src/components/calendar';
 import { usePopupContext } from "src/PopupContext";
 import * as Icon from 'assets/icons/profileIcons';
-import useFonts from 'src/useFonts';
+import CustomText from 'src/components/customText';
 const pic = require('./pic.jpg');
 
 function Profile() {
@@ -27,7 +26,6 @@ function Profile() {
     const { loading, startLoading, stopLoading } = useLoading();
     const { showPopup } = usePopupContext();
     const idUser = Store.userData ? Store.userData.ID : 1;
-    const fontsLoaded = useFonts();
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
@@ -87,9 +85,9 @@ function Profile() {
 
     return (
         <ImageBackground source={pic} style={{ flex: 1 }} imageStyle={{ resizeMode: 'cover' }}>
-            {loading||!fontsLoaded ? (
+            {loading ? (
                 <View style={styles.container}>
-                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
                 </View>
             ) : (
                 <View style={styles.container}>
@@ -101,39 +99,39 @@ function Profile() {
                                 <Icon.plug size={40} color={projColors.currentVerse.font} />
                             )}
                         </View>
-                        <Text style={styles.userInfo}>{userData}</Text>
-                        <Text style={styles.position}>{userPosition}</Text>
+                        <CustomText type='header' color={projColors.currentVerse.redro}>{userData}</CustomText>
+                        <CustomText type='normal' color={projColors.currentVerse.redro}>{userPosition}</CustomText>
                     </View>
                     <View style={styles.buttonsContainer}>
                         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.touchableComponent}>
                             <Icon.calendar size={24} color={projColors.currentVerse.font} />
-                            <Text style={styles.Text}>QR-код</Text>
+                            <CustomText type='normal'>QR-код</CustomText>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={workStatusLocal === 'CLOSED' ? handleOpenWorkDay : handleCloseWorkDay} style={styles.touchableComponent}>
                             <Icon.workStatus size={24} color={projColors.currentVerse.font} />
-                            <Text style={styles.Text}>Рабочий статус</Text>
+                            <CustomText type='normal'>Рабочий статус</CustomText>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleLogout} style={styles.touchableComponent}>
                             <Icon.logOut size={24} color={projColors.currentVerse.font} />
-                            <Text style={styles.Text}>Выход</Text>
+                            <CustomText type='normal'>Выход</CustomText>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setCalendVisible(true)} style={styles.touchableComponent}>
                             <Icon.calendar size={24} color={projColors.currentVerse.font} />
-                            <Text style={styles.Text}>Календарь</Text>
+                            <CustomText type='normal'>Календарь</CustomText>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.contactContainer}>
-                        <Icon.mail size={16} color={projColors.currentVerse.fontAccent} style={styles.icon} />
-                        <Text style={styles.contactText}>Email: {Store.userData.EMAIL}</Text>
-                    </View>
-                    <View style={styles.contactContainer}>
-                        <Icon.phone size={16} color={projColors.currentVerse.fontAccent} style={styles.icon} />
-                        <Text style={styles.contactText}>Телефон: {Store.userData.PERSONAL_MOBILE}</Text>
-                    </View>
-                    <View style={styles.contactContainer}>
-                        <Icon.birth size={16} color={projColors.currentVerse.fontAccent} style={styles.icon} />
-                        <Text style={styles.contactText}>Дата рождения: {Store.userData.PERSONAL_BIRTHDAY}</Text>
-                    </View>
+                    {Store.userData.EMAIL&&<View style={styles.contactContainer}>
+                        <Icon.mail size={16} color={projColors.currentVerse.fontAlter} style={styles.icon} />
+                        <CustomText type='description'>Email: {Store.userData.EMAIL}</CustomText>
+                    </View>}
+                    {Store.userData.PERSONAL_MOBILE&&<View style={styles.contactContainer}>
+                        <Icon.phone size={16} color={projColors.currentVerse.fontAlter} style={styles.icon} />
+                        <CustomText type='description'>Телефон: {Store.userData.PERSONAL_MOBILE}</CustomText>
+                    </View>}
+                    {Store.userData.PERSONAL_BIRTHDAY&&<View style={styles.contactContainer}>
+                        <Icon.birth size={16} color={projColors.currentVerse.fontAlter} style={styles.icon} />
+                        <CustomText type='description'>Дата рождения: {Store.userData.PERSONAL_BIRTHDAY}</CustomText>
+                    </View>}
                     <CustomModal
                         visible={modalVisible}
                         marginTOP={0.2}
@@ -174,19 +172,6 @@ const styles = StyleSheet.create({
         width: 120,
         height: 120,
     },
-    userInfo: {
-        fontSize: 22,
-        color: projColors.currentVerse.redro,
-        textAlign: 'center',
-        fontFamily: "boldFont"
-    },
-    position: {
-        fontSize: 16,
-        color: projColors.currentVerse.redro,
-        textAlign: 'center',
-        fontFamily: "baseFont"
-
-    },
     buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -194,7 +179,7 @@ const styles = StyleSheet.create({
     },
     contactContainer: {
         backgroundColor: projColors.currentVerse.listElementBackground,
-        borderRadius: 8,
+        borderRadius: 20,
         padding: 10,
         marginVertical: 5,
         flexDirection: 'row',
@@ -202,18 +187,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 10,
-        color: projColors.currentVerse.fontAccent,
-    },
-    contactText: {
-        fontSize: 16,
-        color: projColors.currentVerse.font,
-        fontFamily: "baseFont"
-    },
-    Text:{
-        fontSize: 16,
-        color: projColors.currentVerse.font,
-        fontFamily: "baseFont"
-
+        color: projColors.currentVerse.fontAlter,
     },
     touchableComponent:{
         alignItems:'center'

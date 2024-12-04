@@ -62,7 +62,7 @@ import useFonts from 'src/useFonts';
                     <>
                     {! fontsLoaded ? (
             <View style={styles.modalContainer}>
-                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
             </View>
         ) : (
             <>

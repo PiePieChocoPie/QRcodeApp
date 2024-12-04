@@ -211,7 +211,7 @@ const authorize = observer(() => {
         const res = await getAllStaticData(token, true, false, false, false);
         if (res.status) {
             Store.setTokenData(token);
-            router.push({ pathname: "/(tabs)/reader" });
+            router.replace("/(tabs)/profile");
             statusDay(Store.userData.ID);
         } else {
             Alert.alert("Ошибка", "Не удалось загрузить данные пользователя");
@@ -275,7 +275,7 @@ const authorize = observer(() => {
                   <Ionicons
                     name={showPassword ? 'eye-off' : 'eye'}
                     size={24}
-                    color={projColors.currentVerse.fontAccent}
+                    color={projColors.currentVerse.fontAlter}
                   />
                 </TouchableOpacity>
               </View>

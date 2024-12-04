@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, ScrollView, View } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import ModalForm from "src/modals/newModal";
 import { projColors } from 'src/stores/styles'; // Цвета из общего файла стилей
 import { getReports } from 'src/requests/timeManagement';

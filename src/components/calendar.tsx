@@ -202,7 +202,7 @@ const Calendar = () => {
             />
             {loading || !fontsLoaded ? (
         <View style={localStyles.centered}>
-            <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+            <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
         </View>
     ) : (
             <View>
@@ -271,7 +271,7 @@ const localStyles = StyleSheet.create({
         marginVertical: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        color: projColors.currentVerse.fontAccent,
+        color: projColors.currentVerse.fontAlter,
         fontFamily: 'baseFont',
         marginTop: 5,
         fontSize: 16,

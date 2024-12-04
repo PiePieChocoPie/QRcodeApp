@@ -7,6 +7,19 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-element-dropdown",
+          "base-64",
+          "mobx",
+          "mobx-react-lite",
+          "react-navigation",
+          "typescript"
+        ]
+      }
+    },
     "plugins": [
       [
         "expo-camera",

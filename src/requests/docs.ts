@@ -1,26 +1,57 @@
 import axios from "axios";
 import Store from "src/stores/mobx";
 
-export async function getTasksData(ID: string): Promise<any> {
-    let data = JSON.stringify({
+export async function getTasksData(ID: string): Promise<any[]> {
+  // Create three different request bodies
+  const dataArray = [
+    {
       "order": { "DEADLINE": "asc" },
-      "filter": { "<REAL_STATUS": "5", "RESPONSIBLE_ID": ID }
-    });
-  
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${process.env.baseUrl}${process.env.token}tasks.task.list`,
-      headers: { 'Content-Type': 'application/json' },
-      data: data,
-      withCredentials: false
-    };
-  
-    const response = await axios.request(config);
-    Store.setTaskData(response.data.result.tasks);
-    console.log('задач получено - ',response.data.result.tasks.length)
-    return response;
+      "filter": { "RESPONSIBLE_ID": ID },
+    },
+    {
+      "order": { "DEADLINE": "asc" },
+      "filter": { "AUDITOR": ID },
+    },
+    {
+      "order": { "DEADLINE": "asc" },
+      "filter": { "CREATED_BY": ID },
+    },
+  ];
+
+  const config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${process.env.baseUrl}${process.env.token}tasks.task.list`,
+    headers: { 'Content-Type': 'application/json' },
+    withCredentials: false,
+  };
+
+  try {
+    // Perform all requests concurrently
+    const responses = await Promise.all(
+      dataArray.map((body) =>
+        axios.request({ ...config, data: JSON.stringify(body) })
+      )
+    );
+
+    // Combine all task arrays
+    const allTasks = responses.flatMap((response) => response.data.result.tasks);
+
+    // Deduplicate tasks by a unique key (e.g., "ID")
+    const uniqueTasks = Array.from(
+      new Map(allTasks.map((task) => [task.ID, task])).values()
+    );
+
+    // Store the data and log the result
+    Store.setTaskData(uniqueTasks);
+    console.log('Total unique tasks fetched:', uniqueTasks.length);
+
+    return uniqueTasks;
+  } catch (error) {
+    console.error('Failed to fetch tasks:', error);
+    throw error;
   }
+}
   
 
   export async function getDataAboutDocs(raw: string): Promise<any> {

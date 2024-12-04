@@ -92,7 +92,7 @@ const ItineraryItems = ({ item }) => {
                     content={
                         loading ? (
                             <View style={styles.containerCentrallityFromUpper}>
-                                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                                <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
                             </View>
                         ) : (
                             <View style={styles.containerCentrallityFromUpper}>
@@ -128,7 +128,7 @@ const ItineraryItems = ({ item }) => {
                                         >
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Icons.yandex height={30} width={40} />
-                                                <Text style={[styles.TitleSocialOnModal, { color: projColors.currentVerse.fontAccent }]}>Открыть маршрут</Text>
+                                                <Text style={[styles.TitleSocialOnModal, { color: projColors.currentVerse.fontAlter }]}>Открыть маршрут</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )}

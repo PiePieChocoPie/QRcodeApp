@@ -1,15 +1,10 @@
-import { Link, Tabs, useFocusEffect, useNavigation } from 'expo-router';
+import { Link, Tabs, useNavigation } from 'expo-router';
 import { projColors } from 'src/stores/styles';
 import * as Icons from '../../assets/navbar_icons';
-import Popup from 'src/components/popup';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { PopupProvider, usePopupContext } from 'src/PopupContext'; // Обновите путь при необходимости
+import {StyleSheet} from 'react-native';
 import Store from "src/stores/mobx";
-import React, { useState, useEffect } from 'react';
-import clientAdd from './clientAdd';
 
 const TabsLayout = () => {
-  const navigation = useNavigation();
   const isBitrixUser = Store.userData.NAME ? true : false;
   const isIt = isBitrixUser?Store.userData.UF_DEPARTMENT[0] != 11 ? false : true : false;
   return (
@@ -17,6 +12,7 @@ const TabsLayout = () => {
           screenOptions={{ 
             tabBarActiveTintColor: '#DE283B', // Активный цвет иконок - красный
             tabBarInactiveTintColor: projColors.currentVerse.font,
+            headerShadowVisible: false,
           }}
         >
           <Tabs.Screen
@@ -38,7 +34,7 @@ const TabsLayout = () => {
           <Tabs.Screen
             name="tasks"
             options={{
-              headerTitle: 'Задачи',
+              headerTitle: 'Менеджер',
               tabBarShowLabel: false,
               href: isBitrixUser?'tasks':null,
               tabBarIcon: ({ color }) => (
@@ -108,6 +104,7 @@ const styles = StyleSheet.create({
     height: '6%', // Adjust the height as needed
     justifyContent: 'center',
     alignItems: 'center',
+    
   },
   active: {
     width: 40,

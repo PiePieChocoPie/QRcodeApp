@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Text, TouchableOpacity, View, Alert, ActivityIndicator, StyleSheet, Linking } from 'react-native';
+import { View, Alert, ActivityIndicator, StyleSheet, Linking } from 'react-native';
 import { CameraView, useCameraPermissions } from "expo-camera";
 import ChooseStateDialog from "src/modals/chooseStateDialog";
 import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import { useFocusEffect } from "expo-router";
 import useLoading from "src/useLoading";
-import Toast from 'react-native-root-toast';
 import LottieView from 'lottie-react-native';
 import anim2 from 'src/anim2.json';
 import { getAllStaticData } from "src/requests/userData";
@@ -123,7 +122,7 @@ const Reader = () => {
         <View style={styles.container}>
             {loading ? (
                 <View style={styles.containerCentrallity}>
-                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
                 </View>
             ) : (
                 <View style={styles.overlay}>

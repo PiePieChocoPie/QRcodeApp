@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {Modal, View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, StyleSheet} from 'react-native';
 import { projColors } from "src/stores/styles";
 import Store from "src/stores/mobx";
 import useLoading from "src/useLoading";
 import CustomModal from "src/components/custom-modal";
-import Toast from 'react-native-root-toast';
 import { getUpdRejectStatuses, updAttorneyStatus, updItineraryStatus, updUpdStatus } from "src/requests/docs";
 import { Dropdown } from "react-native-element-dropdown";
-import Popup from "src/components/popup";
 import { usePopupContext } from "src/PopupContext";
 
 const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
@@ -130,7 +128,7 @@ const ChooseStateDialog = ({ visible, onClose, docData, docNumber }) => {
             title={docData.title}
             content={loading ? (
                 <View style={styles.containerCentrallity}>
-                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                    <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
                 </View>
             ) : (                
                 <View style={styles.containerCentrallityFromUpper}>
@@ -224,11 +222,11 @@ const styles =  StyleSheet.create({
         },
     Title: {
         fontSize: 16,
-        color: projColors.currentVerse.fontAccent,
+        color: projColors.currentVerse.fontAlter,
         },
     Text: {
         fontSize: 16,
-        color: projColors.currentVerse.fontAccent,
+        color: projColors.currentVerse.fontAlter,
         },
     RBView: {
         alignItems: "center",

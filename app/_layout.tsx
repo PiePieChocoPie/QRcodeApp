@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Stack } from "expo-router";
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { PopupProvider, usePopupContext } from 'src/PopupContext';

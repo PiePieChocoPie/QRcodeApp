@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
-import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Pressable, FlatList, StyleSheet, Linking, TextInput, Alert } from 'react-native';
+import React, { useState, useRef, useCallback } from "react";
+import { View, Text, ScrollView, RefreshControl, ActivityIndicator, Pressable, StyleSheet, TextInput} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import useLoading from "src/useLoading";
 import Store from "src/stores/mobx";
@@ -146,7 +146,7 @@ const phoneDirectory = () => {
                 </View>
                 {loading ? (
             <View style={localStyles.containerCentrallity}>
-                <ActivityIndicator size="large" color={projColors.currentVerse.fontAccent} />
+                <ActivityIndicator size="large" color={projColors.currentVerse.fontAlter} />
             </View>
         ) : (
             <>
@@ -229,7 +229,7 @@ const localStyles = StyleSheet.create({
     },
     Text: {
         fontSize: 16,
-        color: projColors.currentVerse.fontAccent,
+        color: projColors.currentVerse.fontAlter,
         textAlign: 'center',
         marginTop: 20,
     },

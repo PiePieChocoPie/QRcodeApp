@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import React, { useState} from 'react';
+import { Text, TextInput, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-import { encode as base64encode } from 'base-64';
-import * as SecureStore from 'expo-secure-store';
 import { observer } from 'mobx-react-lite';
-import Store from 'src/stores/mobx';
 import useLoading from 'src/useLoading';
-import * as Animatable from 'react-native-animatable';
-import { getAllStaticData } from "src/requests/userData";
-import { statusDay } from "src/requests/timeManagement";
-import * as Icons from '../assets';
 import { router } from "expo-router";
 import Button from 'src/components/button';
 import { projColors } from 'src/stores/styles';
@@ -126,7 +119,7 @@ const registration = observer(() => {
                   <Ionicons
                   name={showPassword ? 'eye-off' : 'eye'}
                   size={24}
-                  color={projColors.currentVerse.fontAccent}
+                  color={projColors.currentVerse.fontAlter}
                   />
                 </TouchableOpacity>
               </View>
@@ -145,7 +138,7 @@ const registration = observer(() => {
                   <Ionicons
                     name={showPassword ? 'eye-off' : 'eye'}
                     size={24}
-                    color={projColors.currentVerse.fontAccent}
+                    color={projColors.currentVerse.fontAlter}
                   />
                 </TouchableOpacity>
               </View>
