@@ -29,7 +29,8 @@
       ],
       "expo-router",
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      "expo-asset"
     ],
     "splash": {
       "image": "./assets/splash.png",

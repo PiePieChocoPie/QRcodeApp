@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet, Linking } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity, Alert, StyleSheet, Linking, ScrollView, Platform } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { encode as base64encode } from 'base-64';
 import * as SecureStore from 'expo-secure-store';
@@ -13,6 +13,14 @@ import * as Icons from '../assets';
 import { Link, router } from "expo-router";
 import Button from 'src/components/button';
 import { projColors } from 'src/stores/styles';
+import CheckBox, { Checkbox } from 'expo-checkbox';
+import CustomText from 'src/components/customText';
+import CustomModal from 'src/components/custom-modal';
+import * as Device from 'expo-device';
+import PrivPolRUiOS from 'src/components/privPolRUiOS';
+import PrivPolENiOS from 'src/components/privPolENiOS';
+import PrivPolRUAnd from 'src/components/privPolRUAnd';
+import PrivPolENAnd from 'src/components/privPolENAnd';
 
 const LoadingScreen = () => {
     return (
@@ -162,6 +170,11 @@ const authorize = observer(() => {
     const [showSavePin, setShowSavePin] = useState(false);
     const [showCheckPin, setShowCheckPin] = useState(false);
     const { loading, startLoading, stopLoading } = useLoading();
+    const [isChecked, setChecked] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const privacyPolicyStatusChanged = (status:boolean) => {
+        setChecked(!isChecked)
+    }
 
     useEffect(() => {
         const checkPin = async () => {
@@ -243,7 +256,6 @@ const authorize = observer(() => {
     if (showCheckPin) {
         return <CheckPinScreen onPinSuccess={handlePinSuccess} />;
     }
-
     return (
         <View style={styles.Registration}>
           <View style={styles.frameParent}>
@@ -280,13 +292,50 @@ const authorize = observer(() => {
                 </TouchableOpacity>
               </View>
             </View>
-    
-            <Button handlePress={buttonHandler} title={'Войти'} disabled={loading} />
-            <Button handlePress={buttonForgotPasswordHandler} title={'Забыли пароль?'} disabled={loading} backgroundColor={projColors.currentVerse.main} fontColor={projColors.currentVerse.redro} />
-            <Button handlePress={buttonNewHandler} title={'Зарегистрироваться'} disabled={loading} backgroundColor={projColors.currentVerse.main} fontColor={projColors.currentVerse.font} />
+            <View style={styles.section}>
+                <Checkbox
+                    style={styles.checkbox}
+                    value={isChecked}
+                    onValueChange={privacyPolicyStatusChanged}
+                    color={isChecked ? '#4630EB' : undefined}
+                />
+                <CustomText>Я принимаю условия </CustomText>
+                
+            </View>
+            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                        <CustomText color='blue'>Политики конфиденциальности</CustomText>
+                    </TouchableOpacity>
+            <Button handlePress={buttonHandler} title={'Войти'} disabled={loading||!isChecked} />
+            <Button 
+            handlePress={buttonForgotPasswordHandler} title={'Забыли пароль?'} disabled={loading} 
+            backgroundColor={projColors.currentVerse.main} fontColor={projColors.currentVerse.redro} />
+            <Button 
+            handlePress={buttonNewHandler} title={'Зарегистрироваться'} disabled={loading} 
+            backgroundColor={projColors.currentVerse.main} fontColor={projColors.currentVerse.font} />
     
             {isInvalidLogin && <Text style={styles.errorText}>Неверные данные</Text>}
           </View>
+          <CustomModal 
+                marginTOP={0.2}
+                title='Политика конфиденциальности|Privacy policy'
+                onClose={()=>setModalVisible(!modalVisible)}
+                visible={modalVisible}
+                content={
+                        <ScrollView>
+                            {Device.manufacturer === 'Apple'
+                            ? <>
+                            <PrivPolRUiOS/>
+                            <PrivPolENiOS/>
+                            </>
+                            :
+                            <>
+                            <PrivPolRUAnd/>
+                            <PrivPolENAnd/>
+                            </>
+                            }
+                        </ScrollView>
+                }
+            />
         </View>
       );
 });
@@ -390,6 +439,13 @@ const pinStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+    section: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    checkbox: {
+        margin: 8,
+    },
     Registration: {
       backgroundColor: projColors.currentVerse.main, // Основной фон экрана
       flex: 1,
