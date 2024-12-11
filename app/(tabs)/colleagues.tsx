@@ -142,7 +142,7 @@ const phoneDirectory = () => {
                             placeholder='Поиск'
                             onChangeText={searchHandler}
                         />
-                <Button handlePress={importHandle} title='Импорт контактов'/>
+                {/* <Button handlePress={importHandle} title='Импорт контактов'/> */}
                 </View>
                 {loading ? (
             <View style={localStyles.containerCentrallity}>

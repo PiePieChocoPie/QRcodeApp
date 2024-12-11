@@ -57,8 +57,9 @@ const TabsLayout = () => {
             name="reports"
             options={{
               headerTitle: 'Отчеты',
+              href: null,
               tabBarShowLabel: false,
-              href: isBitrixUser?'reports':null,
+              // href: isBitrixUser?'reports':null,
               tabBarIcon: ({ color }) => (
                 <Icons.list name="document-outline" width={32} height={32} fill={color} />
               ),
